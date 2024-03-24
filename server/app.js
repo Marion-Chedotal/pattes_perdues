@@ -18,7 +18,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan("combine"));
 
-// app.use('/message', messageRouter);
 app.use("/auth", userRouter);
 
 // Lancement du serveur

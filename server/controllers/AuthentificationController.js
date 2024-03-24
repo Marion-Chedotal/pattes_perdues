@@ -3,10 +3,17 @@ const bcrypt = require("bcryptjs");
 const { escapeHtml } = require("../utils/htmlEscape");
 const { createToken } = require("../middleware/AuthMiddleware.js");
 
+/**
+ * Register a new user
+ * @param {object} req
+ * @param {object} res
+ * @returns {string} string success
+ * @throws {object} error
+ */
 const register = async (req, res) => {
   try {
     // Get user input
-    const { login, password, email, avatar } = req.body;
+    let { login, password, email, avatar } = req.body;
 
     // sanitize input
     login.trim();
@@ -15,10 +22,6 @@ const register = async (req, res) => {
 
     login = escapeHtml(login);
     email = escapeHtml(email);
-
-    if (!(login && password && email)) {
-      return res.status(400).json("Merci de remplir tous les champs");
-    }
 
     // Check if user already exist: same email
     const isEmailAlreadyExist = await User.findOne({ where: { email: email } });
@@ -43,15 +46,22 @@ const register = async (req, res) => {
       avatar: avatar,
     });
 
-    return res.status(201).json(`L'utilisateur ${login} a bien été créé`);
+    res.status(201).json(`L'utilisateur ${login} a bien été créé`);
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: `Erreur de l'enregistrement de l'utilisateur, ${error}`,
+      error: `Erreur de l'enregistrement de l'utilisateur, ${error}`,
     });
   }
 };
 
+/**
+ * Log a user
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} object of accessTokenUser, idUser and login
+ * @throws {object} Error
+ */
 const login = async (req, res) => {
   try {
     const { login, password } = req.body;
@@ -91,12 +101,30 @@ const login = async (req, res) => {
       });
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch users." });
+    res
+      .status(500)
+      .json({ error: `Erreur lors de l'authentification: ${error}` });
   }
 };
 
-const isUserAuthentify = async (req, res) => {
-  res.json(req.user);
+/**
+ * Log out user by destroying his JWT
+ * @param {object} req
+ * @param {object} res
+ * @returns {string} string success
+ * @throws {object} error
+ */
+const logout = async (req, res) => {
+  try {
+    if (req.cookies["access-token"]) {
+      res.clearCookie("access-token");
+      return res.status(200).json({ message: "Vous avez bien été déconnecté" });
+    } else {
+      return res.status(400).json({ message: "Aucun cookie à supprimer" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: `Erreur lors de la déconnexion, ${error}` });
+  }
 };
 
-module.exports = { register, login, isUserAuthentify };
+module.exports = { register, login, logout };

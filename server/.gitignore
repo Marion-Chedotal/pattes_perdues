@@ -1,3 +1,4 @@
 /node_modules
 .env
 pattes_perduesV3.sql
+/coverage

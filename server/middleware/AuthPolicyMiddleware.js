@@ -2,8 +2,17 @@ const Joi = require("joi");
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{10,32}$/;
-const loginRegex = /^[a-zA-Z0-9_]{8,20}$/;
+const loginRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9_!@#$%^&*()\-+=]{8,20}$/;
 
+
+/**
+ * Check format of email, password and login input
+ * @param {Object} req
+ * @param {Object} res
+ * @param {function} next
+ * @returns {void}
+ * @throws {Error} Error if input doesn't respect the required format
+ */
 const register = (req, res, next) => {
   const schema = Joi.object({
     email: Joi.string().email(),
@@ -28,7 +37,7 @@ const register = (req, res, next) => {
       case "login":
         res.status(400).json({
           error:
-            "Format du login non valide. Doit être compris entre 8 et 20 caractères alphanumériques.  ",
+            "Format du login non valide. Doit être compris entre 8 et 20 caractères alphanumériques, dont une majuscule.",
         });
         break;
       default:
@@ -41,4 +50,4 @@ const register = (req, res, next) => {
   }
 };
 
-module.exports = { register };
+module.exports = { register, passwordRegex, loginRegex };
