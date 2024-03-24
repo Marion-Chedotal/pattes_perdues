@@ -1,0 +1,103 @@
+/* rubik-regular - latin */
+@font-face {
+    font-display: swap;
+    font-family: "Rubik";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../../../public/fonts/rubik/rubik-v28-latin-regular.woff2")
+      format("woff2");
+  }
+  
+  /* eb-garamond-500 - latin */
+  @font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "EB Garamond";
+    font-style: normal;
+    font-weight: 500;
+    src: url("../../../public/fonts/garamont/eb-garamond-v27-latin-500.woff2")
+      format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  }
+  
+  .register {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    .card {
+      width: 80%;
+      display: flex;
+      height: 800px;
+  
+      .right {
+        flex: 1;
+        border-radius: 10px;
+        background: url("../../Components/Assets/chat.jpg")
+          center;
+        background-size: cover;
+      }
+      .left {
+        flex: 1;
+        padding-right: 40px;
+        display: flex;
+        flex-direction: column;
+        //   gap: 50px;
+        //   justify-content: center;
+  
+        img {
+          width: 15rem;
+          height: auto;
+        //   float: right;
+        }
+  
+        h1 {
+          font-family: "EB Garamond";
+          text-align: left;
+          color: #004e64;
+        }
+  
+        form {
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
+  
+          input {
+            font-family: "rubik";
+            border: none;
+            border-bottom: 1px solid;
+            padding: 20px;
+          }
+  
+          button {
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #004e64;
+            color: white;
+            font-weight: bold;
+          }
+        }
+        .connection {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-evenly;
+          align-items: center;
+          padding-top: 50px;
+  
+          span {
+            font-family: "rubik";
+            color: #004e64;
+          }
+          button {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background-color: #004e64;
+            color: white;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+  
