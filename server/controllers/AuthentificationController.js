@@ -1,7 +1,12 @@
 const { User } = require("../models");
 const bcrypt = require("bcryptjs");
 const { escapeHtml } = require("../utils/htmlEscape");
-const { createToken } = require("../middleware/AuthMiddleware.js");
+const {
+  checkEmailExists,
+  checkLoginExists,
+  createToken,
+  comparePasswords,
+} = require("../service/AuthenticationService");
 
 /**
  * Register a new user
@@ -12,7 +17,7 @@ const { createToken } = require("../middleware/AuthMiddleware.js");
  */
 const register = async (req, res) => {
   try {
-    //TODO: policy here 
+    //TODO: policy here
     // Get user input
     let { login, password, email, avatar } = req.body;
 
@@ -25,13 +30,13 @@ const register = async (req, res) => {
     email = escapeHtml(email);
 
     // Check if user already exist: same email
-    const isEmailAlreadyExist = await User.findOne({ where: { email: email } });
+    const isEmailAlreadyExist = await checkEmailExists(req.body.email);
     if (isEmailAlreadyExist) {
       return res.status(400).json("Un utilisateur avec cet e-mail existe déjà");
     }
 
     // Check if user already exist: same login
-    const isLoginAlreadyExist = await User.findOne({ where: { login: login } });
+    const isLoginAlreadyExist = await checkLoginExists(req.body.login);
     if (isLoginAlreadyExist) {
       return res.status(400).json("Ce nom d'utilisateur est déjà pris");
     }
@@ -67,39 +72,39 @@ const login = async (req, res) => {
   try {
     const { login, password } = req.body;
 
+    //TODO: policy here too
     // sanitize input
     login.trim();
     password.trim();
 
     if (!(login && password)) {
-      return res.status(400).json("Merci de remplir tous les champs");
+      return res.status(400).json("Please fill in all fields");
     }
 
     const user = await User.findOne({ where: { login: login } });
 
     if (!user) {
-      return res.status(404).json({ error: "L'utilisateur n'existe pas" });
+      return res.status(404).json({ error: "Invalid informations" });
     }
 
     const dbPassword = user.password;
-    bcrypt.compare(password, dbPassword).then((match) => {
-      if (!match) {
-        return res.status(401).json({ error: "Mot de passe incorrect" });
-      }
+    const passwordMatch = await comparePasswords(password, dbPassword);
+    if (!passwordMatch) {
+      return res.status(401).json({ error: "Invalid informations" });
+    }
 
-      const accessToken = createToken(user);
+    const accessToken = createToken(user);
 
-      res.cookie("access-token", accessToken, {
-        maxAge: 2 * 60 * 60 * 1000,
-        httpOnly: true,
-        // sameSite: true,
-      });
+    res.cookie("access-token", accessToken, {
+      maxAge: 2 * 60 * 60 * 1000,
+      httpOnly: true,
+      // sameSite: true,
+    });
 
-      res.status(200).json({
-        token: accessToken,
-        login: login,
-        id: user.id,
-      });
+    res.status(200).json({
+      token: accessToken,
+      login: login,
+      id: user.id,
     });
   } catch (error) {
     res
