@@ -60,12 +60,16 @@
           display: flex;
           flex-direction: column;
           gap: 30px;
+          font-family: "rubik";
   
           input {
-            font-family: "rubik";
             border: none;
             border-bottom: 1px solid;
-            padding: 20px;
+            padding: 10px;
+          }
+
+          select {
+            padding: 10px;
           }
   
           button {
