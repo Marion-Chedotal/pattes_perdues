@@ -23,9 +23,12 @@ app.use("/auth", userRouter);
 // Lancement du serveur
 const port = process.env.PORT || 8080;
 
-db.sequelize.sync().then(() => {
-  app.listen(port, () => {
-    console.log(`serveur listening on port ${port}`);
+try {
+  db.sequelize.sync().then(() => {
+    app.listen(port, () => {
+      console.log(`Serveur listening on port ${port}`);
+    });
   });
-  // TODO: catch si KO sequelize
-});
+} catch (error) {
+  console.error("Error occurred while synchronizing Sequelize:", error);
+}

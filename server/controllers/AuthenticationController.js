@@ -1,12 +1,21 @@
-const { User } = require("../models");
 const bcrypt = require("bcryptjs");
+const Joi = require("joi");
 const { escapeHtml } = require("../utils/htmlEscape");
 const {
-  checkEmailExists,
-  checkLoginExists,
   createToken,
   comparePasswords,
 } = require("../service/AuthenticationService");
+const {
+  checkEmailExists,
+  checkLoginExists,
+  registerUser,
+  getByLogin,
+} = require("../service/UserService");
+
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{10,32}$/;
+const loginRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9_!@#$%^&*()\-+=]{8,20}$/;
 
 /**
  * Register a new user
@@ -17,46 +26,56 @@ const {
  */
 const register = async (req, res) => {
   try {
-    //TODO: policy here
     // Get user input
     let { login, password, email, avatar } = req.body;
 
-    // sanitize input
-    login.trim();
-    password.trim();
-    email.trim();
+    // Check input format
+    const schema = Joi.object({
+      email: Joi.string().email(),
+      password: Joi.string().regex(new RegExp(passwordRegex)),
+      login: Joi.string().regex(new RegExp(loginRegex)),
+    });
 
-    login = escapeHtml(login);
-    email = escapeHtml(email);
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        error: "Invalid input format",
+      });
+    }
+
+    // sanitize input
+    login = escapeHtml(login.trim());
+    email = escapeHtml(email.trim());
+    password.trim();
 
     // Check if user already exist: same email
     const isEmailAlreadyExist = await checkEmailExists(req.body.email);
     if (isEmailAlreadyExist) {
-      return res.status(400).json("Un utilisateur avec cet e-mail existe déjà");
+      return res.status(400).json("Email already used");
     }
 
     // Check if user already exist: same login
     const isLoginAlreadyExist = await checkLoginExists(req.body.login);
     if (isLoginAlreadyExist) {
-      return res.status(400).json("Ce nom d'utilisateur est déjà pris");
+      return res.status(400).json("Login already used");
     }
 
     // Encrypt user password
     const hashPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    await User.create({
+    await registerUser({
       login: login,
       password: hashPassword,
       email: email,
       avatar: avatar,
     });
 
-    res.status(201).json(`L'utilisateur ${login} a bien été créé`);
+    res.status(201).json(`User ${login} has been successfully registered`);
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      error: `Erreur de l'enregistrement de l'utilisateur, ${error}`,
+      error: `Error when register user, ${error}`,
     });
   }
 };
@@ -70,18 +89,30 @@ const register = async (req, res) => {
  */
 const login = async (req, res) => {
   try {
-    const { login, password } = req.body;
+    let { login, password } = req.body;
 
-    //TODO: policy here too
+    // Check input format
+    const schema = Joi.object({
+      password: Joi.string().regex(new RegExp(passwordRegex)),
+      login: Joi.string().regex(new RegExp(loginRegex)),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        error: "Invalid input format",
+      });
+    }
+
     // sanitize input
-    login.trim();
+    login = escapeHtml(login.trim());
     password.trim();
 
     if (!(login && password)) {
       return res.status(400).json("Please fill in all fields");
     }
 
-    const user = await User.findOne({ where: { login: login } });
+    const user = await getByLogin(login);
 
     if (!user) {
       return res.status(404).json({ error: "Invalid informations" });
@@ -93,7 +124,7 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "Invalid informations" });
     }
 
-    const accessToken = createToken(user);
+    const accessToken = createToken(user.login, user.id);
 
     res.cookie("access-token", accessToken, {
       maxAge: 2 * 60 * 60 * 1000,
@@ -107,9 +138,7 @@ const login = async (req, res) => {
       id: user.id,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: `Erreur lors de l'authentification: ${error}` });
+    res.status(500).json({ error: `Authentication error: ${error}` });
   }
 };
 
@@ -127,12 +156,14 @@ const logout = async (req, res) => {
         secure: true,
         samesite: "none",
       });
-      return res.status(200).json({ message: "Vous avez bien été déconnecté" });
+      return res
+        .status(200)
+        .json({ message: "You have been successfully disconnected" });
     } else {
-      return res.status(400).json({ message: "Aucun cookie à supprimer" });
+      return res.status(400).json({ message: "No cookie to delete" });
     }
   } catch (error) {
-    res.status(500).json({ error: `Erreur lors de la déconnexion, ${error}` });
+    res.status(500).json({ error: `Error when logout, ${error}` });
   }
 };
 

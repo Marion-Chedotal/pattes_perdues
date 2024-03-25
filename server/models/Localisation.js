@@ -1,7 +1,13 @@
-module.exports = (sequelize, DataTypes) => {
+module.exports = ( sequelize, DataTypes) => {
   const Localisation = sequelize.define(
     "Localisation",
     {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+        primaryKey: true,
+      },
       area: {
         type: DataTypes.STRING,
         allowNull: true,

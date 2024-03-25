@@ -1,18 +1,24 @@
-const { User } = require("../models");
+const {
+  getByLogin,
+  getById,
+  updateUser,
+  deleteUser,
+} = require("../service/UserService");
+const { checkUserPersimission } = require("../service/AuthenticationService");
+const bcrypt = require("bcryptjs");
 
 /**
  * Get user by his id
- * @param {object} req 
+ * @param {object} req
  * @param {object} res
  * @returns {object} user's data
  * @throws {object} error
  */
-const getById = async (req, res) => {
+const findById = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await User.findByPk(id, {
-        attributes: { exclude: ['password'] } 
-    });
+    const user = await getById(id);
+
     if (!user) {
       return res
         .status(400)
@@ -33,15 +39,10 @@ const getById = async (req, res) => {
  * @returns {object} user's data
  * @throws {object} error
  */
-const getByLogin = async (req, res) => {
+const findByLogin = async (req, res) => {
   const { login } = req.params;
   try {
-    const user = await User.findOne({
-      where: {
-        login,
-      },
-      attributes: { exclude: ['password'] } 
-    });
+    const user = await getByLogin(login);
     if (!user) {
       return res
         .status(400)
@@ -65,26 +66,36 @@ const getByLogin = async (req, res) => {
  * @returns {string} string success
  * @throws {object} error
  */
-const updateUser = async (req, res) => {
+const update = async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
   const data = req.body;
 
-  try {
-    const user = await User.update(data, {
-      where: {
-        id,
-      },
-    });
+  const userAllowed = checkUserPersimission(userId, id);
+  console.log("userAllowed", userAllowed);
+  if (userAllowed) {
+    try {
+      if (data.password) {
+        const hashPassword = await bcrypt.hash(data.password, 10);
+        data.password = hashPassword;
+      }
 
-    if (!user) {
-      return res
-        .status(400)
-        .json({ error: `L'utilisateur ${id} n'existe pas` });
+      const user = await updateUser(id, data);
+
+      if (!user) {
+        return res
+          .status(400)
+          .json({ error: `L'utilisateur ${id} n'existe pas` });
+      }
+      res.status(200).json(`L'utilisateur ${data.login} a bien été mis à jour`);
+    } catch (error) {
+      res.status(500).json({
+        error: `Erreur lors de la mise à jour de l'utilisateur, ${error}`,
+      });
     }
-    res.status(200).json(`L'utilisateur ${data.login} a bien été mis à jour`);
-  } catch (error) {
+  } else {
     res.status(500).json({
-      error: `Erreur lors de la mise à jour de l'utilisateur, ${error}`,
+      error: `You don't have the rights`,
     });
   }
 };
@@ -96,35 +107,34 @@ const updateUser = async (req, res) => {
  * @returns {string} string success
  * @throws {object} Error
  */
-const deleteUser = async (req, res) => {
+const remove = async (req, res) => {
   const { id } = req.params;
-  // TODO: compare id received / id => TODO middleware / service 
-  try {
-    const user = await User.findOne({
-      where: {
-        id,
-      },
-    });
+  const userId = req.user.id;
 
-    const login = user.login;
+  const userAllowed = checkUserPersimission(userId, id);
 
-    if (!user) {
-      return res
-        .status(400)
-        .json({ error: `L'utilisateur ${id} n'existe pas` });
+  if (userAllowed) {
+    try {
+      const user = await deleteUser(id);
+
+      if (!user) {
+        return res
+          .status(400)
+          .json({ error: `L'utilisateur ${id} n'existe pas` });
+      }
+      const login = user.login;
+
+      res.status(200).json(`The user ${login} has been successfully deleted`);
+    } catch (error) {
+      res.status(500).json({
+        error: `Error when deleting user, ${error}`,
+      });
     }
-
-    await User.destroy({
-      where: {
-        id,
-      },
-    });
-    res.status(200).json(`L'utilisateur ${login} a bien été supprimé`);
-  } catch (error) {
+  } else {
     res.status(500).json({
-      error: `Erreur lors de la suppression de l'utilisateur, ${error}`,
+      error: `You don't have the rights`,
     });
   }
 };
 
-module.exports = { getById, getByLogin, updateUser, deleteUser };
+module.exports = { findById, findByLogin, update, remove };

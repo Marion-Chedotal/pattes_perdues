@@ -1,34 +1,16 @@
-const { User } = require("../models");
 const { sign } = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-/** check if the email is already used
- * @param {string} email
- * @returns { boolean }
- */
-const checkEmailExists = async (email) => {
-  return await User.findOne({ where: { email: email } });
-};
-
-/** check if the login is already used
- * @param {string} login
- * @returns { boolean }
- */
-const checkLoginExists = async (login) => {
-  return await User.findOne({ where: { login: login } });
-};
-
 /**
- * Create JWT access token for an user
- * @param {object} user
+ * Create JWT access token for a user
+ * @param {string} login
+ * @param {int} id
  * @returns {string } JWT
  */
-const createToken = (user) => {
-  const accessToken = sign(
-    { login: user.login, id: user.id },
-    process.env.JWT_SECRET,
-    { expiresIn: "2h" }
-  );
+const createToken = (login, id) => {
+  const accessToken = sign({ login, id }, process.env.JWT_SECRET, {
+    expiresIn: "2h",
+  });
 
   return accessToken;
 };
@@ -43,4 +25,15 @@ const comparePasswords = async (password, dbPassword) => {
   return bcrypt.compare(password, dbPassword);
 };
 
-module.exports = { checkEmailExists, checkLoginExists, createToken, comparePasswords };
+/**
+ * Check if the user has permission to perform an action on a resource
+ * @param {string} userId - ID of the user who is trying to perform the action
+ * @param {string} requestedUserId - ID of the user associated with the resource
+ * @returns {<boolean>} True if it's match
+ */
+
+const checkUserPersimission = (userId, requestedUserId) => {
+  return userId === requestedUserId;
+};
+
+module.exports = { createToken, comparePasswords, checkUserPersimission };
