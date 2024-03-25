@@ -98,6 +98,7 @@ const updateUser = async (req, res) => {
  */
 const deleteUser = async (req, res) => {
   const { id } = req.params;
+  // TODO: compare id received / id => TODO middleware / service 
   try {
     const user = await User.findOne({
       where: {

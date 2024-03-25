@@ -29,6 +29,7 @@ const Register = () => {
     const codePostal = e.target.value;
     setPostalCode(codePostal);
 
+    // TODO: Service !
     try {
       const response = await axios.get(apiUrl + codePostal);
       if (response.status === 200) {
@@ -94,7 +95,7 @@ const Register = () => {
               ))}
             </select> 
             {error && error.message} 
-            <button onClick={handleClick}>S'inscrire</button>
+            <button type="submit" onClick={handleClick}>S'inscrire</button>
           </form>
           <div className="connection">
             <span>Vous avez déjà un compte ?</span>

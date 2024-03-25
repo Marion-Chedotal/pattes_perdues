@@ -45,6 +45,7 @@ const register = (req, res, next) => {
           error: "Informations non-valides",
         });
     }
+    next();
   } else {
     next();
   }

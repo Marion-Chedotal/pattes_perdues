@@ -27,7 +27,7 @@ const validateToken = (req, res, next) => {
   const accessToken = req.cookies["access-token"];
 
   if (!accessToken) {
-    return res.status(403).json({ error: "Utilisateur non-authentifié! " });
+    return res.status(401).json({ error: "Utilisateur non-authentifié! " });
   }
 
   try {
@@ -36,8 +36,9 @@ const validateToken = (req, res, next) => {
     if (validToken) {
       return next();
     }
+    // TODO:  else 403
   } catch (error) {
-    res.status(400).json({ error: error });
+    res.status(500).json({ error: error });
   }
 };
 

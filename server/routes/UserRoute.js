@@ -11,9 +11,9 @@ router.post("/login", AuthController.login);
 router.get("/logout", AuthController.logout);
 
 // user route
-router.get("/user/:id", UserController.getById);
-router.get("/user/search/:login", UserController.getByLogin);
-router.put("/user/:id", UserController.updateUser);
-router.delete("/user/:id", UserController.deleteUser);
+router.get("/user/:id", validateToken.validateToken, UserController.getById);
+router.get("/user/search/:login", validateToken.validateToken, UserController.getByLogin);
+router.put("/user/:id", validateToken.validateToken, UserController.updateUser);
+router.delete("/user/:id", validateToken.validateToken, UserController.deleteUser);
 
 module.exports = router;

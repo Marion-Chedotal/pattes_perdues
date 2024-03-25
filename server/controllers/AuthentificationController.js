@@ -12,6 +12,7 @@ const { createToken } = require("../middleware/AuthMiddleware.js");
  */
 const register = async (req, res) => {
   try {
+    //TODO: policy here 
     // Get user input
     let { login, password, email, avatar } = req.body;
 

@@ -27,4 +27,5 @@ db.sequelize.sync().then(() => {
   app.listen(port, () => {
     console.log(`serveur listening on port ${port}`);
   });
+  // TODO: catch si KO sequelize
 });
