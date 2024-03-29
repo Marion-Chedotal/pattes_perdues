@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Address} = require("../models");
 
 /** check if the email is already used
  * @param {string} email
@@ -69,7 +69,7 @@ const updateUser = async (id, data) => {
  */
 const deleteUser = async (id) => {
   const user = await getById(id);
-  
+
   return user.destroy();
 };
 

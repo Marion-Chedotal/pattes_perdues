@@ -11,6 +11,7 @@ const {
   registerUser,
   getByLogin,
 } = require("../service/UserService");
+const { addAddress } = require("../service/AddressService");
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{10,32}$/;
@@ -27,13 +28,15 @@ const loginRegex =
 const register = async (req, res) => {
   try {
     // Get user input
-    let { login, password, email, avatar } = req.body;
+    let { login, password, email, avatar, postalCode, city } = req.body;
 
     // Check input format
     const schema = Joi.object({
       email: Joi.string().email(),
       password: Joi.string().regex(new RegExp(passwordRegex)),
       login: Joi.string().regex(new RegExp(loginRegex)),
+      postalCode: Joi.number().integer(),
+      city: Joi.string(),
     });
 
     const { error } = schema.validate(req.body);
@@ -47,6 +50,7 @@ const register = async (req, res) => {
     login = escapeHtml(login.trim());
     email = escapeHtml(email.trim());
     password.trim();
+    postalCode = escapeHtml(postalCode);
 
     // Check if user already exist: same email
     const isEmailAlreadyExist = await checkEmailExists(req.body.email);
@@ -64,11 +68,17 @@ const register = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    await registerUser({
+    const user = await registerUser({
       login: login,
       password: hashPassword,
       email: email,
       avatar: avatar,
+    });
+ 
+    await addAddress({
+      postalCode: postalCode,
+      city: city,
+      UserId: user.id,
     });
 
     res.status(201).json(`User ${login} has been successfully registered`);

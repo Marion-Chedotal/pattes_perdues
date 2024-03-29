@@ -1,6 +1,6 @@
 module.exports = ( sequelize, DataTypes) => {
-  const Localisation = sequelize.define(
-    "Localisation",
+  const Address = sequelize.define(
+    "Address",
     {
       id: {
         type: DataTypes.UUID,
@@ -8,11 +8,11 @@ module.exports = ( sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
       },
-      area: {
-        type: DataTypes.STRING,
+      street: {
+        type: DataTypes.STRING(100),
         allowNull: true,
       },
-      postcode: {
+      postalCode: {
         type: DataTypes.CHAR(5),
         allowNull: false,
       },
@@ -22,18 +22,14 @@ module.exports = ( sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "Localisation",
+      tableName: "Address",
       timestamps: true,
-      updatedAt: false,
     }
   );
 
-  Localisation.associate = (models) => {
-    Localisation.hasOne(models.User, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    });
+  Address.associate = (models) => {
+    Address.belongsTo(models.User);
   };
 
-  return Localisation;
+  return Address;
 };

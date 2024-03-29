@@ -31,9 +31,15 @@ module.exports = (sequelize, DataTypes) => {
     {
       tableName: "User",
       timestamps: true,
-      updatedAt: false,
     }
   );
+
+  User.associate = (models) => {
+    User.hasOne(models.Address, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    });
+  };
 
   return User;
 };

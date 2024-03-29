@@ -1,18 +1,12 @@
 import "./register.scss";
 import logo from "../../Components/Assets/pattes_perdues_logo.png";
-import {  Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import React, { useState } from "react";
+import registerService from "../../Services/Register.service";
+import Button from "../../Components/Btn/BtnLogin";
 
 const Register = () => {
-  // const [inputs, setInputs] = useState({
-  //   login:"",
-  //   password: "",
-  //   email: "",
-  //   postalCode: "",
-  //   city:""
-  // });
-
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -23,27 +17,15 @@ const Register = () => {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
-  const apiUrl = "https://apicarto.ign.fr/api/codes-postaux/communes/";
 
   const handlePostalCodeChange = async (e) => {
-    const codePostal = e.target.value;
-    setPostalCode(codePostal);
+    const postalCode = e.target.value;
+    setPostalCode(postalCode);
 
-    // TODO: Service !
-    try {
-      const response = await axios.get(apiUrl + codePostal);
-      if (response.status === 200) {
-        if (response.data.length === 0) {
-          throw new Error("Aucune commune trouvée pour ce code postal.");
-        }
-        const cityName = response.data.map((city) => city.nomCommune);
-        setCities(cityName);
-
-        if (cityName) {
-          handleClick();
-        }
-      }
-    } catch (error) {}
+    if (postalCode.length === 5) {
+      const cityNames = await registerService.getCity(postalCode);
+      setCities(cityNames);
+    }
   };
 
   const handleCityChange = (event) => {
@@ -51,21 +33,16 @@ const Register = () => {
   };
 
   const handleClick = async (e) => {
-    // don't refresh the page
     e.preventDefault();
-    try {
-      await axios.post("http://localhost:3001/auth/register", {
-        login: login,
-        password: password,
-        email: email,
-        // postalCode: postalCode,
-        // city: selectedCity
-      });
-      navigate("/");
-    } catch (error) {
-      console.log("ICI", error);
-      setError(error.response.data);
-    }
+
+    await registerService.register({
+      login: login,
+      password: password,
+      email: email,
+      postalCode: postalCode,
+      city: selectedCity,
+    });
+    navigate("/");
   };
 
   return (
@@ -103,20 +80,23 @@ const Register = () => {
               placeholder="Code postal"
               value={postalCode}
               onChange={handlePostalCodeChange}
+              maxLength={5}
             />
             <select value={selectedCity} onChange={handleCityChange} required>
               <option value="">Sélectionnez votre ville</option>
-              {cities.map((city) => (
-                <option value={city}>{city}</option>
+              {cities.map((city, index) => (
+                <option key={index} value={city}>
+                  {city}
+                </option>
               ))}
-            </select> 
-            {error && error.message} 
-            <button type="submit" onClick={handleClick}>S'inscrire</button>
+            </select>
+            {error && error.message}
+            <Button onClick={handleClick}>S'inscrire</Button>
           </form>
           <div className="connection">
             <span>Vous avez déjà un compte ?</span>
             <Link to="/login">
-              <button>Connexion</button>
+              <Button>Connexion</Button>
             </Link>
           </div>
         </div>

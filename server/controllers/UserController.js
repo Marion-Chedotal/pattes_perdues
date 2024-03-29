@@ -72,7 +72,6 @@ const update = async (req, res) => {
   const data = req.body;
 
   const userAllowed = checkUserPersimission(userId, id);
-  console.log("userAllowed", userAllowed);
   if (userAllowed) {
     try {
       if (data.password) {
