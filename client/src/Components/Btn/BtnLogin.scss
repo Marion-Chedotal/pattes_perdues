@@ -1,8 +1,10 @@
+@import "../../App";
+
 button {
     padding: 20px;
     border: none;
     border-radius: 10px;
-    background-color: #004e64;
+    background-color: $blue-color;
     color: white;
     font-weight: bold;
   }

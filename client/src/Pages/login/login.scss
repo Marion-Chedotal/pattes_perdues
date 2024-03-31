@@ -1,102 +1,59 @@
-/* rubik-regular - latin */
-@font-face {
-  font-display: swap;
-  font-family: "Rubik";
-  font-style: normal;
-  font-weight: 400;
-  src: url("../../../public/fonts/rubik/rubik-v28-latin-regular.woff2")
-    format("woff2");
-}
-
-/* eb-garamond-500 - latin */
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: "EB Garamond";
-  font-style: normal;
-  font-weight: 500;
-  src: url("../../../public/fonts/garamont/eb-garamond-v27-latin-500.woff2")
-    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-}
+@import "../../App";
 
 .login {
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: $blue-color;
 
-  .card {
-    width: 80%;
+  Button {
+    border-radius: 10px;
+  }
+
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+
+  .part {
+    //     width: 80%;
     display: flex;
-    height: 800px;
+    //     height: 800px;
 
     .left {
       flex: 1;
+      height: 100%;
+      width: 100%;
       border-radius: 10px;
-      background: url("../../Components/Assets/chat.jpg")
-        center;
+      background: url("../../Components/Assets/chat.jpg") center;
       background-size: cover;
+      // padding-right: 20px;
     }
     .right {
       flex: 1;
-      padding-left: 40px;
-      display: flex;
-      flex-direction: column;
-      //   gap: 50px;
-      //   justify-content: center;
+      padding-left: 20px;
+      gap: 30px;
 
       img {
         width: 15rem;
         height: auto;
-        float: right;
       }
 
       h1 {
-        font-family: "EB Garamond";
-        text-align: left;
-        color: #004e64;
+        font-family: $font-eb-garamond;
       }
 
       form {
-        display: flex;
-        flex-direction: column;
         gap: 30px;
 
         input {
-          font-family: "rubik";
           border: none;
           border-bottom: 1px solid;
-          padding: 20px;
+          padding: 10px;
         }
-
-      }
-      button {
-        align-self: center;
-        margin-top: 20px;
-        padding: 20px;
-        border: none;
-        border-radius: 10px;
-        background-color: #004e64;
-        color: white;
-        font-weight: bold;
       }
       .inscription {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-evenly;
-        align-items: center;
-        padding-top: 50px;
-
+        gap:20px;
+        
         span {
-          font-family: "rubik";
-          color: #004e64;
-        }
-        button {
-          padding: 15px;
-          border: none;
-          border-radius: 10px;
-          background-color: #004e64;
-          color: white;
-          font-weight: bold;
+          font-family: $font-rubik;
         }
       }
     }

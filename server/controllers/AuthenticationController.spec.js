@@ -3,7 +3,7 @@ const { register } = require("./AuthenticationController.js");
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{10,32}$/;
 const loginRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9_!@#$%^&*()\-+=]{8,20}$/;
+/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{8,20}$/;
 
 describe("Policy input for register", () => {
   beforeEach(() => {
