@@ -1,0 +1,12 @@
+{
+  "register": {
+    "loginInvalid": "Le pseudo doit contenir une minuscule, majuscule, un chiffre, et sa longueur doit être comprise entre 8 et 20 caractères",
+    "existingLogin": "Pseudo déjà utilisé",
+    "emailInvalid": "Format à respecter: pattesperdues@hello.com",
+    "existingEmail": "Email déjà utilisé",
+    "passwordInvalid": "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre, un caractères spéciaux: !@#$%^*()_+, et une longueur comprise entre 10 et 32 caractères",
+    "postalCode": "Le code postal doit comprendre 5 chiffres",
+    "cityNotSelected": "Merci de sélectionner une ville.",
+    "cityNotFound": "Aucune commune trouvée pour ce code postal."
+  }
+}

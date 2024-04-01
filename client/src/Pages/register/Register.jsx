@@ -2,56 +2,105 @@ import "./register.scss";
 import logo from "../../Components/Assets/pattes_perdues_logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import registerService from "../../Services/Register.service";
+import authService from "../../Services/Auth.service";
 import Button from "../../Components/Btn/BtnLogin";
+import validateInputs from "../../Utils/errorRegister";
+import errorMessage from "../../Utils/errorMessages.json";
+import { useTranslation } from "react-i18next";
 
 const Register = () => {
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-  const [cities, setCities] = useState([]);
-  const [selectedCity, setSelectedCity] = useState("");
-  const [error, setError] = useState(null);
+  const { t } = useTranslation();
+
+  const [inputs, setInputs] = useState({
+    login: "",
+    password: "",
+    email: "",
+    postalCode: "",
+    selectedCity: "",
+    cities: [],
+  });
+
+  // errors from format input
+  const [validationErrors, setValidationErrors] = useState({});
+  // errors from server
+  const [errMsg, setErrMsg] = useState("");
 
   const navigate = useNavigate();
 
-  const handlePostalCodeChange = async (e) => {
-    const postalCode = e.target.value;
-    setPostalCode(postalCode);
+  //TODO: to refacto
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputs({
+      ...inputs,
+      [name]: value,
+    });
 
-    if (postalCode.length === 5) {
-      const cityNames = await registerService.getCity(postalCode);
-      if (cityNames.length === 0) {
-        setError(Error.register.cityNotFound);
-      } else {
-        setError(null);
-        setCities(cityNames);
+    const validationErrors = validateInputs(
+      { ...inputs, [name]: value },
+      errorMessage
+    );
+    setValidationErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: validationErrors[name],
+    }));
+  };
+
+  const handlePostalCodeChange = async (e) => {
+    const value = e.target.value;
+
+    if (value.length <= 5) {
+      setInputs((prevInputs) => ({
+        ...prevInputs,
+        postalCode: value,
+      }));
+
+      if (value.length === 5) {
+        try {
+          const cityNames = await authService.getCity(value);
+          setInputs((prevInputs) => ({
+            ...prevInputs,
+            cities: cityNames || [],
+          }));
+
+          if (!cityNames || cityNames.length === 0) {
+            setValidationErrors((prevErrors) => ({
+              ...prevErrors,
+              noCity: errorMessage.register.cityNotFound,
+            }));
+          } else {
+            setValidationErrors((prevErrors) => ({
+              ...prevErrors,
+              noCity: undefined,
+            }));
+          }
+        } catch (error) {
+          setValidationErrors({ postalCode: error.message });
+        }
       }
     }
   };
 
-  const handleCityChange = (event) => {
-    setSelectedCity(event.target.value);
-  };
-
-  const handleClick = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const inputErrors = validateInputs(inputs);
+    setValidationErrors(inputErrors);
+
+    if (Object.keys(inputErrors).length > 0) {
+      return;
+    }
 
     try {
-      const response = await registerService.register({
-        login: login,
-        password: password,
-        email: email,
-        postalCode: postalCode,
-        city: selectedCity,
+      await authService.register({
+        login: inputs.login,
+        password: inputs.password,
+        email: inputs.email,
+        postalCode: inputs.postalCode,
+        city: inputs.selectedCity,
       });
-      // if (response.status >= 400) {
-      //   throw new Error("Erreur lors de l'enregistrement."); // Générer une nouvelle erreur
-      // }
       navigate("/");
-    } catch (error) {
-      setError(error);
+    } catch (err) {
+      const errorMessage = t(`authentication.${err}`);
+      setErrMsg(errorMessage);
     }
   };
 
@@ -59,66 +108,83 @@ const Register = () => {
     <div className="register container">
       <div className="row ml-5">
         <div className="part d-flex">
-          <div className="left col-md-6 d-flex flex-column justify-content-center align-items-center">
-            <div className="logo">
+          <div className="left col-md-6 d-flex flex-column">
+            <div className="logo mx-auto">
               <img src={logo} alt="logo pattes perdues" />
             </div>
             <h1 className="fs-2">Créer un compte</h1>
-            <form className="d-flex flex-column">
+            <form
+              className="d-flex flex-column"
+              onSubmit={handleSubmit}
+              noValidate
+            >
+              {typeof errMsg === "string" && <div>{errMsg}</div>}
               <input
                 type="text"
                 placeholder="Pseudo"
                 name="login"
-                onChange={(e) => setLogin(e.target.value)}
-                value={login}
+                onChange={handleChange}
               />
+              {validationErrors.login && (
+                <div className="error-message">{validationErrors.login}</div>
+              )}
               <input
                 type="email"
                 placeholder="Email"
                 name="email"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
+                onChange={handleChange}
               />
+              {validationErrors.email && (
+                <div className="error-message">{validationErrors.email}</div>
+              )}
               <input
                 type="password"
                 placeholder="Mot de passe"
-                aria-describedby="passwordHelpBlock"
                 name="password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
+                onChange={handleChange}
               />
-              <div id="passwordHelpBlock" className="form-text">
-                Le mot de passe doit contenir au moins une lettre minuscule, une
-                lettre majuscule, un chiffre , un caractères spéciaux:
-                !@#$%^*()_+, et une longueur comprise entre 10 et 32 caractères.
-              </div>
+              {validationErrors.password && (
+                <div className="error-message">{validationErrors.password}</div>
+              )}
               <input
                 type="text"
                 placeholder="Code postal"
-                value={postalCode}
+                name="postalCode"
                 onChange={handlePostalCodeChange}
                 maxLength={5}
               />
-              <select value={selectedCity} onChange={handleCityChange} required>
+              {validationErrors.postalCode && (
+                <div className="error-message">
+                  {validationErrors.postalCode}
+                </div>
+              )}
+              {validationErrors.noCity && (
+                <div className="error-message">{validationErrors.noCity}</div>
+              )}
+              <select name="selectedCity" onChange={handleChange} required>
                 <option value="">Sélectionnez votre ville</option>
-                {cities.map((city, index) => (
-                  <option key={index} value={city}>
-                    {city}
-                  </option>
-                ))}
+                {inputs.cities &&
+                  inputs.cities.map((city, index) => (
+                    <option key={index} value={city}>
+                      {city}
+                    </option>
+                  ))}
               </select>
-              {error && <div className="error-message">{error.message}</div>}
-              <Button onClick={handleClick}>S'inscrire</Button>
+              {validationErrors.selectedCity && (
+                <div className="error-message">
+                  {validationErrors.selectedCity}
+                </div>
+              )}
+              <Button type="submit">S'inscrire</Button>
             </form>
-            <div className="connection pt-5 d-flex align-items-center justify-content-center flex-wrappt-5 d-flex align-items-center justify-content-center flex-wrap">
+            <div className="connection pt-5 d-flex align-items-center justify-content-center flex-wrap">
               <span>Vous avez déjà un compte ?</span>
               <Link to="/login">
-                <Button>Connexion</Button>
+                <Button type="button">Connexion</Button>
               </Link>
             </div>
           </div>
-          <div className="right d-none d-sm-block col-md-6">
-          </div>
+          <div className="right d-none d-sm-block col-md-6"></div>
         </div>
       </div>
     </div>

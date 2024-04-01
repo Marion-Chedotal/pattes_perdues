@@ -51,7 +51,6 @@ const register = async (req, res) => {
     login = escapeHtml(login.trim());
     email = escapeHtml(email.trim());
     password.trim();
-    postalCode = escapeHtml(postalCode);
 
     // Check if user already exist: same email
     const isEmailAlreadyExist = await checkEmailExists(req.body.email);
@@ -102,6 +101,10 @@ const login = async (req, res) => {
   try {
     let { login, password } = req.body;
 
+    if (!(login && password)) {
+      return res.status(400).json({ error: "Please fill in all fields"});
+    }
+
     // Check input format
     const schema = Joi.object({
       password: Joi.string().regex(new RegExp(passwordRegex)),
@@ -119,9 +122,6 @@ const login = async (req, res) => {
     login = escapeHtml(login.trim());
     password.trim();
 
-    if (!(login && password)) {
-      return res.status(400).json("Please fill in all fields");
-    }
 
     const user = await getByLogin(login);
 

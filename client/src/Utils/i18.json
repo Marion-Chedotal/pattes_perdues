@@ -1,0 +1,9 @@
+{
+  "authentication": {
+    "Login already used": "Nom d'utilisateur déjà utilisé.",
+    "Email already used": "Email déjà utilisé.",
+    "Please fill in all fields": "Merci de remplir tous les champs.",
+    "Invalid informations": "Identifiant ou mot de passe incorrect.",
+    "Invalid input format": "Login et mot de passe ne respectant pas le format attendu."
+  }
+}
