@@ -1,0 +1,46 @@
+@import "../../App";
+
+.presentation {
+  background-color: $beige-color;
+  font-family: $font-eb-garamond;
+  font-size: 1.3rem;
+
+  .card {
+    color: $blue-color;
+    background-color: $beige-color;
+
+    .card-header {
+      background-color: $beige-color;
+    }
+
+    .intro {
+      background-color: $white-color;
+      border-radius: 10px 60px 10px 10px;
+      height: 8rem;
+    }
+  }
+  .hr {
+    opacity: 1;
+  }
+
+  .how {
+    background-color: $white-color;
+    border-radius: 10px 10px 10px 70px;
+}
+
+  .introImg {
+    width: 18rem;
+    height: auto;
+    // border: none;
+    // background-color: none;
+  }
+  .postCard {
+    .seePost,
+    .publishPost {
+      background-color: $blue-color;
+      color: $white-color;
+      border-radius: 15px;
+      width: 45%;
+    }
+  }
+}

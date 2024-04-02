@@ -3,7 +3,7 @@ import logo from "../../Components/Assets/pattes_perdues_logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import authService from "../../Services/Auth.service";
-import Button from "../../Components/Btn/BtnLogin";
+import Button from "../../Components/Btn/Button";
 import validateInputs from "../../Utils/errorRegister";
 import errorMessage from "../../Utils/errorMessages.json";
 import { useTranslation } from "react-i18next";
@@ -55,6 +55,10 @@ const Register = () => {
       }));
 
       if (value.length === 5) {
+        setValidationErrors((prevErrors) => ({
+          ...prevErrors,
+          postalCode: undefined,
+        }));
         try {
           const cityNames = await authService.getCity(value);
           setInputs((prevInputs) => ({
@@ -112,7 +116,7 @@ const Register = () => {
             <div className="logo mx-auto">
               <img src={logo} alt="logo pattes perdues" />
             </div>
-            <h1 className="fs-2">Créer un compte</h1>
+            <h1 className="fs-2 fw-bold">Créer un compte</h1>
             <form
               className="d-flex flex-column"
               onSubmit={handleSubmit}
@@ -162,7 +166,7 @@ const Register = () => {
                 <div className="error-message">{validationErrors.noCity}</div>
               )}
               <select name="selectedCity" onChange={handleChange} required>
-                <option value="">Sélectionnez votre ville</option>
+                <option value="">Sélectionner votre ville</option>
                 {inputs.cities &&
                   inputs.cities.map((city, index) => (
                     <option key={index} value={city}>

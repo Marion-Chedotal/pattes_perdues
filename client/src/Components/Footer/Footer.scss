@@ -1,0 +1,22 @@
+@import "../../App";
+
+.footer {
+  font-family: $font-eb-garamond;
+  font-weight: bold;
+  font-size: 0.8rem;
+
+ 
+  .navbar-brand {
+    color: $blue-color;
+    text-decoration: none;
+    &:hover,
+    &:focus {
+      color: $blue-color;
+    }
+
+    img {
+        width: 7rem;
+        height: auto;
+      }
+  }
+}

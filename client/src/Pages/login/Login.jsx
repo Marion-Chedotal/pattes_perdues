@@ -3,7 +3,7 @@ import logo from "../../Components/Assets/pattes_perdues_logo.png";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import authService from "../../Services/Auth.service";
-import Button from "../../Components/Btn/BtnLogin";
+import Button from "../../Components/Btn/Button";
 import { useTranslation } from "react-i18next";
 
 const Login = () => {
@@ -44,7 +44,7 @@ const Login = () => {
             <div className="logo mx-auto">
               <img src={logo} alt="logo pattes perdues" />
             </div>
-            <h1 className="fs-2">Se connecter</h1>
+            <h1 className="fs-2 fw-bold">Se connecter</h1>
             <form className="d-flex flex-column" onSubmit={handleSubmit}>
               <input
                 type="text"

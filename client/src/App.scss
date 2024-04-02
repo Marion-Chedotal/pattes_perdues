@@ -11,7 +11,7 @@ $font-eb-garamond: "EB Garamond", serif;
   font-style: normal;
   font-weight: 400;
   src: url("../public/fonts/rubik/rubik-v28-latin-regular.woff2")
-  format("woff2");
+    format("woff2");
 }
 
 /* eb-garamond-500 - latin */
@@ -28,3 +28,9 @@ $font-eb-garamond: "EB Garamond", serif;
 Variables pour les couleurs
 */
 $blue-color: #004e64;
+$beige-color: #D0C19F;
+$white-color: #FFFFFF;
+
+.App {
+  color: $blue-color;
+}
