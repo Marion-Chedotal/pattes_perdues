@@ -4,10 +4,12 @@ import Footer from "../../Components/Footer/Footer.jsx";
 import React from "react";
 import { Image, Container, Row, Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaw } from "@fortawesome/free-solid-svg-icons";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
-import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
-import { faBullhorn } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPaw,
+  faEye,
+  faLocationDot,
+  faBullhorn,
+} from "@fortawesome/free-solid-svg-icons";
 import chien from "../../Components/Assets/chien_home.jpg";
 import Button from "../../Components/Btn/Button.jsx";
 import { Link } from "react-router-dom";
@@ -19,12 +21,16 @@ const Home = () => {
       <main>
         <Container fluid className="presentation mt-5 ">
           <Row>
-            <Col className={`my-5 d-flex justify-content-center justify-content-md-${window.innerWidth >= 768 ? 'center' : 'start'} text-center text-md-start`}>
+            <Col
+              className={`my-5 d-flex justify-content-center justify-content-md-${
+                window.innerWidth >= 768 ? "center" : "start"
+              } text-center text-md-start`}
+            >
               <div className="card border border-0">
                 <h2 className="card-header display-6 pb-5 border border-0 text-center">
                   Pattes perdues
                 </h2>
-                <div className="card-body ms-auto text-center intro d-flex justify-content-center align-items-center">
+                <div className="card-body ms-auto text-center introduction d-flex justify-content-center align-items-center">
                   <p className="card-text fw-bold">
                     facilite votre démarche pour vous aider à retrouver vos
                     animaux grâces à notre communauté !
@@ -33,8 +39,8 @@ const Home = () => {
               </div>
             </Col>
           </Row>
-          <Row className="align-items-center">
-            <Col md={8} className="mx-1 mx-md-5">
+          <Row className="align-items-center justify-content-center">
+            <Col md={8} className="">
               <div className="d-flex align-items-center mb-4">
                 <hr className="flex-grow-1 hr border-2" />
                 <h3 className="ms-4">Comment ?</h3>
@@ -78,7 +84,7 @@ const Home = () => {
                 </ol>
               </dl>
             </Col>
-            <Col md={3} className="text-center mt-5">
+            <Col md={3} className="text-center mt-5 d-none d-md-block">
               <Image
                 alt="chien type labrador"
                 src={chien}
@@ -88,17 +94,25 @@ const Home = () => {
             </Col>
           </Row>
           <Row className="postCard row-cols-2 mt-5">
-            <Col md={6} className="mb-5 seePost d-flex align-items-center mx-auto">
-              <FontAwesomeIcon icon={faEye} />
-              <Link to="/posts">
-                <Button>Voir les annonces</Button>
-              </Link>
+            <Col md={6}>
+              <div className="mb-5 seePost mx-auto text-center">
+                <Link to="/posts">
+                  <Button>
+                    <FontAwesomeIcon icon={faEye} className="me-1" />
+                    Voir les annonces
+                  </Button>
+                </Link>
+              </div>
             </Col>
-            <Col md={6} className="mb-5 publishPost d-flex align-items-center mx-auto">
-              <FontAwesomeIcon icon={faBullhorn} />
-              <Link to="/publish">
-                <Button>Publier une annonce</Button>
-              </Link>
+            <Col md={6}>
+              <div className="mb-5 publishPost mx-auto text-center">
+                <Link to="/publish">
+                  <Button>
+                    <FontAwesomeIcon icon={faBullhorn} className="me-3" />
+                    Publier une annonce
+                  </Button>
+                </Link>
+              </div>
             </Col>
           </Row>
         </Container>

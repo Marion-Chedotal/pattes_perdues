@@ -3,8 +3,7 @@ import logo from "../Assets/pattes_perdues_logo.png";
 import { Link } from "react-router-dom";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaw } from "@fortawesome/free-solid-svg-icons";
-import { faCircleUp } from "@fortawesome/free-solid-svg-icons";
+import { faPaw, faCircleUp } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = () => {
   return (

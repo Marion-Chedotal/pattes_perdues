@@ -3,7 +3,7 @@
 .presentation {
   background-color: $beige-color;
   font-family: $font-eb-garamond;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
 
   .card {
     color: $blue-color;
@@ -13,7 +13,7 @@
       background-color: $beige-color;
     }
 
-    .intro {
+    .introduction {
       background-color: $white-color;
       border-radius: 10px 60px 10px 10px;
       height: 8rem;
@@ -26,21 +26,22 @@
   .how {
     background-color: $white-color;
     border-radius: 10px 10px 10px 70px;
-}
+    width: fit-content;
+
+    li {
+      font-size: 1rem;
+    }
+  }
 
   .introImg {
     width: 18rem;
     height: auto;
-    // border: none;
-    // background-color: none;
   }
+
   .postCard {
-    .seePost,
-    .publishPost {
-      background-color: $blue-color;
-      color: $white-color;
-      border-radius: 15px;
-      width: 45%;
+    button {
+      padding: 40px;
+      border-radius: 20px;
     }
   }
 }
