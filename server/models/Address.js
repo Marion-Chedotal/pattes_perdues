@@ -2,12 +2,6 @@ module.exports = ( sequelize, DataTypes) => {
   const Address = sequelize.define(
     "Address",
     {
-      id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-        primaryKey: true,
-      },
       street: {
         type: DataTypes.STRING(100),
         allowNull: true,
@@ -28,7 +22,8 @@ module.exports = ( sequelize, DataTypes) => {
   );
 
   Address.associate = (models) => {
-    Address.belongsTo(models.User);
+    Address.hasOne(models.User);
+    Address.hasOne(models.Post);
   };
 
   return Address;

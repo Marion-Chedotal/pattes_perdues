@@ -40,12 +40,16 @@ const getByLogin = async (login) => {
 };
 
 /**
- * Find user by his id
+ * Find user by his id and get his address
  * @param {string} id
  * @returns {Promise<Object>}
  */
 const getById = async (id) => {
-  return await User.findByPk(id);
+  return await User.findByPk(id, { 
+    include: {
+    model: Address,
+    attributes: ['street', 'postalCode', 'city']
+  }});
 };
 
 /**

@@ -75,11 +75,12 @@ const register = async (req, res) => {
       avatar: avatar,
     });
  
-    await addAddress({
+    const address = await addAddress({
       postalCode: postalCode,
-      city: city,
-      UserId: user.id,
+      city: city
     });
+
+    await user.setAddress(address);
 
     res.status(201).json(`User ${login} has been successfully registered`);
   } catch (error) {

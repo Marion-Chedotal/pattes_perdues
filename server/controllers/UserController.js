@@ -15,7 +15,7 @@ const bcrypt = require("bcryptjs");
  * @throws {object} error
  */
 const findById = async (req, res) => {
-  const { id } = req.params;
+  const { id } = parseInt(req.params, 10);
   try {
     const user = await getById(id);
 
@@ -67,11 +67,12 @@ const findByLogin = async (req, res) => {
  * @throws {object} error
  */
 const update = async (req, res) => {
-  const { id } = req.params;
+  const { id } = parseInt(req.params, 10);
   const userId = req.user.id;
   const data = req.body;
 
   const userAllowed = checkUserPersimission(userId, id);
+
   if (userAllowed) {
     try {
       if (data.password) {
@@ -107,7 +108,7 @@ const update = async (req, res) => {
  * @throws {object} Error
  */
 const remove = async (req, res) => {
-  const { id } = req.params;
+  const { id } = parseInt(req.params, 10);
   const userId = req.user.id;
 
   const userAllowed = checkUserPersimission(userId, id);
