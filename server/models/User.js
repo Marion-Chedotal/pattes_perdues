@@ -28,10 +28,7 @@ module.exports = (sequelize, DataTypes) => {
 
   // add foreign keys
   User.associate = (models) => {
-    User.belongsTo(models.Address, {
-      onUpdate: "CASCADE",
-      onDelete: "CASCADE",
-    });
+    User.belongsTo(models.Address);
     User.hasMany(models.Post);
   };
 

@@ -1,4 +1,4 @@
-const { User, Address} = require("../models");
+const { User, Address } = require("../models");
 
 /** check if the email is already used
  * @param {string} email
@@ -45,11 +45,12 @@ const getByLogin = async (login) => {
  * @returns {Promise<Object>}
  */
 const getById = async (id) => {
-  return await User.findByPk(id, { 
+  return await User.findByPk(id, {
     include: {
-    model: Address,
-    attributes: ['street', 'postalCode', 'city']
-  }});
+      model: Address,
+      attributes: ["street", "postalCode", "city"],
+    },
+  });
 };
 
 /**
@@ -58,7 +59,7 @@ const getById = async (id) => {
  * @param {object} data
  * @returns {Promise<Object>}
  */
-const updateUser = async (id, data) => {
+const editUser = async (id, data) => {
   return await User.update(data, {
     where: {
       id,
@@ -83,6 +84,6 @@ module.exports = {
   registerUser,
   getByLogin,
   getById,
-  updateUser,
+  editUser,
   deleteUser,
 };

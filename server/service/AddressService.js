@@ -11,14 +11,30 @@ const addAddress = async (data) => {
 };
 
 /**
- * Find address 
+ * Find address by his id
+ * @param {string} id
  * @returns {Promise<Object>}
  */
-const getAddress = async () => {
-  return await Address.findOne();
+const getAddress = async (id) => {
+  return await Address.findOne(id);
+};
+
+/**
+ * Update address
+ * @param {string} id
+ * @param {object} data
+ * @returns {Promise<Object>}
+ */
+const editAddress = async (id, data) => {
+  return await Address.update(data, {
+    where: {
+      id,
+    },
+  });
 };
 
 module.exports = {
     addAddress,
-    getAddress
+    getAddress,
+    editAddress
 };

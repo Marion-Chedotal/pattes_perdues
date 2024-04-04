@@ -15,9 +15,21 @@ const { addAddress } = require("../service/AddressService");
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()_+])[A-Za-z\d!@#$%&*()_+]{10,32}$/;
-const loginRegex =
-/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{8,20}$/
-;
+const loginRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{8,20}$/;
+/**
+ * Validate inputs
+ */
+const validateInput = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().email(),
+    password: Joi.string().regex(new RegExp(passwordRegex)),
+    login: Joi.string().regex(new RegExp(loginRegex)),
+    postalCode: Joi.number().integer(),
+    city: Joi.string(),
+  });
+
+  return schema.validate(data);
+};
 
 /**
  * Register a new user
@@ -29,28 +41,16 @@ const loginRegex =
 const register = async (req, res) => {
   try {
     // Get user input
-    let { login, password, email, avatar, postalCode, city } = req.body;
+    let { login, password, email, postalCode, city } = req.body;
 
     // Check input format
-    const schema = Joi.object({
-      email: Joi.string().email(),
-      password: Joi.string().regex(new RegExp(passwordRegex)),
-      login: Joi.string().regex(new RegExp(loginRegex)),
-      postalCode: Joi.number().integer(),
-      city: Joi.string(),
-    });
-
-    const { error } = schema.validate(req.body);
+    const { error } = validateInput(req.body);
     if (error) {
-      return res.status(400).json({
-        error: "Invalid input format",
-      });
+      return res.status(400).json({ error: "Invalid input format" });
     }
 
     // sanitize input
-    login = escapeHtml(login.trim());
     email = escapeHtml(email.trim());
-    password.trim();
 
     // Check if user already exist: same email
     const isEmailAlreadyExist = await checkEmailExists(req.body.email);
@@ -72,12 +72,11 @@ const register = async (req, res) => {
       login: login,
       password: hashPassword,
       email: email,
-      avatar: avatar,
     });
- 
+
     const address = await addAddress({
       postalCode: postalCode,
-      city: city
+      city: city,
     });
 
     await user.setAddress(address);
@@ -103,7 +102,7 @@ const login = async (req, res) => {
     let { login, password } = req.body;
 
     if (!(login && password)) {
-      return res.status(400).json({ error: "Please fill in all fields"});
+      return res.status(400).json({ error: "Please fill in all fields" });
     }
 
     // Check input format
@@ -118,11 +117,6 @@ const login = async (req, res) => {
         error: "Invalid input format",
       });
     }
-
-    // sanitize input
-    login = escapeHtml(login.trim());
-    password.trim();
-
 
     const user = await getByLogin(login);
 
@@ -179,4 +173,4 @@ const logout = async (req, res) => {
   }
 };
 
-module.exports = { register, login, logout };
+module.exports = { validateInput, register, login, logout };
