@@ -1,16 +1,9 @@
-const {
-  checkEmailExists,
-  checkLoginExists,
-  getByLogin,
-  getById,
-  editUser,
-  deleteUser,
-} = require("../service/UserService");
-const { editAddress } = require("../service/AddressService");
-const { checkUserPersimission } = require("../service/AuthenticationService");
+const UserService = require("../service/UserService");
+const AddressService = require("../service/AddressService");
+const AuthenticationService = require("../service/AuthenticationService");
 const { validateInput } = require("./AuthenticationController");
 const bcrypt = require("bcryptjs");
-const { escapeHtml } = require("../utils/htmlEscape.js");
+const { escapeHtml } = require("../utils/htmlEscape");
 
 /**
  * Get user by his id
@@ -23,17 +16,17 @@ const findById = async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   try {
-    const user = await getById(id);
-    console.log("user", user);
+    const user = await UserService.getById(id);
+
     if (!user) {
       return res
         .status(400)
-        .json({ error: `L'utilisateur ${id} n'existe pas` });
+        .json({ error: `User ${id} doesn't exist` });
     }
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({
-      error: `Erreur lors de la récupération de l'utilisateur, ${error}`,
+      error: `Error when fetching user, ${error}`,
     });
   }
 };
@@ -48,16 +41,16 @@ const findById = async (req, res) => {
 const findByLogin = async (req, res) => {
   const { login } = req.params;
   try {
-    const user = await getByLogin(login);
+    const user = await UserService.getByLogin(login);
     if (!user) {
       return res
         .status(400)
-        .json({ error: `L'utilisateur ${login} n'existe pas` });
+        .json({ error: `User ${login} doesn't exist` });
     }
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({
-      error: `Erreur lors de la récupération de l'utilisateur, ${error}`,
+      error: `Error when fetching user, ${error}`,
     });
   }
 };
@@ -79,7 +72,7 @@ const updateUser = async (req, res) => {
   // Get user input
   let { login, password, email, postalCode, city } = req.body;
 
-  const userAllowed = checkUserPersimission(userId, id);
+  const isUserAllowed = AuthenticationService.checkUserPermission(userId, id);
 
   // Validate user input
   const { error } = validateInput(req.body);
@@ -90,14 +83,14 @@ const updateUser = async (req, res) => {
   // sanitize input
   city = escapeHtml(city);
 
-  const currentUser = await getById(id);
+  const currentUser = await UserService.getById(id);
 
-  if (userAllowed) {
+  if (isUserAllowed) {
     try {
       // Check if user already exist: same email
       if (currentUser.email !== email) {
         email = escapeHtml(email.trim());
-        const isEmailAlreadyExist = await checkEmailExists(email);
+        const isEmailAlreadyExist = await UserService.checkEmailExists(email);
         if (isEmailAlreadyExist) {
           return res.status(400).json("Email already used");
         }
@@ -105,7 +98,7 @@ const updateUser = async (req, res) => {
 
       // Check if user already exist: same login
       if (currentUser.login !== login) {
-        const isLoginAlreadyExist = await checkLoginExists(login);
+        const isLoginAlreadyExist = await UserService.checkLoginExists(login);
         if (isLoginAlreadyExist) {
           return res.status(400).json("Login already used");
         }
@@ -115,19 +108,19 @@ const updateUser = async (req, res) => {
         const hashPassword = await bcrypt.hash(password, 10);
         req.body.password = hashPassword;
       }
-      await editAddress(currentUser.AddressId, req.body);
+      await AddressService.editAddress(currentUser.AddressId, req.body);
       
-      const user = await editUser(id, req.body);
+      const user = await UserService.editUser(id, req.body);
 
       if (!user) {
         return res
           .status(400)
-          .json({ error: `L'utilisateur ${id} n'existe pas` });
+          .json({ error: `User ${id} doesn't exist` });
       }
-      res.status(200).json(`L'utilisateur ${login} a bien été mis à jour`);
+      res.status(200).json(`The user ${login} has been successfully updated`);
     } catch (error) {
       res.status(500).json({
-        error: `Erreur lors de la mise à jour de l'utilisateur, ${error}`,
+        error: `Error when updating user, ${error}`,
       });
     }
   } else {
@@ -148,16 +141,16 @@ const removeUser = async (req, res) => {
   const id = parseInt(req.params.id, 10);
   const userId = req.user.id;
 
-  const userAllowed = checkUserPersimission(userId, id);
+  const isUserAllowed = AuthenticationService.checkUserPermission(userId, id);
 
-  if (userAllowed) {
+  if (isUserAllowed) {
     try {
-      const user = await deleteUser(id);
+      const user = await UserService.deleteUser(id);
 
       if (!user) {
         return res
           .status(400)
-          .json({ error: `L'utilisateur ${id} n'existe pas` });
+          .json({ error: `User ${id} doesn't exist` });
       }
       const login = user.login;
 

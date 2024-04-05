@@ -1,4 +1,5 @@
-const { addAddress, editAddress } = require("../service/AddressService");
+const AddressService = require("../service/AddressService");
+const AuthenticationService = require("../service//AuthenticationService");
 const { escapeHtml } = require("../utils/htmlEscape");
 
 /**
@@ -16,7 +17,7 @@ const createAddress = async (req, res) => {
   postalCode = escapeHtml(postalCode);
 
   try {
-    await addAddress({
+    await AddressService.addAddress({
       street,
       postalCode,
       city,
@@ -36,21 +37,21 @@ const updateAddress = async (res, req) => {
   const userId = req.user.id;
   const data = req.body;
 
-  const userAllowed = checkUserPersimission(userId, id);
+  const isUserAllowed = AuthenticationService.checkUserPermission(userId, id);
 
-  if (userAllowed) {
+  if (isUserAllowed) {
     try {
-      const address = await editAddress(id, data);
+      const address = await AddressService.editAddress(id, data);
 
       if (!address) {
-        return res.status(400).json({ error: `Adresse n'ont trouvé` });
+        return res.status(400).json({ error: `Address not found` });
       }
       res
         .status(200)
-        .json(`${data.login}, votre adresse a bien été mise à jour`);
+        .json(`${data.login}, address has been successfully updated`);
     } catch {
       res.status(500).json({
-        error: `Erreur lors de la mise à jour de votre adresse, ${error}`,
+        error: `Error when updating address, ${error}`,
       });
     }
   } else {
@@ -60,4 +61,4 @@ const updateAddress = async (res, req) => {
   }
 };
 
-module.exports = { createAddress, updateAddress};
+module.exports = { createAddress, updateAddress };

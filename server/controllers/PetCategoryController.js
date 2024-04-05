@@ -1,7 +1,4 @@
-const {
-  getPetCategoryById,
-  getAllPetCategory,
-} = require("../service/PetCategoryService");
+const PetCategoryService = require("../service/PetCategoryService");
 
 /**
  * Get type by his id
@@ -15,16 +12,14 @@ const findById = async (req, res) => {
   const label = req.params.label;
 
   try {
-    const petCategory = await getPetCategoryById(id);
+    const petCategory = await PetCategoryService.getPetCategoryById(id);
     if (!petCategory) {
-      return res
-        .status(400)
-        .json({ error: `Cette catégorie n'existe pas` });
+      return res.status(400).json({ error: `This pet category doesn't exist` });
     }
     res.status(200).json(petCategory);
   } catch (error) {
     res.status(500).json({
-      error: `Erreur lors de la récupération de la catégorie ${label}, ${error}`,
+      error: `Error when fetching pet category ${label}, ${error}`,
     });
   }
 };
@@ -40,19 +35,17 @@ const findAllPetCategory = async (req, res) => {
   const label = req.params.label;
 
   try {
-    const petCategory = await getAllPetCategory();
+    const petCategory = await PetCategoryService.getAllPetCategory();
 
     if (!petCategory) {
-      return res
-        .status(400)
-        .json({
-          error: `Il n'y a pas de catégorie d'animaux associée aux annonces`,
-        });
+      return res.status(400).json({
+        error: `There is no pet category`,
+      });
     }
     res.status(200).json(petCategory);
   } catch (error) {
     res.status(500).json({
-      error: `Erreur lors de la récupération des catégories d'animaux, ${error}`,
+      error: `Error when fetching pet category, ${error}`,
     });
   }
 };

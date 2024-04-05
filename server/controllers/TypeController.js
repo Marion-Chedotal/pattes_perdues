@@ -1,4 +1,4 @@
-const { getTypeById, getAllType } = require("../service/TypeService");
+const TypeService = require("../service/TypeService");
 
 /**
  * Get type by his id
@@ -12,14 +12,14 @@ const findById = async (req, res) => {
   const label = req.params.label;
 
   try {
-    const type = await getTypeById(id);
+    const type = await TypeService.getTypeById(id);
     if (!type) {
-      return res.status(400).json({ error: `Ce type n'existe pas` });
+      return res.status(400).json({ error: `Type ${id} doesn't exist` });
     }
     res.status(200).json(type);
   } catch (error) {
     res.status(500).json({
-      error: `Erreur lors de la récupération du type ${label}, ${error}`,
+      error: `Error when ufetching post ${label}, ${error}`,
     });
   }
 };
@@ -35,15 +35,15 @@ const findAllType = async (req, res) => {
   const label = req.params.label;
 
   try {
-    const type = await getAllType();
+    const type = await TypeService.getAllType();
 
     if (!type) {
-      return res.status(400).json({ error: `Il n'y a pas de type associé aux annonces` });
+      return res.status(400).json({ error: `Type ${id} doesn't exist` });
     }
     res.status(200).json(type);
   } catch (error) {
     res.status(500).json({
-      error: `Erreur lors de la récupération des types d'annonce, ${error}`,
+      error: `Error when ufetching post, ${error}`,
     });
   }
 };

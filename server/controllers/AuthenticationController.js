@@ -1,17 +1,9 @@
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
 const { escapeHtml } = require("../utils/htmlEscape");
-const {
-  createToken,
-  comparePasswords,
-} = require("../service/AuthenticationService");
-const {
-  checkEmailExists,
-  checkLoginExists,
-  registerUser,
-  getByLogin,
-} = require("../service/UserService");
-const { addAddress } = require("../service/AddressService");
+const AuthenticationService = require("../service/AuthenticationService");
+const UserService = require("../service/UserService");
+const AddressService = require("../service/AddressService");
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()_+])[A-Za-z\d!@#$%&*()_+]{10,32}$/;
@@ -53,13 +45,17 @@ const register = async (req, res) => {
     email = escapeHtml(email.trim());
 
     // Check if user already exist: same email
-    const isEmailAlreadyExist = await checkEmailExists(req.body.email);
+    const isEmailAlreadyExist = await UserService.checkEmailExists(
+      req.body.email
+    );
     if (isEmailAlreadyExist) {
       return res.status(400).json("Email already used");
     }
 
     // Check if user already exist: same login
-    const isLoginAlreadyExist = await checkLoginExists(req.body.login);
+    const isLoginAlreadyExist = await UserService.checkLoginExists(
+      req.body.login
+    );
     if (isLoginAlreadyExist) {
       return res.status(400).json("Login already used");
     }
@@ -68,13 +64,13 @@ const register = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    const user = await registerUser({
+    const user = await UserService.registerUser({
       login: login,
       password: hashPassword,
       email: email,
     });
 
-    const address = await addAddress({
+    const address = await AddressService.addAddress({
       postalCode: postalCode,
       city: city,
     });
@@ -118,19 +114,22 @@ const login = async (req, res) => {
       });
     }
 
-    const user = await getByLogin(login);
+    const user = await UserService.getByLogin(login);
 
     if (!user) {
       return res.status(404).json({ error: "Invalid informations" });
     }
 
     const dbPassword = user.password;
-    const passwordMatch = await comparePasswords(password, dbPassword);
+    const passwordMatch = await AuthenticationService.comparePasswords(
+      password,
+      dbPassword
+    );
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid informations" });
     }
 
-    const accessToken = createToken(user.login, user.id);
+    const accessToken = AuthenticationService.createToken(user.login, user.id);
 
     res.cookie("access-token", accessToken, {
       maxAge: 2 * 60 * 60 * 1000,
