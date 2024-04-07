@@ -12,7 +12,7 @@ class PostService {
   }
 
   /**
-   * Find post by his id
+   * Find post by his id including user information
    * @param {string} id
    * @returns {Promise<Object>}
    */
@@ -123,6 +123,18 @@ class PostService {
 
     return post.destroy();
   }
+
+    /**
+   * Check if userId of a post is the userId to receive a message
+   * @param {string} postUserId
+   * @param {string} receiverMessageId
+   * @returns {Promise<Object>}
+   */
+  static async isCorrectAddressee(postUserId, receiverMessageId ) {
+  
+  
+    if (postUserId === receiverMessageId) return true;
+  };
 }
 
 module.exports = PostService;

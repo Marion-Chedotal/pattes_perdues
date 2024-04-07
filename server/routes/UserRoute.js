@@ -5,6 +5,8 @@ const UserController = require("../controllers/UserController");
 const TypeController = require("../controllers/TypeController");
 const PetCategoryController = require("../controllers/PetCategoryController");
 const PostController = require("../controllers/PostController");
+const MessageController = require("../controllers/MessageController");
+const ConversationController = require("../controllers/ConversationController");
 const AuthMiddleware = require("../middleware/AuthMiddleware");
 
 // authentication route
@@ -56,6 +58,25 @@ router.delete(
   "/post/:id",
   AuthMiddleware.validateToken,
   PostController.removePost
+);
+
+// message route
+router.post(
+  "/post/:id/contact",
+  AuthMiddleware.validateToken,
+  MessageController.createMessage
+);
+// router.get("/user/:id/message/", AuthMiddleware.validateToken, MessageController.findAll);
+
+router.get(
+  "/user/:userId/conversations",
+  AuthMiddleware.validateToken,
+  ConversationController.findConversations
+);
+router.get(
+  "/user/:userId/conversation/:id",
+  AuthMiddleware.validateToken,
+  ConversationController.findConversation
 );
 
 module.exports = router;

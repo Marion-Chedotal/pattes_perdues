@@ -1,5 +1,5 @@
 const AddressService = require("../service/AddressService");
-const AuthenticationService = require("../service//AuthenticationService");
+const AuthenticationService = require("../service/AuthenticationService");
 const { escapeHtml } = require("../utils/htmlEscape");
 
 /**
