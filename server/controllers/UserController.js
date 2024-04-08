@@ -55,9 +55,6 @@ const findByLogin = async (req, res) => {
   }
 };
 
-// TODO: getByCity
-// TODO: getByPostCode
-
 /**
  * Update user's data
  * @param {object} req
@@ -67,12 +64,12 @@ const findByLogin = async (req, res) => {
  */
 const updateUser = async (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const userId = req.user.id;
+  const currentUserId = req.user.id;
 
   // Get user input
   let { login, password, email, postalCode, city } = req.body;
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(userId, id);
+  const isUserAllowed = AuthenticationService.checkUserPermission(currentUserId, id);
 
   // Validate user input
   const { error } = validateInput(req.body);
@@ -139,9 +136,9 @@ const updateUser = async (req, res) => {
  */
 const removeUser = async (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const userId = req.user.id;
+  const currentUserId = req.user.id;
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(userId, id);
+  const isUserAllowed = AuthenticationService.checkUserPermission(currentUserId, id);
 
   if (isUserAllowed) {
     try {

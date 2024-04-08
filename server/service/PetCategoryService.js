@@ -2,8 +2,8 @@ const { Pet_category } = require("../models");
 
 class PetCategoryService {
   /**
-   * Find pet category of post by id
-   * @param {string} id
+   * Find pet category by id
+   * @param {number} id
    * @returns {Promise<Object>}
    */
   static async getPetCategoryById(id) {
@@ -11,8 +11,8 @@ class PetCategoryService {
   }
 
   /**
-   * Find all type of pet category
-   * @returns {Promise<Object>}
+   * Find all pet category
+   * @returns {Promise<Object[]>}
    */
   static async getAllPetCategory() {
     return await Pet_category.findAll();

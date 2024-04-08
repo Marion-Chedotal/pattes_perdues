@@ -32,12 +32,21 @@ const createAddress = async (req, res) => {
   }
 };
 
+/**
+ * Update address
+ * @param {object} req
+ * @param {object} res
+ * @returns {string} string success
+ * @throws {object} error
+ */
 const updateAddress = async (res, req) => {
   const id = parseInt(req.params.id, 10);
-  const userId = req.user.id;
-  const data = req.body;
+  const currentUserId = req.user.id;
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(userId, id);
+  const isUserAllowed = AuthenticationService.checkUserPermission(
+    currentUserId,
+    id
+  );
 
   if (isUserAllowed) {
     try {
@@ -46,9 +55,7 @@ const updateAddress = async (res, req) => {
       if (!address) {
         return res.status(400).json({ error: `Address not found` });
       }
-      res
-        .status(200)
-        .json(`${data.login}, address has been successfully updated`);
+      res.status(200).json(`Address has been successfully updated`);
     } catch {
       res.status(500).json({
         error: `Error when updating address, ${error}`,

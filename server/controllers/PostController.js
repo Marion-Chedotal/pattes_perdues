@@ -9,7 +9,6 @@ const { escapeHtml } = require("../utils/htmlEscape");
  * @param {object} res
  * @throws {object} error
  */
-
 const createPost = async (req, res) => {
   let {
     gender,
@@ -36,7 +35,7 @@ const createPost = async (req, res) => {
   });
 
   try {
-    // get user information
+    // get current user information
     const currentUserId = req.user.id;
     const currentUser = await UserService.getById(currentUserId);
     req.body.UserId = currentUserId;
@@ -54,6 +53,12 @@ const createPost = async (req, res) => {
   }
 };
 
+/**
+ * Find post by his id
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
 const findById = async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
@@ -71,6 +76,12 @@ const findById = async (req, res) => {
   }
 };
 
+/**
+ * Find all the post
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
 const findAll = async (req, res) => {
   try {
     const post = await PostService.getAll();
@@ -86,6 +97,12 @@ const findAll = async (req, res) => {
   }
 };
 
+/**
+ * Find user's post
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
 const findByUser = async (req, res) => {
   const userId = parseInt(req.params.id, 10);
 
@@ -102,6 +119,12 @@ const findByUser = async (req, res) => {
   }
 };
 
+/**
+ * Find post by address
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
 const findByAddress = async (req, res) => {
   const postalCode = req.params.postalCode;
 
@@ -119,6 +142,12 @@ const findByAddress = async (req, res) => {
   }
 };
 
+/**
+ * Find post by type
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
 const findByType = async (req, res) => {
   const type = req.params.id;
 
@@ -136,6 +165,12 @@ const findByType = async (req, res) => {
   }
 };
 
+/**
+ * Find post by pet category
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
 const findByPetCategory = async (req, res) => {
   const petCategory = req.params.id;
 
@@ -153,6 +188,12 @@ const findByPetCategory = async (req, res) => {
   }
 };
 
+/**
+ * Update a post
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
 const updatePost = async (req, res) => {
   let {
     gender,
@@ -206,6 +247,12 @@ const updatePost = async (req, res) => {
   }
 };
 
+/**
+ * Delete a post
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
 const removePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
   const currentUserId = req.user.id;

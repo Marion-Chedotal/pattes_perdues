@@ -13,9 +13,12 @@ class MessageService {
 
   /**
    * Check is conversation existe between 2 users
+   * @param {number} idSender - id of the sender
+   * @param {number} idReceiver - id of the receiver
+   * @returns {boolean}
    */
   static async isConversationExist(idSender, idReceiver) {
-    return await Message.findOne({
+    const conversation = await Message.findOne({
       where: {
         [Op.or]: [
           { UserId: idSender, receiverId: idReceiver },
@@ -23,6 +26,7 @@ class MessageService {
         ],
       },
     });
+    return !!conversation;
   }
 }
 

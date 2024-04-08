@@ -8,7 +8,7 @@ class ConversationService {
    * Create a new conversation
    * @returns {Promise<Object>}
    */
-  static async createConversation() {
+  static async addConversation() {
     return await Conversation.create();
   }
   // TODO: doesn't work as I want
@@ -16,7 +16,7 @@ class ConversationService {
    * Get all conversation by User
    * @param {number} idSender
    * @param {number} idReceiver
-   * @returns {Promise<Object>}
+   * @returns {Promise<Object[]>}
    */
   static async getAllConversationByUser(userId) {
     return await Conversation.findAll({

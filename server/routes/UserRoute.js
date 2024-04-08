@@ -7,6 +7,7 @@ const PetCategoryController = require("../controllers/PetCategoryController");
 const PostController = require("../controllers/PostController");
 const MessageController = require("../controllers/MessageController");
 const ConversationController = require("../controllers/ConversationController");
+const AddressController = require("../controllers/AddressController");
 const AuthMiddleware = require("../middleware/AuthMiddleware");
 
 // authentication route

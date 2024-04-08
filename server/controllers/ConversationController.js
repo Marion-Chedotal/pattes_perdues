@@ -8,9 +8,9 @@ const AuthenticationService = require("../service/AuthenticationService");
  * @returns {string} string success
  * @throws {object} error
  */
-const addConversation = async (req, res) => {
+const createConversation = async (req, res) => {
   try {
-    await ConversationService.createConversation();
+    await ConversationService.addConversation();
 
     res.status(201).json(`Conversation created`);
   } catch (error) {
@@ -95,4 +95,4 @@ const findConversations = async (req, res) => {
   }
 };
 
-module.exports = { addConversation, findConversation, findConversations };
+module.exports = { createConversation, findConversation, findConversations };

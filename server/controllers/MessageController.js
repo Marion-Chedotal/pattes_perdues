@@ -13,7 +13,7 @@ const { escapeHtml } = require("../utils/htmlEscape");
 const createMessage = async (req, res) => {
   let { content, receiverId } = req.body;
   const idPost = parseInt(req.params.id, 10);
-  // const currentIdUser = req.user.id;
+
   const post = await PostService.getById(idPost);
   const postUserId = post.UserId;
   const senderId = req.user.id;
@@ -21,8 +21,6 @@ const createMessage = async (req, res) => {
   req.body.receiverId = post.UserId;
   req.body.UserId = senderId;
 
-  console.log("postUserId", postUserId);
-  console.log("receviedid", receiverId);
   const correctReceiver = await PostService.isCorrectAddressee(
     postUserId,
     receiverId
@@ -38,7 +36,7 @@ const createMessage = async (req, res) => {
   if (correctReceiver) {
     if (!isConversationExist) {
       if (senderId != receiverId) {
-        const newConversation = await ConversationService.createConversation();
+        const newConversation = await ConversationService.addConversation();
 
         req.body.ConversationId = newConversation.id;
         await MessageService.addMessage(req.body);
@@ -62,6 +60,10 @@ const createMessage = async (req, res) => {
         });
       }
     }
+  } else {
+    res.status(500).json({
+      error: `You can't send a message`,
+    });
   }
 };
 

@@ -1,4 +1,4 @@
-const { escapeHtml } = require("./htmlEscape.js");
+const { escapeHtml } = require("./htmlEscape");
 
 describe("escapeHtml", () => {
   it("should escape HTML characters properly", () => {

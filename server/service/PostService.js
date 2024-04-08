@@ -1,4 +1,4 @@
-const { Post, User, Address, Type, Pet_category } = require("../models");
+const { Post, User } = require("../models");
 
 class PostService {
   /**
@@ -6,14 +6,13 @@ class PostService {
    * @param {Object} postData - data of the post
    * @returns {Promise<Object>}
    */
-
   static async addPost(postData) {
     return await Post.create(postData);
   }
 
   /**
    * Find post by his id including user information
-   * @param {string} id
+   * @param {number} id
    * @returns {Promise<Object>}
    */
   static async getById(id) {
@@ -101,7 +100,7 @@ class PostService {
 
   /**
    * Update post
-   * @param {string} idPost
+   * @param {number} idPost
    * @param {object} data
    * @returns {Promise<Object>}
    */
@@ -115,8 +114,8 @@ class PostService {
 
   /**
    * Delete post
-   * @param {string} id
-   * @returns {Promise<Object>}
+   * @param {number} id
+   * @returns {Promise}
    */
   static async deletePost(id) {
     const post = await this.getById(id);
@@ -124,17 +123,15 @@ class PostService {
     return post.destroy();
   }
 
-    /**
+  /**
    * Check if userId of a post is the userId to receive a message
-   * @param {string} postUserId
-   * @param {string} receiverMessageId
-   * @returns {Promise<Object>}
+   * @param {number} postUserId
+   * @param {number} receiverMessageId
+   * @returns {boolean}
    */
-  static async isCorrectAddressee(postUserId, receiverMessageId ) {
-  
-  
+  static async isCorrectAddressee(postUserId, receiverMessageId) {
     if (postUserId === receiverMessageId) return true;
-  };
+  }
 }
 
 module.exports = PostService;

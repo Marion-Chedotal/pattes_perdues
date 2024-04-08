@@ -1,7 +1,7 @@
 const PetCategoryService = require("../service/PetCategoryService");
 
 /**
- * Get type by his id
+ * Get pet category by his id
  * @param {object} req
  * @param {object} res
  * @returns {object} pet category data
@@ -32,7 +32,6 @@ const findById = async (req, res) => {
  */
 const findAllPetCategory = async (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const label = req.params.label;
 
   try {
     const petCategory = await PetCategoryService.getAllPetCategory();

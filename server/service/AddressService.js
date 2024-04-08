@@ -11,20 +11,21 @@ class AddressService {
     return await Address.create(data);
   }
 
-  /**
-   * Find address by his id
-   * @param {string} id
-   * @returns {Promise<Object>}
-   */
-  static async getAddress(id) {
-    return await Address.findOne(id);
-  }
+  // TODO: necessaire? 
+  // /**
+  //  * Find address by his id
+  //  * @param {number} id
+  //  * @returns {Promise<Object>}
+  //  */
+  // static async getAddress(id) {
+  //   return await Address.findByPk(id);
+  // }
 
   /**
    * Update address
-   * @param {string} id
+   * @param {number} id
    * @param {object} data
-   * @returns {Promise<Object>}
+   * @returns {Promise<Object[]>}
    */
   static async editAddress(id, data) {
     return await Address.update(data, {

@@ -8,8 +8,16 @@ const AddressService = require("../service/AddressService");
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()_+])[A-Za-z\d!@#$%&*()_+]{10,32}$/;
 const loginRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{8,20}$/;
+
 /**
- * Validate inputs
+ * Validate register input using a Joi schema.
+ * @param {object} data - The data to be validated.
+ * @param {string} data.email - email
+ * @param {string} data.password - password.
+ * @param {string} data.login - login.
+ * @param {number} data.postalCode - postal code .
+ * @param {string} data.city - city.
+ * @returns {Joi.ValidationResult<object>} - The result of the validation. 
  */
 const validateInput = (data) => {
   const schema = Joi.object({

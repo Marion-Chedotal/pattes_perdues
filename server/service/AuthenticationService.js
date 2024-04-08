@@ -5,7 +5,7 @@ class AuthenticationService {
   /**
  * Create JWT access token for a user
  * @param {string} login
- * @param {int} id
+ * @param {number} id
  * @returns {string } JWT
  */
 static createToken(login, id) {
@@ -28,8 +28,8 @@ static async comparePasswords(password, dbPassword) {
 
 /**
  * Check if the user has permission to perform an action on a resource
- * @param {string} userId - ID of the user who is trying to perform the action
- * @param {string} requestedUserId - ID of the user associated with the resource
+ * @param {number} userId - ID of the user who is trying to perform the action
+ * @param {number} requestedUserId - ID of the user associated with the resource
  * @returns {<boolean>} True if it's match
  */
 

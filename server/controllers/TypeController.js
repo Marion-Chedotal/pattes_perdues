@@ -9,7 +9,6 @@ const TypeService = require("../service/TypeService");
  */
 const findById = async (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const label = req.params.label;
 
   try {
     const type = await TypeService.getTypeById(id);
@@ -19,7 +18,7 @@ const findById = async (req, res) => {
     res.status(200).json(type);
   } catch (error) {
     res.status(500).json({
-      error: `Error when ufetching post ${label}, ${error}`,
+      error: `Error when fetching type, ${error}`,
     });
   }
 };
@@ -27,12 +26,11 @@ const findById = async (req, res) => {
  * Get all the type
  * @param {object} req
  * @param {object} res
- * @returns {object} type's data
+ * @returns {object} all type's data
  * @throws {object} error
  */
 const findAllType = async (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const label = req.params.label;
 
   try {
     const type = await TypeService.getAllType();
@@ -43,7 +41,7 @@ const findAllType = async (req, res) => {
     res.status(200).json(type);
   } catch (error) {
     res.status(500).json({
-      error: `Error when ufetching post, ${error}`,
+      error: `Error when fetching type, ${error}`,
     });
   }
 };
