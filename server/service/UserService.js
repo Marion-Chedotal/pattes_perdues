@@ -28,16 +28,6 @@ class UserService {
   }
 
   /**
-   * Create a new user
-   * @param {Object} userData - data of the user
-   * @returns {Promise<Object>}
-   */
-
-  static async registerUser(userData) {
-    return await User.create(userData);
-  }
-
-  /**
    * Find user by login
    * @param {string} login
    * @returns {Promise<Object>}
@@ -52,7 +42,7 @@ class UserService {
 
   /**
    * Find user by his id and get his address
-   * @param {string} id
+   * @param {number} id
    * @returns {Promise<Object>}
    */
   static async getById(id) {
@@ -66,7 +56,7 @@ class UserService {
 
   /**
    * Update user
-   * @param {string} idUser
+   * @param {number} idUser
    * @param {object} data
    * @returns {Promise<Object>}
    */
@@ -80,8 +70,8 @@ class UserService {
 
   /**
    * Delete user
-   * @param {string} id
-   * @returns {Promise<Object>}
+   * @param {number} id
+   * @returns {Promise}
    */
   static async deleteUser(id) {
     const user = await this.getById(id);
