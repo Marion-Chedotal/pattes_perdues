@@ -7,7 +7,6 @@ const PetCategoryController = require("../controllers/PetCategoryController");
 const PostController = require("../controllers/PostController");
 const MessageController = require("../controllers/MessageController");
 const ConversationController = require("../controllers/ConversationController");
-const AddressController = require("../controllers/AddressController");
 const AuthMiddleware = require("../middleware/AuthMiddleware");
 
 // authentication route
@@ -33,15 +32,6 @@ router.delete(
   UserController.removeUser
 );
 
-// TODO: to refacto - just for test
-// type route
-router.get("/type/:id", TypeController.findById);
-router.get("/type", TypeController.findAllType);
-
-// pet category route
-router.get("/petCategory/:id", PetCategoryController.findById);
-router.get("/petCategory", PetCategoryController.findAllPetCategory);
-
 // post route
 router.post("/post", AuthMiddleware.validateToken, PostController.createPost);
 router.get("/post/:id", PostController.findById);
@@ -61,14 +51,22 @@ router.delete(
   PostController.removePost
 );
 
+// type route
+router.get("/type/:id", TypeController.findById);
+router.get("/type", TypeController.findAllType);
+
+// pet category route
+router.get("/petCategory/:id", PetCategoryController.findById);
+router.get("/petCategory", PetCategoryController.findAllPetCategory);
+
 // message route
 router.post(
   "/post/:id/contact",
   AuthMiddleware.validateToken,
   MessageController.createMessage
 );
-// router.get("/user/:id/message/", AuthMiddleware.validateToken, MessageController.findAll);
 
+// conversations route
 router.get(
   "/user/:userId/conversations",
   AuthMiddleware.validateToken,

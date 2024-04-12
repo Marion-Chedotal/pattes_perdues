@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const db = require("./models");
 const cookieParser = require("cookie-parser");
 // Routers
-const userRouter = require("./routes/UserRoute.js");
+const routes = require("./routes/routes");
 
 // instanciation du serveur
 const app = express();
@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan("combine"));
 
-app.use("/auth", userRouter);
+app.use("/pattesperdues", routes);
 
 // Lancement du serveur
 const port = process.env.PORT || 8080;

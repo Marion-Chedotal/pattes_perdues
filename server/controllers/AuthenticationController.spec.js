@@ -1,4 +1,4 @@
-const { register } = require("./AuthenticationController.js");
+const { register } = require("./AuthenticationController");
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{10,32}$/;
