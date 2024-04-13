@@ -15,10 +15,15 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(morgan("combine"));
 
-app.use("/pattesperdues", routes);
+app.use("/api", routes);
 
 // Lancement du serveur
 const port = process.env.PORT || 8080;

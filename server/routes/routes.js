@@ -12,7 +12,7 @@ const AuthMiddleware = require("../middleware/AuthMiddleware");
 // authentication route
 router.post("/register", AuthController.register);
 router.post("/login", AuthController.login);
-router.get("/logout", AuthController.logout);
+router.delete("/logout", AuthController.logout);
 
 // user route
 router.get("/user/:id", AuthMiddleware.validateToken, UserController.findById);
