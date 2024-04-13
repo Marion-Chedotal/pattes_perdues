@@ -2,7 +2,7 @@ import "./register.scss";
 import logo from "../../Components/Assets/pattes_perdues_logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import authService from "../../Services/Auth.service";
+import authService from "../../Services/AuthService";
 import Button from "../../Components/Btn/Button";
 import validateInputs from "../../Utils/errorRegister";
 import errorMessage from "../../Utils/errorMessages.json";

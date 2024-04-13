@@ -25,26 +25,55 @@ const getCity = async (postalCode) => {
  */
 const register = async (userData) => {
   try {
-    const response = await axios.post("http://localhost:3001/auth/register", userData);
+    const response = await axios.post(
+      "http://localhost:3001/api/register",
+      userData
+    );
     return response.data;
   } catch (error) {
-    throw error.response.data
+    throw error.response.data;
   }
 };
 
 /**
- * Login 
+ * Login
  * @param {object} userData - User data to be login
  * @returns {Promise<object>} - Promise resolving to the response object from the login endpoint
  */
 const login = async (userData) => {
   try {
-    const response = await axios.post("http://localhost:3001/auth/login", userData);
+    const response = await axios.post(
+      "http://localhost:3001/api/login",
+      userData,
+      {
+        withCredentials: true,
+      }
+    );
     return response.data;
   } catch (error) {
-    throw error.response.data
+    throw error;
   }
 };
 
-const authService = { getCity, register, login };
+/**
+ * Logout
+ * @param {object} userData - User data to be logout
+ * @returns {Promise<object>} - Promise resolving to the response object from the logout endpoint
+ */
+const logout = async () => {
+  try {
+    const response = await axios.delete(
+      "http://localhost:3001/api/logout",
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const authService = { getCity, register, login, logout };
 export default authService;

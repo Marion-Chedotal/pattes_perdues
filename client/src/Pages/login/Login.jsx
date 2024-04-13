@@ -1,14 +1,15 @@
 import "./login.scss";
 import logo from "../../Components/Assets/pattes_perdues_logo.png";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import authService from "../../Services/Auth.service";
 import Button from "../../Components/Btn/Button";
 import { useTranslation } from "react-i18next";
+import { AuthContext } from "../../Context/AuthContext";
 
 const Login = () => {
   const { t } = useTranslation();
 
+  const { login } = useContext(AuthContext);
   const [inputs, setInputs] = useState({
     login: "",
     password: "",
@@ -22,14 +23,13 @@ const Login = () => {
     const { name, value } = e.target;
     setInputs({ ...inputs, [name]: value });
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await authService.login(inputs);
-      navigate("/");
+      await login(inputs);
+      navigate("/accueil");
     } catch (err) {
-    
       const errorMessage = t(`authentication.${err.error}`);
       setErrMsg(errorMessage);
     }

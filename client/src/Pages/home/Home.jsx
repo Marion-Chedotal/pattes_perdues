@@ -1,6 +1,6 @@
 import "./home.scss";
-import Navbar from "../../Components/NavBar/Navbar.jsx";
-import Footer from "../../Components/Footer/Footer.jsx";
+import Header from "../../Components/Header/Header";
+import Footer from "../../Components/Footer/Footer";
 import React from "react";
 import { Image, Container, Row, Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <div>
-      <Navbar />
+      <Header />
       <main>
         <Container fluid className="presentation mt-5 ">
           <Row>
@@ -96,7 +96,7 @@ const Home = () => {
           <Row className="postCard row-cols-2 mt-5">
             <Col md={6}>
               <div className="mb-5 seePost mx-auto text-center">
-                <Link to="/posts">
+                <Link to="/annonces">
                   <Button>
                     <FontAwesomeIcon icon={faEye} className="me-1" />
                     Voir les annonces
@@ -106,7 +106,7 @@ const Home = () => {
             </Col>
             <Col md={6}>
               <div className="mb-5 publishPost mx-auto text-center">
-                <Link to="/publish">
+                <Link to="/deposer-une-annonce">
                   <Button>
                     <FontAwesomeIcon icon={faBullhorn} className="me-3" />
                     Publier une annonce
