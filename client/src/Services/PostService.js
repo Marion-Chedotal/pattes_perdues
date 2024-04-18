@@ -9,11 +9,17 @@ const register = async (formData) => {
   try {
     const response = await axios.post(
       "http://localhost:3001/api/post",
-      formData
+      formData,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.message;
   }
 };
 

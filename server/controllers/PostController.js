@@ -54,11 +54,11 @@ const createPost = async (req, res) => {
       microchip,
       collar,
       distinctive_signs,
-      picture,
+      picture: req.file.path,
       is_active,
       UserId,
       TypeId,
-      PetCategoryId
+      PetCategoryId,
     });
 
     const address = await AddressService.addAddress({

@@ -19,6 +19,7 @@ const PostForm = () => {
   const [selectedTypeId, setSelectedTypeId] = useState("");
   const [petCategories, setPetCategories] = useState([]);
   const [selectedCatId, setSelectedCatId] = useState("");
+  const [picture, setPicture] = useState(null);
 
   // errors from format input
   const [validationErrors, setValidationErrors] = useState({});
@@ -37,7 +38,6 @@ const PostForm = () => {
     street: "",
     postalCode: "",
     selectedCity: "",
-    cities: [],
   });
 
   // fetch Types
@@ -76,6 +76,8 @@ const PostForm = () => {
   // Picture
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+
+    setPicture(file);
     const reader = new FileReader();
 
     reader.onloadend = () => {
@@ -150,6 +152,9 @@ const PostForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const pictureUpload = new FormData();
+      pictureUpload.append("picture", picture);
+      
       await postService.register({
         ...formData,
         PetCategoryId: selectedCatId,
@@ -157,6 +162,7 @@ const PostForm = () => {
         TypeId: selectedTypeId,
         is_active: true,
         city: formData.selectedCity,
+        picture: picture,
       });
       // navigate(`/annonces/${id}`);
     } catch (err) {
@@ -168,14 +174,19 @@ const PostForm = () => {
     <div>
       <Header />
       <h2 className="text-center my-5">Votre annonce</h2>
-      <form className="post-form" onSubmit={handleSubmit}>
+      <form
+        className="post-form"
+        onSubmit={handleSubmit}
+        method="POST"
+        action="/upload"
+        encType="multipart/form-data"
+      >
         <Row className="mb-3 mx-5 align-items-center justify-content-center">
           <Col md={6}>
             <label className="required">
               Type d'annonce
               <select
                 onChange={handleChange}
-                // value={formData.selectedTypeId}
                 name="selectedTypeId"
                 className="form-select"
                 required
@@ -194,7 +205,6 @@ const PostForm = () => {
               Catégories d'animal
               <select
                 onChange={handleChange}
-                // value={formData.selectedCatId}
                 name="selectedCatId"
                 className="form-select"
                 required
@@ -214,7 +224,12 @@ const PostForm = () => {
             {" "}
             <label>
               Image :
-              <input type="file" className="me-4" onChange={handleFileChange} />
+              <input
+                type="file"
+                name="picture"
+                className="me-4"
+                onChange={handleFileChange}
+              />
             </label>
             {formData.picture && (
               <div className="text-center mt-4">

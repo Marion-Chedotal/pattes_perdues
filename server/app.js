@@ -5,7 +5,8 @@ const cors = require("cors");
 const morgan = require("morgan");
 const db = require("./models");
 const cookieParser = require("cookie-parser");
-// Routers
+
+// Router
 const routes = require("./routes/routes");
 
 // instanciation du serveur
@@ -22,6 +23,7 @@ app.use(
   })
 );
 app.use(morgan("combine"));
+app.use(express.static("uploads"));
 
 app.use("/api", routes);
 
