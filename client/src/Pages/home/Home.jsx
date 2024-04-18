@@ -40,7 +40,7 @@ const Home = () => {
             </Col>
           </Row>
           <Row className="align-items-center justify-content-center">
-            <Col md={8} className="">
+            <Col md={8}>
               <div className="d-flex align-items-center mb-4">
                 <hr className="flex-grow-1 hr border-2" />
                 <h3 className="ms-4">Comment ?</h3>

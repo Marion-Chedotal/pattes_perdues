@@ -22,7 +22,7 @@ const Footer = () => {
         </span>
       </div>
     </Nav>
-    <Navbar.Brand as={Link} to="/home">
+    <Navbar.Brand as={Link} to="/accueil">
       <FontAwesomeIcon icon={faCircleUp} />
     </Navbar.Brand>
   </Container>

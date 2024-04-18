@@ -1,8 +1,7 @@
 const PostService = require("../service/PostService");
-const UserService = require("../service/UserService");
 const AuthenticationService = require("../service/AuthenticationService");
+const AddressService = require("../service/AddressService");
 const { escapeHtml } = require("../utils/htmlEscape");
-
 /**
  * Register a new post
  * @param {object} req
@@ -21,8 +20,10 @@ const createPost = async (req, res) => {
     distinctive_signs,
     picture,
     is_active,
+    street,
+    postalCode,
+    city,
     UserId,
-    AddressId,
     TypeId,
     PetCategoryId,
   } = req.body;
@@ -30,19 +31,43 @@ const createPost = async (req, res) => {
   // sanitize input
   const fieldsToSanitize = ["description", "name", "distinctive_signs"];
 
-  fieldsToSanitize.forEach((field) => {
-    escapeHtml(field.trim());
+  fieldsToSanitize.forEach((fieldName) => {
+    req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
   });
 
   try {
     // get current user information
-    const currentUserId = req.user.id;
-    const currentUser = await UserService.getById(currentUserId);
-    req.body.UserId = currentUserId;
-    req.body.AddressId = currentUser.AddressId;
+    // const currentUserId = req.user.id;
+    // const currentUser = await UserService.getById(currentUserId);
+    // // req.body.UserId = currentUserId;
+    // // req.body.AddressId = currentUser.AddressId;
+    // req.body.UserId = currentUserId;
+    // req.body.AddressId = currentUser.AddressId;
 
     // create a new post
-    await PostService.addPost(req.body);
+    const post = await PostService.addPost({
+      gender,
+      alert_date,
+      description,
+      name,
+      tattoo,
+      microchip,
+      collar,
+      distinctive_signs,
+      picture,
+      is_active,
+      UserId,
+      TypeId,
+      PetCategoryId
+    });
+
+    const address = await AddressService.addAddress({
+      street: street,
+      postalCode: postalCode,
+      city: city,
+    });
+
+    await post.setAddress(address);
 
     res.status(201).json(`Post has been successfully registered`);
   } catch (error) {
@@ -224,8 +249,8 @@ const updatePost = async (req, res) => {
   // sanitize input
   const fieldsToSanitize = ["description", "name", "distinctive_signs"];
 
-  fieldsToSanitize.forEach((field) => {
-    escapeHtml(field.trim());
+  fieldsToSanitize.forEach((fieldName) => {
+    req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
   });
 
   if (isUserAllowed) {
@@ -241,7 +266,7 @@ const updatePost = async (req, res) => {
       });
     }
   } else {
-    res.status(500).json({
+    res.status(403).json({
       error: `You don't have the rights`,
     });
   }
@@ -257,7 +282,7 @@ const removePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
   const currentUserId = req.user.id;
   const postToDelete = await PostService.getById(idPost);
- 
+
   const isUserAllowed = AuthenticationService.checkUserPermission(
     postToDelete?.UserId,
     currentUserId
@@ -277,7 +302,7 @@ const removePost = async (req, res) => {
       });
     }
   } else {
-    res.status(500).json({
+    res.status(403).json({
       error: `You don't have the rights`,
     });
   }

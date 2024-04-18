@@ -7,12 +7,11 @@ const sequelize = db.sequelize;
 
 const { Op } = require("sequelize");
 
-class ConversationService {
   /**
    * Create a new conversation
    * @returns {Promise<Object>}
    */
-  static async addConversation() {
+  const addConversation = async () => {
     return await Conversation.create();
   }
 
@@ -22,7 +21,7 @@ class ConversationService {
    * @param {number} idReceiver
    * @returns {Promise<Object[]>}
    */
-  static async getAllConversationByUser(userId) {
+  const getAllConversationByUser = async  (userId) => {
     try {
         const user = await UserService.getById(userId);
         const userLogin = user.login;
@@ -58,7 +57,7 @@ class ConversationService {
    * @param {number} idConversation
    * @returns {Promise<Object>}
    */
-  static async getConversation(idUser, idConversation) {
+  const getConversation =  async (idUser, idConversation) => {
     return await Conversation.findOne({
       where: { id: idConversation },
       include: [
@@ -71,6 +70,6 @@ class ConversationService {
       ],
     });
   }
-}
 
-module.exports = ConversationService;
+
+module.exports = {addConversation, getAllConversationByUser, getConversation };

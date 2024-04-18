@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import typeService from "../../Services/TypeService";
 import categoryService from "../../Services/PetCategoryService";
+import authService from "../../Services/AuthService";
 import postService from "../../Services/PostService";
 import { AuthContext } from "../../Context/AuthContext";
 import Button from "../../Components/Btn/Button";
@@ -9,10 +10,18 @@ import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import { Row, Col } from "react-bootstrap";
 import "./postForm.scss";
+import errorMessage from "../../Utils/errorMessages.json";
 
 const PostForm = () => {
   const { currentUser } = useContext(AuthContext);
-  const currentUserId = currentUser.id;
+  const currentUserId = currentUser?.id;
+  const [types, setTypes] = useState([]);
+  const [selectedTypeId, setSelectedTypeId] = useState("");
+  const [petCategories, setPetCategories] = useState([]);
+  const [selectedCatId, setSelectedCatId] = useState("");
+
+  // errors from format input
+  const [validationErrors, setValidationErrors] = useState({});
 
   const [formData, setFormData] = useState({
     gender: "",
@@ -25,16 +34,13 @@ const PostForm = () => {
     distinctive_signs: "",
     picture: "",
     is_active: "",
-    addressId: "",
-    PetCategoryId: "",
-    UserId: "",
-    TypeId: "",
+    street: "",
+    postalCode: "",
+    selectedCity: "",
+    cities: [],
   });
 
   // fetch Types
-  const [types, setTypes] = useState([]);
-  const [selectedTypeId, setSelectedTypeId] = useState("");
-
   useEffect(() => {
     const fetchTypes = async () => {
       try {
@@ -50,9 +56,6 @@ const PostForm = () => {
   }, []);
 
   // fetch pet category
-  const [petCategories, setPetCategories] = useState([]);
-  const [selectedCatId, setSelectedCatId] = useState("");
-
   useEffect(() => {
     const fetchCategory = async () => {
       try {
@@ -68,21 +71,9 @@ const PostForm = () => {
 
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    if (name === "TypeId") {
-      setSelectedTypeId(value);
-      console.log("Selected Type Id:", value);
-    }
+  // handleChange Parts
 
-    if (name === "PetCategoryId") {
-      setSelectedCatId(value);
-      console.log("Selected Category Id:", value);
-    }
-  };
-
-  // picture
+  // Picture
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -98,20 +89,81 @@ const PostForm = () => {
     }
   };
 
+  // PostalCode
+  const handlePostalCodeChange = async (e) => {
+    const value = e.target.value;
+
+    if (value.length <= 5) {
+      setFormData((prevInputs) => ({
+        ...prevInputs,
+        postalCode: value,
+      }));
+
+      if (value.length === 5) {
+        setValidationErrors((prevErrors) => ({
+          ...prevErrors,
+          postalCode: undefined,
+        }));
+        try {
+          const cityNames = await authService.getCity(value);
+          setFormData((prevInputs) => ({
+            ...prevInputs,
+            cities: cityNames || [],
+          }));
+
+          if (!cityNames || cityNames.length === 0) {
+            setValidationErrors((prevErrors) => ({
+              ...prevErrors,
+              noCity: errorMessage.register.cityNotFound,
+            }));
+          } else {
+            setValidationErrors((prevErrors) => ({
+              ...prevErrors,
+              noCity: undefined,
+            }));
+          }
+        } catch (error) {
+          setValidationErrors({ postalCode: error.message });
+        }
+      }
+    }
+  };
+
+  // Global
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // for Type and Pet Category select
+    if (name === "selectedTypeId") {
+      setSelectedTypeId(value);
+    } else if (name === "selectedCatId") {
+      setSelectedCatId(value);
+    }
+
+    setValidationErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: validationErrors[name],
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await postService.register({
         ...formData,
-        PetCategoryId: formData.selectedPetCategoryId,
+        PetCategoryId: selectedCatId,
         UserId: currentUserId,
-        TypeId: formData.selectedTypeId,
+        TypeId: selectedTypeId,
+        is_active: true,
+        city: formData.selectedCity,
       });
       // navigate(`/annonces/${id}`);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
+
   return (
     <div>
       <Header />
@@ -119,11 +171,12 @@ const PostForm = () => {
       <form className="post-form" onSubmit={handleSubmit}>
         <Row className="mb-3 mx-5 align-items-center justify-content-center">
           <Col md={6}>
-            <label>
+            <label className="required">
               Type d'annonce
               <select
                 onChange={handleChange}
-                value={formData.TypeId}
+                // value={formData.selectedTypeId}
+                name="selectedTypeId"
                 className="form-select"
                 required
               >
@@ -137,11 +190,12 @@ const PostForm = () => {
             </label>
           </Col>
           <Col md={6}>
-            <label>
+            <label className="required">
               Catégories d'animal
               <select
                 onChange={handleChange}
-                value={selectedCatId}
+                // value={formData.selectedCatId}
+                name="selectedCatId"
                 className="form-select"
                 required
               >
@@ -160,12 +214,7 @@ const PostForm = () => {
             {" "}
             <label>
               Image :
-              <input
-                type="file"
-                className="me-4"
-                onChange={handleFileChange}
-                required
-              />
+              <input type="file" className="me-4" onChange={handleFileChange} />
             </label>
             {formData.picture && (
               <div className="text-center mt-4">
@@ -182,7 +231,12 @@ const PostForm = () => {
             {" "}
             <label>
               Genre :
-              <select name="gender" onChange={handleChange} required>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Sélectionner le genre</option>
                 <option value="mâle">Mâle</option>
                 <option value="femelle">Femelle</option>
@@ -197,7 +251,7 @@ const PostForm = () => {
                 onChange={handleChange}
               />
             </label>
-            <label>
+            <label className="required">
               Date :
               <input
                 type="date"
@@ -208,7 +262,7 @@ const PostForm = () => {
                 required
               />
             </label>
-            <label>
+            <label className="required">
               Description :
               <textarea
                 type="text"
@@ -229,62 +283,47 @@ const PostForm = () => {
                 onChange={handleChange}
                 placeholder="Pour faciliter l'identification, indiquer si l'animal porte des signes distintifs"
                 row={5}
-                required
               />
             </label>
           </Col>
         </Row>
         <Row className="mb-3 mx-5 align-items-center justify-content-center">
           <Col md={6}>
-            <label>
+            <label className="required">
               Rue :
               <input
                 type="text"
                 name="street"
-                value={formData.street}
                 onChange={handleChange}
+                required
               />
             </label>
-            <label>
+            <label className="required">
               Code postal :
               <input
                 type="text"
                 name="postalCode"
-                value={formData.postalCode}
-                onChange={handleChange}
+                onChange={handlePostalCodeChange}
+                maxLength={5}
+                required
               />
             </label>
-            <label>
-              Ville :
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-              />
+            <label className="required">
+              Ville
+              <select name="selectedCity" onChange={handleChange} required>
+                <option value="">Sélectionner votre ville</option>
+                {formData.cities &&
+                  formData.cities.map((city, index) => (
+                    <option key={index} value={city}>
+                      {city}
+                    </option>
+                  ))}
+              </select>
             </label>
           </Col>
           <Col md={6}>
             <div className="d-flex align-items-center justify-content-between">
-              <p >L'animal est-il tatoué ?</p>
-              <input
-                type="radio"
-                name="tattoo"
-                value="true"
-                onChange={handleChange}
-              />
-              <label >Oui</label>
-              <input
-                type="radio"
-                name="tattoo"
-                value="false"
-                onChange={handleChange}
-              />
-              <label>Non</label>
-            </div>
-            <div className="d-flex align-items-center justify-content-between">
-              <p>L'animal est-il pucé ?</p>
-
+              <p>L'animal est-il tatoué ?</p>
               <input
                 type="radio"
                 name="tattoo"
@@ -301,17 +340,35 @@ const PostForm = () => {
               <label>Non</label>
             </div>
             <div className="d-flex align-items-center justify-content-between">
+              <p>L'animal est-il pucé ?</p>
+
+              <input
+                type="radio"
+                name="microchip"
+                value="true"
+                onChange={handleChange}
+              />
+              <label>Oui</label>
+              <input
+                type="radio"
+                name="microchip"
+                value="false"
+                onChange={handleChange}
+              />
+              <label>Non</label>
+            </div>
+            <div className="d-flex align-items-center justify-content-between">
               <p>L'animal a t-il un collier ?</p>
               <input
                 type="radio"
-                name="tattoo"
+                name="collar"
                 value="true"
                 onChange={handleChange}
               />{" "}
               <label> Oui</label>
               <input
                 type="radio"
-                name="tattoo"
+                name="collar"
                 value="false"
                 onChange={handleChange}
               />{" "}
@@ -321,7 +378,7 @@ const PostForm = () => {
         </Row>
         <div className="text-center">
           <Button className="" type="submit">
-            Publier le post
+            Publier l'annonce
           </Button>
         </div>
       </form>

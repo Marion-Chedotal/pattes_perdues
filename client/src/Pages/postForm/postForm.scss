@@ -1,6 +1,6 @@
 .post-form {
-
-  label, p {
+  label,
+  p {
     display: block;
     margin-bottom: 10px;
     font-weight: bold;
@@ -19,7 +19,14 @@
     box-sizing: border-box;
     font-size: 16px;
   }
-  
+
+  label.required::before,
+  select.required::before {
+    content: '*';
+    color: red;
+    margin-right: 5px;
+  }
+
   Button {
     border-radius: 10px;
   }

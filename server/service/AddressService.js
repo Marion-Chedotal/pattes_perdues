@@ -1,13 +1,13 @@
 const { Address } = require("../models");
 
-class AddressService {
+
   /**
    * Create a new address
    * @param {Object} data - data of the address
    * @returns {Promise<Object>}
    */
 
-  static async addAddress(data) {
+  const addAddress = async (data) => {
     return await Address.create(data);
   }
 
@@ -27,13 +27,13 @@ class AddressService {
    * @param {object} data
    * @returns {Promise<Object[]>}
    */
-  static async editAddress(id, data) {
+  const editAddress = async (id, data) => {
     return await Address.update(data, {
       where: {
         id,
       },
     });
   }
-}
 
-module.exports = AddressService;
+
+module.exports = { addAddress, editAddress};

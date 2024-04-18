@@ -1,12 +1,11 @@
 const { Type } = require("../models");
 
-class TypeService {
   /**
    * Find type of post by id
    * @param {number} id
    * @returns {Promise<Object>}
    */
-  static async getTypeById(id) {
+  const getTypeById= async (id) => {
     return await Type.findByPk(id);
   }
 
@@ -14,9 +13,9 @@ class TypeService {
    * Find all type of post
    * @returns {Promise<Object[]>}
    */
-  static async getAllType() {
+  const getAllType = async () => {
     return await Type.findAll();
   }
-}
 
-module.exports = TypeService;
+
+module.exports = {getTypeById, getAllType};

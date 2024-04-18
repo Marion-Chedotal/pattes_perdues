@@ -1,7 +1,5 @@
-// LogoutButton.js
 import React, { useContext} from "react";
 import { AuthContext } from "../../Context/AuthContext";
-// import authService from "../../Services/AuthService";
 
 const LogoutButton = () => {
   const { logout } = useContext(AuthContext);

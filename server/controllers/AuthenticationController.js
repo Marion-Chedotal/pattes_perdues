@@ -148,6 +148,7 @@ const login = async (req, res) => {
     res.status(200).json({
       login: login,
       id: user.id,
+      accessToken: accessToken
     });
   } catch (error) {
     res.status(500).json({ error: `Authentication error: ${error}` });

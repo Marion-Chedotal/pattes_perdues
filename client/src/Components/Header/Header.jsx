@@ -9,7 +9,7 @@ import { AuthContext } from "../../Context/AuthContext";
 
 const Header = () => {
   const { currentUser } = useContext(AuthContext);
-  console.log(currentUser);
+
   return (
     <Navbar expand="lg">
       <Container>
@@ -31,15 +31,15 @@ const Header = () => {
               />
               <Logout />
             </>
-          ): (
+          ) : (
             <>
-             <Link to="/login" className="me-lg-3 mb-3 mb-lg-0">
-            <Button type="button">Connexion</Button>
-          </Link>
-          <Link to="/register">
-            <Button type="button">Inscription</Button>
-          </Link>
-          </>
+              <Link to="/login" className="me-lg-3 mb-3 mb-lg-0">
+                <Button type="button">Connexion</Button>
+              </Link>
+              <Link to="/register">
+                <Button type="button">Inscription</Button>
+              </Link>
+            </>
           )}
         </Nav>
 

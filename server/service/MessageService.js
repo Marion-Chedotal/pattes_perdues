@@ -1,13 +1,12 @@
 const { Message } = require("../models");
 const { Op } = require("sequelize");
 
-class MessageService {
   /**
    * Create a new message
    * @param {Object} data - data of the message
    * @returns {Promise<Object>}
    */
-  static async addMessage(data) {
+  const addMessage = async (data) => {
     return await Message.create(data);
   }
 
@@ -17,7 +16,7 @@ class MessageService {
    * @param {number} idReceiver - id of the receiver
    * @returns {boolean}
    */
-  static async isConversationExist(idSender, idReceiver) {
+  const isConversationExist =  async (idSender, idReceiver) => {
     const conversation = await Message.findOne({
       where: {
         [Op.or]: [
@@ -28,6 +27,6 @@ class MessageService {
     });
     return !!conversation;
   }
-}
 
-module.exports = MessageService;
+
+module.exports = {addMessage, isConversationExist };

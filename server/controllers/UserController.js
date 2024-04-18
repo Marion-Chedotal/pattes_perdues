@@ -6,6 +6,29 @@ const bcrypt = require("bcryptjs");
 const { escapeHtml } = require("../utils/htmlEscape");
 
 /**
+ * Get authenticated user information
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} user's data
+ * @throws {object} error
+ */
+const findMe = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await UserService.getById(userId);
+
+    if (!user) {
+      return res.status(400).json({ error: `User ${id} doesn't exist` });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when fetching user, ${error}`,
+    });
+  }
+};
+
+/**
  * Get user by his id
  * @param {object} req
  * @param {object} res
@@ -19,9 +42,7 @@ const findById = async (req, res) => {
     const user = await UserService.getById(id);
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ error: `User ${id} doesn't exist` });
+      return res.status(400).json({ error: `User ${id} doesn't exist` });
     }
     res.status(200).json(user);
   } catch (error) {
@@ -43,9 +64,7 @@ const findByLogin = async (req, res) => {
   try {
     const user = await UserService.getByLogin(login);
     if (!user) {
-      return res
-        .status(400)
-        .json({ error: `User ${login} doesn't exist` });
+      return res.status(400).json({ error: `User ${login} doesn't exist` });
     }
     res.status(200).json(user);
   } catch (error) {
@@ -69,7 +88,10 @@ const updateUser = async (req, res) => {
   // Get user input
   let { login, password, email, postalCode, city } = req.body;
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(currentUserId, id);
+  const isUserAllowed = AuthenticationService.checkUserPermission(
+    currentUserId,
+    id
+  );
 
   // Validate user input
   const { error } = validateInput(req.body);
@@ -77,7 +99,7 @@ const updateUser = async (req, res) => {
     return res.status(400).json({ error: "Invalid input format" });
   }
 
-  // sanitize input
+  // sanitize input TODO: à voir car logiquement je reprends l'api
   city = escapeHtml(city);
 
   const currentUser = await UserService.getById(id);
@@ -106,13 +128,11 @@ const updateUser = async (req, res) => {
         req.body.password = hashPassword;
       }
       await AddressService.editAddress(currentUser.AddressId, req.body);
-      
+
       const user = await UserService.editUser(id, req.body);
 
       if (!user) {
-        return res
-          .status(400)
-          .json({ error: `User ${id} doesn't exist` });
+        return res.status(400).json({ error: `User ${id} doesn't exist` });
       }
       res.status(200).json(`The user ${login} has been successfully updated`);
     } catch (error) {
@@ -121,7 +141,7 @@ const updateUser = async (req, res) => {
       });
     }
   } else {
-    res.status(500).json({
+    res.status(403).json({
       error: `You don't have the rights`,
     });
   }
@@ -138,16 +158,17 @@ const removeUser = async (req, res) => {
   const id = parseInt(req.params.id, 10);
   const currentUserId = req.user.id;
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(currentUserId, id);
+  const isUserAllowed = AuthenticationService.checkUserPermission(
+    currentUserId,
+    id
+  );
 
   if (isUserAllowed) {
     try {
       const user = await UserService.deleteUser(id);
 
       if (!user) {
-        return res
-          .status(400)
-          .json({ error: `User ${id} doesn't exist` });
+        return res.status(400).json({ error: `User ${id} doesn't exist` });
       }
       const login = user.login;
 
@@ -158,10 +179,10 @@ const removeUser = async (req, res) => {
       });
     }
   } else {
-    res.status(500).json({
+    res.status(403).json({
       error: `You don't have the rights`,
     });
   }
 };
 
-module.exports = { findById, findByLogin, updateUser, removeUser };
+module.exports = { findMe, findById, findByLogin, updateUser, removeUser };

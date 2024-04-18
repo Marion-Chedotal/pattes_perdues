@@ -1,11 +1,11 @@
 const { User, Address } = require("../models");
 
-class UserService {
+
   /** check if the email is already used
    * @param {string} email
    * @returns { Promise<object> }
    */
-  static async checkEmailExists(email) {
+  const checkEmailExists = async (email) => {
     return await User.findOne({ where: { email: email } });
   }
 
@@ -13,7 +13,7 @@ class UserService {
    * @param {string} login
    * @returns { Promise<object> }
    */
-  static async checkLoginExists(login) {
+  const checkLoginExists = async (login) => {
     return await User.findOne({ where: { login: login } });
   }
 
@@ -23,16 +23,17 @@ class UserService {
    * @returns {Promise<Object>}
    */
 
-  static async registerUser(userData) {
+  const registerUser = async (userData) => {
     return await User.create(userData);
   }
 
+  
   /**
    * Find user by login
    * @param {string} login
    * @returns {Promise<Object>}
    */
-  static async getByLogin(login) {
+  const getByLogin = async (login) => {
     return await User.findOne({
       where: {
         login,
@@ -45,7 +46,7 @@ class UserService {
    * @param {number} id
    * @returns {Promise<Object>}
    */
-  static async getById(id) {
+ const getById = async (id) => {
     return await User.findByPk(id, {
       include: {
         model: Address,
@@ -60,7 +61,7 @@ class UserService {
    * @param {object} data
    * @returns {Promise<Object>}
    */
-  static async editUser(idUser, data) {
+  const editUser = async (idUser, data) => {
     return await User.update(data, {
       where: {
         id: idUser,
@@ -73,11 +74,11 @@ class UserService {
    * @param {number} id
    * @returns {Promise}
    */
-  static async deleteUser(id) {
+  const deleteUser = async (id) => {
     const user = await this.getById(id);
 
     return user.destroy();
   }
-}
 
-module.exports = UserService;
+
+module.exports = {checkEmailExists, checkLoginExists, registerUser, getByLogin, getById, editUser, deleteUser };

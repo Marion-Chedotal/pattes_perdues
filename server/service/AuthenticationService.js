@@ -1,14 +1,13 @@
 const { sign } = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-class AuthenticationService {
   /**
  * Create JWT access token for a user
  * @param {string} login
  * @param {number} id
  * @returns {string } JWT
  */
-static createToken(login, id) {
+const createToken = (login, id) => {
   const accessToken = sign({ login, id }, process.env.JWT_SECRET, {
     expiresIn: "2h",
   });
@@ -22,7 +21,7 @@ static createToken(login, id) {
  * @param {string} dbPassword - The hashed password stored in the database.
  * @returns {Promise<boolean>} True if the passwords match
  */
-static async comparePasswords(password, dbPassword) {
+const comparePasswords = (password, dbPassword) => {
   return bcrypt.compare(password, dbPassword);
 };
 
@@ -33,9 +32,9 @@ static async comparePasswords(password, dbPassword) {
  * @returns {<boolean>} True if it's match
  */
 
-static checkUserPermission (userId, requestedUserId) {
+const checkUserPermission = (userId, requestedUserId) => {
   return userId === requestedUserId;
 };
-}
 
-module.exports = AuthenticationService;
+
+module.exports = {createToken, comparePasswords, checkUserPermission};
