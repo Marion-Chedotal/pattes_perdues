@@ -8,9 +8,11 @@ import { AuthContext } from "../../Context/AuthContext";
 import Button from "../../Components/Btn/Button";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, FormLabel } from "react-bootstrap";
 import "./postForm.scss";
 import errorMessage from "../../Utils/errorMessages.json";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
 const PostForm = () => {
   const { currentUser } = useContext(AuthContext);
@@ -154,7 +156,7 @@ const PostForm = () => {
     try {
       const pictureUpload = new FormData();
       pictureUpload.append("picture", picture);
-      
+
       await postService.register({
         ...formData,
         PetCategoryId: selectedCatId,
@@ -227,13 +229,13 @@ const PostForm = () => {
               <input
                 type="file"
                 name="picture"
-                className="me-4"
+                className="mx-4 my-2"
                 onChange={handleFileChange}
               />
             </label>
             {formData.picture && (
-              <div className="text-center mt-4">
-                <h5>Prévisualisation de l'image</h5>
+              <div className="text-center my-3">
+                <h6>Prévisualisation de l'image</h6>
                 <img
                   src={formData.picture}
                   alt="Preview"
@@ -244,7 +246,7 @@ const PostForm = () => {
           </Col>
           <Col md={6}>
             {" "}
-            <label>
+            <label className="required">
               Genre :
               <select
                 name="gender"
@@ -255,6 +257,7 @@ const PostForm = () => {
                 <option value="">Sélectionner le genre</option>
                 <option value="mâle">Mâle</option>
                 <option value="femelle">Femelle</option>
+                <option value="femelle">Inconnu</option>
               </select>
             </label>
             <label>
@@ -266,14 +269,18 @@ const PostForm = () => {
                 onChange={handleChange}
               />
             </label>
-            <label className="required">
+            <label className="required tooltipDate">
               Date :
+              <FontAwesomeIcon icon={faCircleInfo} className="ms-2" />
+              <span className="tooltip">
+                Indiquer la date à laquelle l'animal a été reccueilli ou vu pour
+                la dernière fois.
+              </span>
               <input
                 type="date"
                 name="alert_date"
                 value={formData.alert_date}
                 onChange={handleChange}
-                placeholder="Correspond à la date à laquelle l'animal a été vu pour la dernière fois, ou reccueilli"
                 required
               />
             </label>
@@ -337,64 +344,86 @@ const PostForm = () => {
             </label>
           </Col>
           <Col md={6}>
-            <div className="d-flex align-items-center justify-content-between">
-              <p>L'animal est-il tatoué ?</p>
-              <input
-                type="radio"
-                name="tattoo"
-                value="true"
-                onChange={handleChange}
-              />
-              <label>Oui</label>
-              <input
-                type="radio"
-                name="tattoo"
-                value="false"
-                onChange={handleChange}
-              />
-              <label>Non</label>
-            </div>
-            <div className="d-flex align-items-center justify-content-between">
-              <p>L'animal est-il pucé ?</p>
+            <div>
+              <div className="d-flex justify-content-between align-items-center">
+                <p>L'animal est-il tatoué ?</p>
+                <div className="d-flex align-items-center">
+                  <label>
+                    {" "}
+                    <input
+                      type="radio"
+                      name="tattoo"
+                      value="true"
+                      onChange={handleChange}
+                    />
+                    Oui
+                  </label>
 
-              <input
-                type="radio"
-                name="microchip"
-                value="true"
-                onChange={handleChange}
-              />
-              <label>Oui</label>
-              <input
-                type="radio"
-                name="microchip"
-                value="false"
-                onChange={handleChange}
-              />
-              <label>Non</label>
-            </div>
-            <div className="d-flex align-items-center justify-content-between">
-              <p>L'animal a t-il un collier ?</p>
-              <input
-                type="radio"
-                name="collar"
-                value="true"
-                onChange={handleChange}
-              />{" "}
-              <label> Oui</label>
-              <input
-                type="radio"
-                name="collar"
-                value="false"
-                onChange={handleChange}
-              />{" "}
-              <label>Non</label>
+                  <label>
+                    {" "}
+                    <input
+                      type="radio"
+                      name="tattoo"
+                      value="false"
+                      onChange={handleChange}
+                    />
+                    Non
+                  </label>
+                </div>
+              </div>
+              <div className="d-flex justify-content-between align-items-center">
+                <p>L'animal est-il pucé ?</p>
+                <div className="d-flex align-items-center">
+                  <label>
+                    <input
+                      type="radio"
+                      name="microchip"
+                      value="true"
+                      onChange={handleChange}
+                    />
+                    Oui
+                  </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="microchip"
+                      value="false"
+                      onChange={handleChange}
+                    />
+                    Non
+                  </label>
+                </div>
+              </div>
+              <div className="d-flex justify-content-between align-items-center">
+                <p>L'animal a-t-il un collier ?</p>
+                <div className="d-flex align-items-center">
+                  <FormLabel>
+                    <input
+                      type="radio"
+                      name="collar"
+                      value="true"
+                      onChange={handleChange}
+                    />
+                    Oui
+                  </FormLabel>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="collar"
+                      value="false"
+                      onChange={handleChange}
+                    />
+                    Non
+                  </label>
+                </div>
+              </div>
             </div>
           </Col>
         </Row>
-        <div className="text-center">
-          <Button className="" type="submit">
-            Publier l'annonce
-          </Button>
+        <div className="text-center py-5">
+          <Button type="submit">Publier l'annonce</Button>
         </div>
       </form>
 
