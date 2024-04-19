@@ -292,19 +292,17 @@ const PostForm = () => {
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Expliquer la situation"
-                row={5}
                 required
               />
             </label>
             <label>
-              Signes Distinctifs :
+              Signes Distinctifs de l'animal:
               <textarea
                 type="text"
                 name="distinctive_signs"
                 value={formData.distinctive_signs}
                 onChange={handleChange}
-                placeholder="Pour faciliter l'identification, indiquer si l'animal porte des signes distintifs"
-                row={5}
+                placeholder="Cela peut faciliter l'indentification de l'animal"
               />
             </label>
           </Col>

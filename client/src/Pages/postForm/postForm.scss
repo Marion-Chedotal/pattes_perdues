@@ -16,10 +16,14 @@
     padding: 8px;
     margin-top: 5px;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
+    border: 2px solid $beige-color;
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 16px;
+  }
+
+  textarea {
+    height: 150px;
   }
 
   input[type="radio"] {

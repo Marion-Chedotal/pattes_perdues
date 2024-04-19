@@ -10,12 +10,16 @@ const ConversationController = require("../controllers/ConversationController");
 const AuthMiddleware = require("../middleware/AuthMiddleware");
 const upload = require("../utils/multerConfig");
 
-// authentication route
+/**
+ * authentication route
+ */
 router.post("/register", AuthController.register);
 router.post("/login", AuthController.login);
 router.delete("/logout", AuthMiddleware.validateToken, AuthController.logout);
 
-// user route
+/**
+ * user route
+ */
 router.get("/me", AuthMiddleware.validateToken, UserController.findMe);
 router.get("/user/:id", AuthMiddleware.validateToken, UserController.findById);
 router.get(
@@ -35,7 +39,9 @@ router.delete(
   UserController.removeUser
 );
 
-// post route
+/**
+ * post route
+ */
 router.post(
   "/post",
   AuthMiddleware.validateToken,
@@ -43,7 +49,7 @@ router.post(
   PostController.createPost
 );
 router.get("/post/:id", PostController.findById);
-router.get("/posts/", PostController.findAll);
+router.get("/posts", PostController.findAll);
 router.get("/post/user/:id", PostController.findByUser);
 router.get("/post/address/:postalCode", PostController.findByAddress);
 // router.get("/post/type/:id", PostController.findByType);
@@ -60,22 +66,30 @@ router.delete(
   PostController.removePost
 );
 
-// type route
+/**
+ * type route
+ */
 router.get("/type/:id", TypeController.findById);
 router.get("/type", TypeController.findAllType);
 
-// pet category route
+/**
+ * pet category route
+ */
 router.get("/petCategory/:id", PetCategoryController.findById);
 router.get("/petCategory", PetCategoryController.findAllPetCategory);
 
-// message route
+/**
+ * message route
+ */
 router.post(
   "/post/:id/contact",
   AuthMiddleware.validateToken,
   MessageController.createMessage
 );
 
-// conversations route
+/**
+ * conversation route
+ */
 router.get(
   "/user/:userId/conversations",
   AuthMiddleware.validateToken,

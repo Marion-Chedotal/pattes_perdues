@@ -1,0 +1,19 @@
+@import "../../App";
+
+.card {
+  font-weight: bold;
+  border-radius: 50px !important;
+  border: 3px solid $beige-color !important;
+
+  .card-body,
+  .listgroup,
+  Button {
+    color: $blue-color;
+  }
+
+  Button {
+    background-color: $beige-color;
+    border-radius: 30px;
+    padding: 5px 25px;
+  }
+}

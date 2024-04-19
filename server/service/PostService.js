@@ -1,4 +1,4 @@
-const { Post, User } = require("../models");
+const { Post, User, Pet_category, Type, Address } = require("../models");
 
 /**
  * Create a new post
@@ -23,7 +23,9 @@ const getById = async (id) => {
  * @returns {Promise<Array>}
  */
 const getAll = async () => {
-  return await Post.findAll();
+  return await Post.findAll({
+    include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+  });
 };
 
 /**

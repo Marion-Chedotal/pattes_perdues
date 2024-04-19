@@ -23,5 +23,26 @@ const register = async (formData) => {
   }
 };
 
-const postService = { register };
+/**
+ * Get all posts
+ * @returns {Promise<object>} - Promise resolving to the response object from the post endpoint
+ */
+const getAll = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:3001/api/posts",
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.message;
+  }
+};
+
+const postService = { register, getAll };
 export default postService;
