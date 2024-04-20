@@ -85,18 +85,29 @@ const PostsList = () => {
       <Header />
       <div className="d-flex justify-content-center my-5">
         <Link to="/deposer-une-annonce" className="publishPost">
-          <FontAwesomeIcon icon={faPlus} className="plusIcone me-3 align-middle" />
+          <FontAwesomeIcon
+            icon={faPlus}
+            className="plusIcone me-3 align-middle"
+          />
           Ajouter une annonce ?
         </Link>
       </div>
-      <div className="d-flex justify-content-around align-items-center my-5">
-        <select value={typeFilter} onChange={handleTypeFilterChange}>
+      <div className="d-flex flex-column flex-sm-row justify-content-around align-items-center my-5">
+        <select
+          value={typeFilter}
+          onChange={handleTypeFilterChange}
+          className="mb-3"
+        >
           <option value="all">Toutes les types</option>
           <option value="perdu">Perdus</option>
           <option value="trouvé">Trouvés</option>
           <option value="volé">Volés</option>
         </select>
-        <select value={categoryFilter} onChange={handleCategoryFilterChange}>
+        <select
+          value={categoryFilter}
+          onChange={handleCategoryFilterChange}
+          className="mb-3"
+        >
           <option value="all">Toutes les catégories</option>
           <option value="Chiens">Chiens</option>
           <option value="Chats">Chats</option>
@@ -107,6 +118,7 @@ const PostsList = () => {
           value={searchInput}
           onChange={handleInputChange}
           placeholder="Recherche par ville"
+          className="mb-3"
         />
       </div>
       <div className="row gy-5">

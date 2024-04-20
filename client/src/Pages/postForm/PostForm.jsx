@@ -157,7 +157,7 @@ const PostForm = () => {
       const pictureUpload = new FormData();
       pictureUpload.append("picture", picture);
 
-      await postService.register({
+      const response = await postService.register({
         ...formData,
         PetCategoryId: selectedCatId,
         UserId: currentUserId,
@@ -166,7 +166,8 @@ const PostForm = () => {
         city: formData.selectedCity,
         picture: picture,
       });
-      // navigate(`/annonces/${id}`);
+
+      navigate(`/annonce/${response.postId}`);
     } catch (err) {
       // console.log(err);
     }
@@ -229,7 +230,7 @@ const PostForm = () => {
               <input
                 type="file"
                 name="picture"
-                className="mx-4 my-2"
+                className="mx-4 my-2 border border-0"
                 onChange={handleFileChange}
               />
             </label>
