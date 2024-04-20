@@ -1,5 +1,5 @@
 import "./register.scss";
-import logo from "../../Components/Assets/pattes_perdues_logo.png";
+import logo from "../../Assets/pattes_perdues_logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import authService from "../../Services/AuthService";

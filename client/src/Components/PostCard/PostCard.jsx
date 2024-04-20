@@ -2,7 +2,7 @@ import "./PostCard.scss";
 import React from "react";
 import { Card } from "react-bootstrap";
 import formatDate from "../../Utils/formatDate";
-import Button from "../../Components/Btn/Button";
+import Button from "../Btn/Button";
 
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -30,7 +30,12 @@ const PostCard = ({ post }) => {
             <FontAwesomeIcon icon={faIdCard} className="me-2" />
             <Card.Title className="mb-0 ms-2">{post.name}</Card.Title>
           </div>
-          <Card.Img variant="top" src={post.image} className="my-3" />
+          <Card.Img
+            variant="top"
+            src={"http://localhost:3001/" + post.picture}
+            className="my-3"
+            style={{ height: "250px", objectFit: "cover" }}
+          />
           <div className="d-flex justify-content-evenly w-100">
             <div className="d-flex align-items-center">
               <FontAwesomeIcon icon={faCalendar} />
@@ -45,7 +50,7 @@ const PostCard = ({ post }) => {
             <FontAwesomeIcon icon={faLocationDot} />
             <p className="mb-0 ms-2">{post.Address.city}</p>
           </div>
-          <Link to="/annonce" className="my-4">
+          <Link to={`/annonce/${post.id}`} className="my-4">
             <Button type="button">Détails</Button>
           </Link>
         </Card.Body>

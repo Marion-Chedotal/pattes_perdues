@@ -46,60 +46,6 @@ const getAllByUser = async (userId) => {
   });
 };
 
-// TODO: refacto par une méthode Filter
-// filter by Address et/ou Type et/Ou Pet Category
-
-// /**
-//  * Find all post by Address
-//  * @param {number} postalCode
-//  * @returns {Promise<Array>}
-//  */
-// static async getByAddress(postalCode) {
-//   return await Post.findAll({
-//     include: {
-//       model: Address,
-//       attributes: ["postalCode", "city"],
-//       where: {
-//         postalCode: postalCode,
-//       }
-//     },
-//   });
-// }
-
-// /**
-//  * Find all post by type
-//  * @param {number} typeId
-//  * @returns {Promise<Object>}
-//  */
-// static async getByType(typeId) {
-//   return await Post.findAll({
-//     where: {
-//       TypeId: typeId,
-//     },
-//     include: {
-//       model: Type,
-//       attributes: ["label"],
-//     },
-//   });
-// }
-
-// /**
-//  * Find all post by pet category
-//  *  @param {number} petCategoryId
-//  * @returns {Promise<Object>}
-//  */
-// static async getByPetCategory(petCategoryId) {
-//   return await Post.findAll({
-//     where: {
-//       PetCategoryId: petCategoryId,
-//     },
-//     include: {
-//       model: Pet_category,
-//       attributes: ["label"],
-//     },
-//   });
-// }
-
 /**
  * Update post
  * @param {number} idPost

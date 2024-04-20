@@ -10,8 +10,8 @@ import {
   faLocationDot,
   faBullhorn,
 } from "@fortawesome/free-solid-svg-icons";
-import chien from "../../Components/Assets/chien_home.jpg";
-import Button from "../../Components/Btn/Button.jsx";
+import chien from "../../Assets/chien_home.jpg";
+import Button from "../../Components/Btn/Button";
 import { Link } from "react-router-dom";
 
 const Home = () => {

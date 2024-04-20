@@ -1,5 +1,5 @@
 import "./login.scss";
-import logo from "../../Components/Assets/pattes_perdues_logo.png";
+import logo from "../../Assets/pattes_perdues_logo.png";
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../../Components/Btn/Button";

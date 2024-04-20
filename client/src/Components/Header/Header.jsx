@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Button from "../Btn/Button";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import logo from "../Assets/pattes_perdues_logo.png";
+import logo from "../../Assets/pattes_perdues_logo.png";
 import Logout from "../LogoutBtn/LogoutBtn";
 import { AuthContext } from "../../Context/AuthContext";
 

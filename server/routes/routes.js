@@ -52,8 +52,6 @@ router.get("/post/:id", PostController.findById);
 router.get("/posts", PostController.findAll);
 router.get("/post/user/:id", PostController.findByUser);
 router.get("/post/address/:postalCode", PostController.findByAddress);
-// router.get("/post/type/:id", PostController.findByType);
-// router.get("/post/petCategory/:id", PostController.findByPetCategory);
 router.put(
   "/post/:id",
   AuthMiddleware.validateToken,

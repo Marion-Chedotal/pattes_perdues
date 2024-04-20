@@ -4,6 +4,7 @@ import Login from "./Pages/login/Login";
 import Register from "./Pages/register/Register";
 import PostForm from "./Pages/postForm/PostForm";
 import PostsList from "./Pages/postsList/PostsList";
+import Post from "./Pages/post/Post";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
@@ -16,7 +17,7 @@ function App() {
 
     // Update favicon
     const favicon = document.querySelector('link[rel="icon"]');
-    favicon.href = "../Components/Assets/pattes_perdues_logo.png";
+    favicon.href = "../Assets/pattes_perdues_logo.png";
   }, []);
 
   const router = createBrowserRouter([
@@ -39,6 +40,10 @@ function App() {
     {
       path: "/annonces",
       element: <PostsList />,
+    },
+    {
+      path: "/annonce/:id",
+      element: <Post />,
     },
   ]);
   return (
