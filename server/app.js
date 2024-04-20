@@ -23,7 +23,7 @@ app.use(
   })
 );
 app.use(morgan("combine"));
-app.use(express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 
 app.use("/api", routes);
 
