@@ -1,7 +1,7 @@
 import "./PostCard.scss";
 import React from "react";
 import { Card } from "react-bootstrap";
-import formatDate from "../../Utils/formatDate";
+import { formatDate } from "../../Utils/format";
 import Button from "../Btn/Button";
 
 import { Link } from "react-router-dom";

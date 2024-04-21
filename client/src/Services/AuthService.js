@@ -1,6 +1,18 @@
 import axios from "axios";
 
 /**
+ * Get me
+ */
+const getMe = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/api/me", { withCredentials: true});
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+/**
  * Get postalCode from API carto
  * @param {number} postalCode - Postal code to query
  * @returns {Promise<Array<string>>} - Promise resolving to an array of city names
@@ -62,12 +74,9 @@ const login = async (userData) => {
  */
 const logout = async () => {
   try {
-    const response = await axios.delete(
-      "http://localhost:3001/api/logout",
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axios.delete("http://localhost:3001/api/logout", {
+      withCredentials: true,
+    });
 
     return response.data;
   } catch (error) {
@@ -75,5 +84,5 @@ const logout = async () => {
   }
 };
 
-const authService = { getCity, register, login, logout };
+const authService = { getMe, getCity, register, login, logout };
 export default authService;

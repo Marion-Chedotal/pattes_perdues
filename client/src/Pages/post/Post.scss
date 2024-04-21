@@ -1,0 +1,30 @@
+@import "../../App";
+
+.onePost {
+  .tag {
+    font-weight: bold;
+    background-color: $blue-color;
+    color: $beige-color;
+    padding: 8px 30px;
+    border-radius: 20px;
+  }
+  .icone {
+    color: $beige-color;
+    font-size: 2rem;
+  }
+
+  h5, h6, span, p {
+    text-align: left;
+  }
+  .details {
+    background-color: $beige-color;
+    border-radius: 25px;
+    padding: 15px;
+    font-weight: bold;
+
+    h5 {
+        text-decoration: underline;
+        padding-bottom: 5px;
+    }
+}
+}

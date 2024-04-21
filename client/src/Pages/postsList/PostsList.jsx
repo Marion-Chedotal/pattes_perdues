@@ -34,7 +34,7 @@ const PostsList = () => {
   }, []);
 
   useEffect(() => {
-    // filtered posts by type / pet cateogry / city
+    // filtered posts by type / pet category / city
     const filtered = posts
       .filter((post) => post.Type.label === typeFilter || typeFilter === "all")
       .filter(
@@ -81,7 +81,7 @@ const PostsList = () => {
   const visiblePosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
-    <div>
+    <div className="postList">
       <Header />
       <div className="d-flex justify-content-center my-5">
         <Link to="/deposer-une-annonce" className="publishPost">

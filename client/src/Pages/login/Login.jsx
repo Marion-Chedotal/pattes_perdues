@@ -28,7 +28,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(inputs);
-      navigate("/accueil");
+      navigate("/");
     } catch (err) {
       const errorMessage = t(`authentication.${err.error}`);
       setErrMsg(errorMessage);

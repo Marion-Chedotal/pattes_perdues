@@ -1,0 +1,18 @@
+@import "../../App";
+
+.private {
+  Button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: $blue-color;
+    color: white;
+    font-weight: bold;
+  
+}
+  padding: 20px;
+  border-radius: 30px;
+  background-color: $beige-color;
+  color: $blue-color;
+  font-weight: bold;
+}

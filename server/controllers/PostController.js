@@ -69,7 +69,12 @@ const createPost = async (req, res) => {
 
     await post.setAddress(address);
 
-    res.status(201).json(`Post has been successfully registered`);
+    res
+      .status(201)
+      .json({
+        postId: post.id,
+        message: "Post has been successfully registered",
+      });
   } catch (error) {
     console.error(error);
     res.status(500).json({

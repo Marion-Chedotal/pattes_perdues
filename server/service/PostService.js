@@ -15,7 +15,9 @@ const addPost = async (postData) => {
  * @returns {Promise<Object>}
  */
 const getById = async (id) => {
-  return await Post.findByPk(id, { include: User });
+  return await Post.findByPk(id, {
+    include: [User, Pet_category, Type, Address],
+  });
 };
 
 /**
@@ -25,7 +27,7 @@ const getById = async (id) => {
 const getAll = async () => {
   return await Post.findAll({
     include: [{ model: Pet_category }, { model: Type }, { model: Address }],
-    order: [['createdAt', 'DESC']]
+    order: [["createdAt", "DESC"]],
   });
 };
 

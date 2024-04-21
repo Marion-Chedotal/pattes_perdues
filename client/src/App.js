@@ -9,6 +9,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
+import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 
 function App() {
   useEffect(() => {
@@ -22,7 +23,7 @@ function App() {
 
   const router = createBrowserRouter([
     {
-      path: "/accueil",
+      path: "/",
       element: <Home />,
     },
     {
@@ -35,7 +36,11 @@ function App() {
     },
     {
       path: "/deposer-une-annonce",
-      element: <PostForm />,
+      element: (
+        <PrivateRoute>
+          <PostForm />
+        </PrivateRoute>
+      ),
     },
     {
       path: "/annonces",

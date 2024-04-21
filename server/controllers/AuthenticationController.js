@@ -57,7 +57,7 @@ const register = async (req, res) => {
       req.body.email
     );
     if (isEmailAlreadyExist) {
-      return res.status(400).json("Email already used");
+      return res.status(409).json("Email already used");
     }
 
     // Check if user already exist: same login
@@ -65,7 +65,7 @@ const register = async (req, res) => {
       req.body.login
     );
     if (isLoginAlreadyExist) {
-      return res.status(400).json("Login already used");
+      return res.status(409).json("Login already used");
     }
 
     // Encrypt user password

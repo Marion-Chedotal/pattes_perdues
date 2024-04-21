@@ -20,7 +20,12 @@ const findMe = async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: `User ${id} doesn't exist` });
     }
-    res.status(200).json(user);
+    // display only this userData
+    const userData = {
+      id: user.id,
+      login: user.login,
+    };
+    res.status(200).json(userData);
   } catch (error) {
     res.status(500).json({
       error: `Error when fetching user, ${error}`,
