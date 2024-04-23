@@ -5,7 +5,7 @@ import axios from "axios";
  * @param {object} formData - form data to be registered
  * @returns {Promise<object>} - Promise resolving to the response object from the post endpoint
  */
-const register = async (formData) => {
+const register = async (formData, token) => {
   try {
     const response = await axios.post(
       "http://localhost:3001/api/post",
@@ -14,6 +14,7 @@ const register = async (formData) => {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -29,15 +30,12 @@ const register = async (formData) => {
  */
 const getAll = async () => {
   try {
-    const response = await axios.get(
-      "http://localhost:3001/api/posts",
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await axios.get("http://localhost:3001/api/posts", {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     throw error.message;
@@ -50,12 +48,31 @@ const getAll = async () => {
  */
 const getOne = async (id) => {
   try {
-    const response = await axios.get(
-      `http://localhost:3001/api/post/${id}`,
+    const response = await axios.get(`http://localhost:3001/api/post/${id}`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.message;
+  }
+};
+
+const isPostOwner = (currentUserId, userPostId) => {
+  if (currentUserId === userPostId) return true;
+};
+
+const deletePost = async (id, token) => {
+  try {
+    const response = await axios.delete(
+      `http://localhost:3001/api/post/${(id)}`,
       {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -64,6 +81,5 @@ const getOne = async (id) => {
     throw error.message;
   }
 };
-
-const postService = { register, getAll, getOne };
+const postService = { register, getAll, getOne, isPostOwner, deletePost };
 export default postService;

@@ -68,7 +68,7 @@ const editPost = async (idPost, data) => {
  * @returns {Promise}
  */
 const deletePost = async (id) => {
-  const post = await this.getById(id);
+  const post = await getById(id);
 
   return post.destroy();
 };

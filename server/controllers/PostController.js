@@ -54,7 +54,7 @@ const createPost = async (req, res) => {
       microchip,
       collar,
       distinctive_signs,
-      picture: req.file.path,
+      picture: req.file?.path,
       is_active,
       UserId,
       TypeId,
@@ -69,12 +69,10 @@ const createPost = async (req, res) => {
 
     await post.setAddress(address);
 
-    res
-      .status(201)
-      .json({
-        postId: post.id,
-        message: "Post has been successfully registered",
-      });
+    res.status(201).json({
+      postId: post.id,
+      message: "Post has been successfully registered",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -285,7 +283,8 @@ const updatePost = async (req, res) => {
  */
 const removePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
-  const currentUserId = req.user.id;
+  const currentUserId = req.userId;
+
   const postToDelete = await PostService.getById(idPost);
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
@@ -296,7 +295,6 @@ const removePost = async (req, res) => {
   if (isUserAllowed) {
     try {
       const post = await PostService.deletePost(idPost);
-
       if (post.length === 0) {
         return res.status(400).json({ error: `Post ${id} doesn't exist` });
       }

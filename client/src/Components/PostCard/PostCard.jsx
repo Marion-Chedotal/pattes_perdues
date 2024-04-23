@@ -3,7 +3,7 @@ import React from "react";
 import { Card } from "react-bootstrap";
 import { formatDate } from "../../Utils/format";
 import Button from "../Btn/Button";
-
+import affiche from "../../Assets/affiche_animal_perdu.jpg";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -30,12 +30,21 @@ const PostCard = ({ post }) => {
             <FontAwesomeIcon icon={faIdCard} className="me-2" />
             <Card.Title className="mb-0 ms-2">{post.name}</Card.Title>
           </div>
-          <Card.Img
-            variant="top"
-            src={"http://localhost:3001/" + post.picture}
-            className="my-3"
-            style={{ height: "250px", objectFit: "cover" }}
-          />
+          {post?.picture ? (
+            <Card.Img
+              variant="top"
+              src={"http://localhost:3001/" + post.picture}
+              className="my-3"
+              style={{ height: "250px", objectFit: "cover" }}
+            />
+          ) : (
+            <Card.Img
+              variant="top"
+              src={affiche}
+              className="my-3"
+              style={{ height: "250px", objectFit: "cover" }}
+            />
+          )}
           <div className="d-flex justify-content-evenly w-100">
             <div className="d-flex align-items-center">
               <FontAwesomeIcon icon={faCalendar} />

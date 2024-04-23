@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./PostsList.scss";
 import Header from "../../Components/Header/Header";
 import PostCard from "../../Components/PostCard/PostCard";
@@ -18,6 +18,24 @@ const PostsList = () => {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [searchInput, setSearchInput] = useState("");
   const [noResults, setNoResults] = useState(false);
+
+  const [deleteSuccessMessage, setDeleteSuccessMessage] = useState("");
+  // when owner deleting post, he is redirect here with success message.
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state && location.state.deleteSuccessMessage) {
+      setDeleteSuccessMessage(location.state.deleteSuccessMessage);
+    }
+  }, [location]);
+  useEffect(() => {
+    if (deleteSuccessMessage) {
+      const timer = setTimeout(() => {
+        setDeleteSuccessMessage("");
+      }, 5000); // 5000ms = 5 secondes
+      return () => clearTimeout(timer);
+    }
+  }, [deleteSuccessMessage]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,6 +101,9 @@ const PostsList = () => {
   return (
     <div className="postList">
       <Header />
+      {deleteSuccessMessage && (
+        <div className="successDelete text-center alert alert-success">{deleteSuccessMessage}</div>
+      )}
       <div className="d-flex justify-content-center my-5">
         <Link to="/deposer-une-annonce" className="publishPost">
           <FontAwesomeIcon
@@ -99,9 +120,9 @@ const PostsList = () => {
           className="mb-3"
         >
           <option value="all">Toutes les types</option>
-          <option value="perdu">Perdus</option>
-          <option value="trouvé">Trouvés</option>
-          <option value="volé">Volés</option>
+          <option value="Perdu">Perdus</option>
+          <option value="Trouvé">Trouvés</option>
+          <option value="Volé">Volés</option>
         </select>
         <select
           value={categoryFilter}

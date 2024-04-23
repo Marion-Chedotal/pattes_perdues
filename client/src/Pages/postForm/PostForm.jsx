@@ -17,6 +17,7 @@ import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 const PostForm = () => {
   const { currentUser } = useContext(AuthContext);
   const currentUserId = currentUser?.id;
+
   const [types, setTypes] = useState([]);
   const [selectedTypeId, setSelectedTypeId] = useState("");
   const [petCategories, setPetCategories] = useState([]);
@@ -157,15 +158,18 @@ const PostForm = () => {
       const pictureUpload = new FormData();
       pictureUpload.append("picture", picture);
 
-      const response = await postService.register({
-        ...formData,
-        PetCategoryId: selectedCatId,
-        UserId: currentUserId,
-        TypeId: selectedTypeId,
-        is_active: true,
-        city: formData.selectedCity,
-        picture: picture,
-      });
+      const response = await postService.register(
+        {
+          ...formData,
+          PetCategoryId: selectedCatId,
+          UserId: currentUserId,
+          TypeId: selectedTypeId,
+          is_active: true,
+          city: formData.selectedCity,
+          picture: picture,
+        },
+        currentUser.accessToken
+      );
 
       navigate(`/annonce/${response.postId}`);
     } catch (err) {
