@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "jest --coverage",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "Marion Chédotal",
   "license": "ISC",
