@@ -1,13 +1,15 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../../Context/AuthContext";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/authActions";
 import Button from "../../Components/Btn/Button";
 
 const LogoutButton = () => {
-  const { logout } = useContext(AuthContext);
-
+ 
+  const dispatch = useDispatch();
+  
   const handleLogout = async (inputs) => {
     try {
-      logout(inputs);
+      dispatch(logout());
     } catch (error) {
       console.error("Error during logout:", error);
     }

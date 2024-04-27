@@ -1,15 +1,15 @@
 import "./login.scss";
 import logo from "../../Assets/pattes_perdues_logo.png";
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../../Components/Btn/Button";
 import { useTranslation } from "react-i18next";
-import { AuthContext } from "../../Context/AuthContext";
+import authService from "../../Services/AuthService";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../store/authActions";
 
 const Login = () => {
-  const { t } = useTranslation();
 
-  const { login } = useContext(AuthContext);
   const [inputs, setInputs] = useState({
     login: "",
     password: "",
@@ -17,6 +17,8 @@ const Login = () => {
 
   const [errMsg, setErrMsg] = useState("");
 
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,7 +29,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(inputs);
+      const data = await authService.login(inputs);
+      dispatch(loginSuccess(data.accessToken, data.user ));
       navigate("/");
     } catch (err) {
       const errorMessage = t(`authentication.${err.error}`);

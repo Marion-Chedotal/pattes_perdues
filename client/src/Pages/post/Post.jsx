@@ -1,16 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Post.scss";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import affiche from "../../Assets/affiche_animal_perdu.jpg";
-import { AuthContext } from "../../Context/AuthContext";
 import postService from "../../Services/PostService";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../../Components/Btn/Button";
 import { formatDate, capitalizeFirstLetter } from "../../Utils/format";
-import { useParams } from "react-router-dom";
-import { Image, Container, Row, Col } from "react-bootstrap";
-import Modal from "react-bootstrap/Modal";
+import { Image, Container, Row, Col, Modal } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faVenusMars,
@@ -38,11 +36,13 @@ import {
 
 const Post = () => {
   const { id } = useParams();
-  const { currentUser } = useContext(AuthContext);
+
   const [post, setPost] = useState(null);
   const [show, setShow] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState("");
   const [error, setError] = useState(null);
+
+  const { user, token } = useSelector((state) => state.auth);
 
   //modal management
   const handleClose = () => {
@@ -52,13 +52,14 @@ const Post = () => {
 
   const handleShow = () => setShow(true);
 
-  const isPostOwner = postService.isPostOwner(currentUser?.id, post?.User?.id);
+  const isPostOwner = postService.isPostOwner(user?.id, post?.User?.id);
 
   const postDate = post ? formatDate(post.alert_date) : "";
   const name = post ? capitalizeFirstLetter(post.name) : "";
 
   const navigate = useNavigate();
 
+  // TODO:sécuriser cette url pour la transmission
   const shareUrl = window.location.href;
 
   useEffect(() => {
@@ -74,11 +75,11 @@ const Post = () => {
     fetchPostDetails();
   }, [id]);
 
-  // isOwnerPost: it can delete it
+  // isOwnerPost: he can delete it
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      await postService.deletePost(id, currentUser.accessToken);
+      await postService.deletePost(id, token);
       navigate("/annonces", {
         state: {
           deleteSuccessMessage: "Votre annonce a été supprimée avec succès !",
@@ -99,26 +100,37 @@ const Post = () => {
           </div>
           {isPostOwner && (
             <div className="mb-4 d-flex justify-content-center isOwnerAction">
-              <button>
-                <FontAwesomeIcon icon={faPenToSquare} className="iconAction" />
-              </button>
+              <Link to={`/modification-annonce/${id}`}>
+                <button>
+                  <FontAwesomeIcon
+                    icon={faPenToSquare}
+                    className="iconAction"
+                  />
+                </button>
+              </Link>
               <button onClick={handleShow}>
                 <FontAwesomeIcon icon={faTrash} className="me-5 iconAction" />
               </button>
-              <Modal show={show} onHide={handleClose} className="modalDelete">
+              <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                   <div>
                     <p>Êtes-vous sûr de vouloir supprimer cette annonce ?</p>
                     {error && <div className="alert alert-danger">{error}</div>}
                   </div>
                 </Modal.Header>
-                <Modal.Footer className="hello">
-                  <button className="p-2 text-black border border-0 rounded"
+                <Modal.Footer>
+                  <button
+                    className="p-2 text-black border border-0 rounded"
                     onClick={handleDelete}
                   >
                     Oui
                   </button>
-                  <button className="p-2 text-black border border border-0 rounded" onClick={handleClose}>Non</button>
+                  <button
+                    className="p-2 text-black border border border-0 rounded"
+                    onClick={handleClose}
+                  >
+                    Non
+                  </button>
                 </Modal.Footer>
               </Modal>
             </div>

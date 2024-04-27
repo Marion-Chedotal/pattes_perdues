@@ -17,7 +17,7 @@ const loginRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{8,20}$/;
  * @param {string} data.login - login.
  * @param {number} data.postalCode - postal code .
  * @param {string} data.city - city.
- * @returns {Joi.ValidationResult<object>} - The result of the validation. 
+ * @returns {Joi.ValidationResult<object>} - The result of the validation.
  */
 const validateInput = (data) => {
   const schema = Joi.object({
@@ -139,45 +139,14 @@ const login = async (req, res) => {
 
     const accessToken = AuthenticationService.createToken(user.login, user.id);
 
-    res.cookie("access-token", accessToken, {
-      maxAge: 2 * 60 * 60 * 1000,
-      httpOnly: true,
-      sameSite: true,
-    });
-
     res.status(200).json({
-      login: login,
-      id: user.id,
-      accessToken: accessToken
+      user: { login: login, id: user.id },
+      accessToken: accessToken,
     });
   } catch (error) {
     res.status(500).json({ error: `Authentication error: ${error}` });
   }
 };
 
-/**
- * Log out user by destroying his JWT
- * @param {object} req
- * @param {object} res
- * @returns {string} string success
- * @throws {object} error
- */
-const logout = async (req, res) => {
-  try {
-    if (req.cookies["access-token"]) {
-      res.clearCookie("access-token", {
-        secure: true,
-        samesite: true,
-      });
-      return res
-        .status(200)
-        .json({ message: "You have been successfully disconnected" });
-    } else {
-      return res.status(400).json({ message: "No cookie to delete" });
-    }
-  } catch (error) {
-    res.status(500).json({ error: `Error when logout, ${error}` });
-  }
-};
 
-module.exports = { validateInput, register, login, logout };
+module.exports = { validateInput, register, login };

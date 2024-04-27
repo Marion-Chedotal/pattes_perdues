@@ -64,10 +64,11 @@ const isPostOwner = (currentUserId, userPostId) => {
   if (currentUserId === userPostId) return true;
 };
 
-const deletePost = async (id, token) => {
+const update = async (id, formData, token) => {
   try {
-    const response = await axios.delete(
-      `http://localhost:3001/api/post/${(id)}`,
+    const response = await axios.put(
+      `http://localhost:3001/api/post/${id}`,
+      formData,
       {
         withCredentials: true,
         headers: {
@@ -81,5 +82,30 @@ const deletePost = async (id, token) => {
     throw error.message;
   }
 };
-const postService = { register, getAll, getOne, isPostOwner, deletePost };
+
+const deletePost = async (id, token) => {
+  try {
+    const response = await axios.delete(
+      `http://localhost:3001/api/post/${id}`,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.message;
+  }
+};
+const postService = {
+  register,
+  getAll,
+  getOne,
+  isPostOwner,
+  update,
+  deletePost,
+};
 export default postService;

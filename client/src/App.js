@@ -4,6 +4,7 @@ import Login from "./Pages/login/Login";
 import Register from "./Pages/register/Register";
 import PostForm from "./Pages/postForm/PostForm";
 import PostsList from "./Pages/postsList/PostsList";
+import UpdatePost from "./Pages/updatePost/UpdatePost";
 import Post from "./Pages/post/Post";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { useEffect } from "react";
@@ -49,6 +50,10 @@ function App() {
     {
       path: "/annonce/:id",
       element: <Post />,
+    },
+    {
+      path: "/modification-annonce/:id",
+      element: <UpdatePost />,
     },
   ]);
   return (

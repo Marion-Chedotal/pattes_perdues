@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import typeService from "../../Services/TypeService";
 import categoryService from "../../Services/PetCategoryService";
 import authService from "../../Services/AuthService";
 import postService from "../../Services/PostService";
-import { AuthContext } from "../../Context/AuthContext";
 import Button from "../../Components/Btn/Button";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
@@ -15,8 +15,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
 const PostForm = () => {
-  const { currentUser } = useContext(AuthContext);
-  const currentUserId = currentUser?.id;
+  const { user, token } = useSelector((state) => state.auth);
+  const currentUserId = user?.id;
 
   const [types, setTypes] = useState([]);
   const [selectedTypeId, setSelectedTypeId] = useState("");
@@ -79,7 +79,6 @@ const PostForm = () => {
   // Picture
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-
     setPicture(file);
     const reader = new FileReader();
 
@@ -168,7 +167,7 @@ const PostForm = () => {
           city: formData.selectedCity,
           picture: picture,
         },
-        currentUser.accessToken
+        token
       );
 
       navigate(`/annonce/${response.postId}`);
@@ -260,9 +259,9 @@ const PostForm = () => {
                 required
               >
                 <option value="">Sélectionner le genre</option>
-                <option value="mâle">Mâle</option>
-                <option value="femelle">Femelle</option>
-                <option value="femelle">Inconnu</option>
+                <option value="Mâle">Mâle</option>
+                <option value="Femelle">Femelle</option>
+                <option value="Inconnu">Inconnu</option>
               </select>
             </label>
             <label>

@@ -241,7 +241,7 @@ const updatePost = async (req, res) => {
   } = req.body;
 
   const idPost = parseInt(req.params.id, 10);
-  const currentUserId = req.user.id;
+  const currentUserId = req.userId;
   const postToEdit = await PostService.getById(idPost);
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
@@ -258,7 +258,21 @@ const updatePost = async (req, res) => {
 
   if (isUserAllowed) {
     try {
-      const post = await PostService.editPost(idPost, req.body);
+      const post = await PostService.editPost(idPost, {
+        gender,
+        alert_date,
+        description,
+        name,
+        tattoo,
+        microchip,
+        collar,
+        distinctive_signs,
+        picture: req.file?.path,
+        is_active,
+        UserId,
+        TypeId,
+        PetCategoryId,
+      });
       if (post.length === 0) {
         return res.status(400).json({ error: `Post doesn't exist` });
       }

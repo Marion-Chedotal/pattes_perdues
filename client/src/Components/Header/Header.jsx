@@ -1,14 +1,15 @@
 import "./Header.scss";
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import Button from "../Btn/Button";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import logo from "../../Assets/pattes_perdues_logo.png";
 import Logout from "../LogoutBtn/LogoutBtn";
-import { AuthContext } from "../../Context/AuthContext";
+import { useSelector } from "react-redux";
 
 const Header = () => {
-  const { currentUser } = useContext(AuthContext);
+
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   return (
     <Navbar expand="lg">
@@ -21,9 +22,9 @@ const Header = () => {
         <img src={logo} alt="logo pattes perdues" />
       </Navbar.Brand>
       <Nav className="order-lg-3 mx-auto d-flex align-items-center">
-        {currentUser ? (
+        {isAuthenticated && user? (
           <>
-            <span className="me-lg-3 mb-3 mb-lg-0">{currentUser?.login}</span>
+            <span className="me-lg-3 mb-3 mb-lg-0">{user?.login}</span>
             <Logout />
           </>
         ) : (

@@ -1,19 +1,19 @@
-import React, { useContext } from "react";
+import React from "react";
 import "./PrivateRoute.scss";
-import { AuthContext } from "../../Context/AuthContext";
 import { Link } from "react-router-dom";
 import Header from "../../Components/Header/Header";
 import PostForm from "../../Pages/postForm/PostForm";
 import Button from "../Btn/Button";
 import { Image, Container, Row, Col } from "react-bootstrap";
 import affiche from "../../Assets/affiche_animal_perdu.jpg";
+import { useSelector } from "react-redux";
 
 const PrivateRoute = () => {
-  const { currentUser } = useContext(AuthContext);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   return (
     <div>
-        {currentUser ? (
+        {isAuthenticated && user ? (
           <PostForm />
         ) : (
           <>
