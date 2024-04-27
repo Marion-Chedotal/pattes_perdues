@@ -8,22 +8,22 @@ const { verify } = require("jsonwebtoken");
  * @returns {void}
  */
 const validateToken = (req, res, next) => {
-  const accessToken = req.cookies["access-token"];
-
-  if (!accessToken) {
-    return res.status(401).json({ error: "User not authenticated! " });
-  }
-
+  const authHeader = req.headers.authorization;
+  const accessToken = authHeader?.split(" ")[1];
   try {
     const validToken = verify(accessToken, process.env.JWT_SECRET);
-    req.user = validToken;
+
+    req.userId = validToken.id;
+    req.token = accessToken;
 
     if (validToken) {
       return next();
     } else {
-      res.status(403).json({ error: "Access denied: You are not authorised to access this resource. "})
+      res.status(403).json({
+        error:
+          "Access denied: You are not authorised to access this resource. ",
+      });
     }
-
   } catch (error) {
     res.status(500).json({ error: error });
   }

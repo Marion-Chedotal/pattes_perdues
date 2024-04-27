@@ -15,7 +15,6 @@ const upload = require("../utils/multerConfig");
  */
 router.post("/register", AuthController.register);
 router.post("/login", AuthController.login);
-router.delete("/logout", AuthMiddleware.validateToken, AuthController.logout);
 
 /**
  * user route
