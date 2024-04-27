@@ -38,34 +38,6 @@
     margin-right: 5px;
   }
 
-  .tooltipDate {
-    position: relative;
-
-    .tooltip {
-      position: absolute;
-      top: 0%;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: $blue-color;
-      color: white;
-      padding: 5px;
-      border-radius: 3px;
-      font-size: 12px;
-      white-space: nowrap;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      -webkit-transform: translateX(-50%);
-      -moz-transform: translateX(-50%);
-      -ms-transform: translateX(-50%);
-      -o-transform: translateX(-50%);
-    }
-    &:hover .tooltip {
-      visibility: visible;
-      opacity: 1;
-    }
-  }
-
   Button {
     border-radius: 30px;
     padding: 12px 20px;

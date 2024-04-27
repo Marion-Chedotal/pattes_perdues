@@ -9,6 +9,7 @@ import Button from "../../Components/Btn/Button";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import { Row, Col, FormLabel } from "react-bootstrap";
+import { Tooltip } from "react-tooltip";
 import "./postForm.scss";
 import errorMessage from "../../Utils/errorMessages.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -273,21 +274,23 @@ const PostForm = () => {
                 onChange={handleChange}
               />
             </label>
-            <label className="required tooltipDate">
+            <label
+              className="required tooltip-date "
+              data-tip
+              data-tooltip-id="tooltip-date"
+              data-tooltip-content="Indiquer la date à laquelle l'animal a été reccueilli ou vu pour la dernière fois."
+            >
               Date :
               <FontAwesomeIcon icon={faCircleInfo} className="ms-2" />
-              <span className="tooltip">
-                Indiquer la date à laquelle l'animal a été reccueilli ou vu pour
-                la dernière fois.
-              </span>
-              <input
-                type="date"
-                name="alert_date"
-                value={formData.alert_date}
-                onChange={handleChange}
-                required
-              />
+              <Tooltip id="tooltip-date" effect="solid"></Tooltip>
             </label>
+            <input
+              type="date"
+              name="alert_date"
+              value={formData.alert_date}
+              onChange={handleChange}
+              required
+            />
             <label className="required">
               Description :
               <textarea

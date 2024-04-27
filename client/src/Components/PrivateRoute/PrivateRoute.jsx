@@ -8,13 +8,13 @@ import { Image, Container, Row, Col } from "react-bootstrap";
 import affiche from "../../Assets/affiche_animal_perdu.jpg";
 import { useSelector } from "react-redux";
 
-const PrivateRoute = () => {
+const PrivateRoute = ({ children }) => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   return (
     <div>
         {isAuthenticated && user ? (
-          <PostForm />
+          children
         ) : (
           <>
             <Header />

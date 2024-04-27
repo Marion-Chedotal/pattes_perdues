@@ -5,6 +5,7 @@ import Register from "./Pages/register/Register";
 import PostForm from "./Pages/postForm/PostForm";
 import PostsList from "./Pages/postsList/PostsList";
 import UpdatePost from "./Pages/updatePost/UpdatePost";
+import Profil from "./Pages/profil/Profil";
 import Post from "./Pages/post/Post";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { useEffect } from "react";
@@ -53,7 +54,19 @@ function App() {
     },
     {
       path: "/modification-annonce/:id",
-      element: <UpdatePost />,
+      element: (
+        <PrivateRoute>
+          <UpdatePost />
+        </PrivateRoute>
+      ),
+    },
+    {
+      path: "/profil/:login",
+      element: (
+        <PrivateRoute>
+          <Profil />
+        </PrivateRoute>
+      ),
     },
   ]);
   return (
