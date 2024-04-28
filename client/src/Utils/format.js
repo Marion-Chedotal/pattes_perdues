@@ -13,6 +13,3 @@ export const formatDate = (dateToFormat) => {
 export const capitalizeFirstLetter = (string) => {
   return string?.charAt(0).toUpperCase() + string?.slice(1);
 };
-
-// const format = { formatDate, capitalizeFirstLetter};
-// export default format;

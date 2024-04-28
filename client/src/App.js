@@ -21,7 +21,7 @@ function App() {
 
     // Update favicon
     const favicon = document.querySelector('link[rel="icon"]');
-    favicon.href = "../Assets/pattes_perdues_logo.png";
+    favicon.href = "./Assets/pattes_perdues_logo.png";
   }, []);
 
   const router = createBrowserRouter([

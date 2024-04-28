@@ -49,6 +49,20 @@ const getAllByUser = async (userId) => {
 };
 
 /**
+ * Get the number of post by user
+ * @param {number} userId
+ * @returns {Promise<Array>}
+ */
+const countPostsByUser = async (userId) => {
+  return await Post.count({
+    where: {
+      UserId: userId,
+    },
+  });
+};
+
+
+/**
  * Update post
  * @param {number} idPost
  * @param {object} data
@@ -89,6 +103,7 @@ module.exports = {
   getById,
   getAll,
   getAllByUser,
+  countPostsByUser,
   editPost,
   deletePost,
   isCorrectAddressee,

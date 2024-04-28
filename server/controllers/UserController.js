@@ -6,34 +6,6 @@ const bcrypt = require("bcryptjs");
 const { escapeHtml } = require("../utils/htmlEscape");
 
 /**
- * Get authenticated user information
- * @param {object} req
- * @param {object} res
- * @returns {object} user's data
- * @throws {object} error
- */
-const findMe = async (req, res) => {
-  try {
-    const userId = req.userId;
-    const user = await UserService.getById(userId);
-
-    if (!user) {
-      return res.status(400).json({ error: `User ${id} doesn't exist` });
-    }
-    // display only this userData
-    const userData = {
-      id: user.id,
-      login: user.login,
-    };
-    res.status(200).json(userData);
-  } catch (error) {
-    res.status(500).json({
-      error: `Error when fetching user, ${error}`,
-    });
-  }
-};
-
-/**
  * Get user by his id
  * @param {object} req
  * @param {object} res
@@ -65,12 +37,15 @@ const findById = async (req, res) => {
  * @throws {object} error
  */
 const findByLogin = async (req, res) => {
-  const { login } = req.params;
+  const login = req;
+
   try {
     const user = await UserService.getByLogin(login);
+
     if (!user) {
       return res.status(400).json({ error: `User ${login} doesn't exist` });
     }
+  
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({
@@ -160,20 +135,23 @@ const updateUser = async (req, res) => {
  * @throws {object} Error
  */
 const removeUser = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const currentUserId = req.user.id;
+  const login = req.params.login;
+
+  const user = await UserService.getByLogin(login);
+  const userId = user.id;
+  const currentUserId = req.userId;
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
     currentUserId,
-    id
+    userId
   );
 
   if (isUserAllowed) {
     try {
-      const user = await UserService.deleteUser(id);
+      const user = await UserService.deleteUser(userId);
 
       if (!user) {
-        return res.status(400).json({ error: `User ${id} doesn't exist` });
+        return res.status(400).json({ error: `User ${userId} doesn't exist` });
       }
       const login = user.login;
 
@@ -190,4 +168,4 @@ const removeUser = async (req, res) => {
   }
 };
 
-module.exports = { findMe, findById, findByLogin, updateUser, removeUser };
+module.exports = { findById, findByLogin, updateUser, removeUser };

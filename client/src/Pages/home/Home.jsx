@@ -1,7 +1,8 @@
 import "./home.scss";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Image, Container, Row, Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,12 +13,34 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import chien from "../../Assets/chien_home.jpg";
 import Button from "../../Components/Btn/Button";
-import { Link } from "react-router-dom";
+
 
 const Home = () => {
+
+  const [deleteSuccessMessage, setDeleteSuccessMessage] = useState("");
+  // when owner deleting his account, he is redirect here with success message.
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state && location.state.deleteSuccessMessage) {
+      setDeleteSuccessMessage(location.state.deleteSuccessMessage);
+    }
+  }, [location]);
+  
+  useEffect(() => {
+    if (deleteSuccessMessage) {
+      const timer = setTimeout(() => {
+        setDeleteSuccessMessage("");
+      }, 5000); // 5000ms = 5 secondes
+      return () => clearTimeout(timer);
+    }
+  }, [deleteSuccessMessage]);
+
   return (
     <div>
       <Header />
+      {deleteSuccessMessage && (
+        <div className="successDelete text-center alert alert-success">{deleteSuccessMessage}</div>
+      )}
       <main>
         <Container fluid className="presentation mt-5 ">
           <Row>

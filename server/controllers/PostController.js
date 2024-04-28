@@ -148,6 +148,28 @@ const findByUser = async (req, res) => {
 };
 
 /**
+ * Find the number of posts publish by a user
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
+const numberPostsByUser = async (req, res) => {
+  const currentUserId = req.userId;
+  
+  try {
+    const post = await PostService.countPostsByUser(currentUserId);
+    if (post.length === 0) {
+      return res.status(400).json({ error: `User doesn't have post yet.` });
+    }
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when fetching post, ${error}`,
+    });
+  }
+};
+
+/**
  * Find post by address
  * @param {object} req
  * @param {object} res
@@ -330,6 +352,7 @@ module.exports = {
   findById,
   findAll,
   findByUser,
+  numberPostsByUser,
   findByAddress,
   findByType,
   findByPetCategory,

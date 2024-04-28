@@ -19,7 +19,6 @@ router.post("/login", AuthController.login);
 /**
  * user route
  */
-router.get("/me", AuthMiddleware.validateToken, UserController.findMe);
 router.get("/user/:id", AuthMiddleware.validateToken, UserController.findById);
 router.get(
   "/user/search/:login",
@@ -33,7 +32,7 @@ router.put(
   UserController.updateUser
 );
 router.delete(
-  "/user/:id",
+  "/user/:login",
   AuthMiddleware.validateToken,
   UserController.removeUser
 );
@@ -49,8 +48,13 @@ router.post(
 );
 router.get("/post/:id", PostController.findById);
 router.get("/posts", PostController.findAll);
-router.get("/post/user/:id", PostController.findByUser);
-router.get("/post/address/:postalCode", PostController.findByAddress);
+router.get("/posts/user/:id", PostController.findByUser);
+router.get("/posts/address/:postalCode", PostController.findByAddress);
+router.get(
+  "/posts/:userId",
+  AuthMiddleware.validateToken,
+  PostController.numberPostsByUser
+);
 router.put(
   "/post/:id",
   AuthMiddleware.validateToken,

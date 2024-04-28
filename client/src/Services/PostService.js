@@ -3,6 +3,7 @@ import axios from "axios";
 /**
  * Register a post
  * @param {object} formData - form data to be registered
+ * @param {string} token - token
  * @returns {Promise<object>} - Promise resolving to the response object from the post endpoint
  */
 const register = async (formData, token) => {
@@ -44,6 +45,7 @@ const getAll = async () => {
 
 /**
  * Get post details
+ * @param {integer} id - id of the post
  * @returns {Promise<object>} - Promise resolving to the response object from the post endpoint
  */
 const getOne = async (id) => {
@@ -60,6 +62,32 @@ const getOne = async (id) => {
   }
 };
 
+/**
+ * Get number of posts 
+ * @param {integer} userId - id of the current user
+ * @param {string} token - token
+ * @returns {Promise<object>} - Promise resolving to the response object from the post endpoint
+ */
+const getUserNumberOfPost = async (userId, token) => {
+  
+  try {
+    const response = await axios.get(`http://localhost:3001/api/posts/${userId}`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.message;
+  }
+};
+
+/**
+ * Know if the currentUser is the post owner
+ * @returns {Boolean} - True or false
+ */
 const isPostOwner = (currentUserId, userPostId) => {
   if (currentUserId === userPostId) return true;
 };
@@ -100,10 +128,12 @@ const deletePost = async (id, token) => {
     throw error.message;
   }
 };
+
 const postService = {
   register,
   getAll,
   getOne,
+  getUserNumberOfPost,
   isPostOwner,
   update,
   deletePost,
