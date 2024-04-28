@@ -101,14 +101,14 @@ const Post = () => {
           {isPostOwner && (
             <div className="mb-4 d-flex justify-content-center isOwnerAction">
               <Link to={`/modification-annonce/${id}`}>
-                <button>
+                <button type="button">
                   <FontAwesomeIcon
                     icon={faPenToSquare}
                     className="iconAction"
                   />
                 </button>
               </Link>
-              <button onClick={handleShow}>
+              <button type="button" onClick={handleShow}>
                 <FontAwesomeIcon icon={faTrash} className="me-5 iconAction" />
               </button>
               <Modal show={show} onHide={handleClose}>
@@ -120,12 +120,14 @@ const Post = () => {
                 </Modal.Header>
                 <Modal.Footer>
                   <button
+                    type="button"
                     className="p-2 text-black border border-0 rounded"
                     onClick={handleDelete}
                   >
                     Oui
                   </button>
                   <button
+                    type="button"
                     className="p-2 text-black border border border-0 rounded"
                     onClick={handleClose}
                   >
@@ -253,7 +255,9 @@ const Post = () => {
           </Col>
           <Col md={6} className="mt-5 mt-lg-0">
             <h4 className="mb-4">Envie d'aider ?</h4>
-            <Button class>Contacter {post?.User?.login}</Button>
+            <Button type="button" class>
+              Contacter {post?.User?.login}
+            </Button>
             <div className="d-flex justify-content-center gap-2 mt-4 align-items-center mt-5">
               <h6>Partager l'annonce:</h6>
               <EmailShareButton url={shareUrl}>

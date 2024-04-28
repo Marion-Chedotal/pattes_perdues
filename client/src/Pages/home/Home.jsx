@@ -97,7 +97,7 @@ const Home = () => {
             <Col md={6}>
               <div className="mb-5 seePost mx-auto text-center">
                 <Link to="/annonces">
-                  <Button>
+                  <Button type="button">
                     <FontAwesomeIcon icon={faEye} className="me-1" />
                     Voir les annonces
                   </Button>
@@ -107,7 +107,7 @@ const Home = () => {
             <Col md={6}>
               <div className="mb-5 publishPost mx-auto text-center">
                 <Link to="/deposer-une-annonce">
-                  <Button>
+                  <Button type="button">
                     <FontAwesomeIcon icon={faBullhorn} className="me-3" />
                     Publier une annonce
                   </Button>

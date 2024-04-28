@@ -7,6 +7,7 @@ import PostsList from "./Pages/postsList/PostsList";
 import UpdatePost from "./Pages/updatePost/UpdatePost";
 import Profil from "./Pages/profil/Profil";
 import Post from "./Pages/post/Post";
+import PageNotFound from "./Pages/notFound/notFound";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
@@ -38,11 +39,7 @@ function App() {
     },
     {
       path: "/deposer-une-annonce",
-      element: (
-        <PrivateRoute>
-          <PostForm />
-        </PrivateRoute>
-      ),
+      element: <PrivateRoute children={PostForm} />,
     },
     {
       path: "/annonces",
@@ -54,19 +51,15 @@ function App() {
     },
     {
       path: "/modification-annonce/:id",
-      element: (
-        <PrivateRoute>
-          <UpdatePost />
-        </PrivateRoute>
-      ),
+      element: <PrivateRoute children={UpdatePost} />,
     },
     {
       path: "/profil/:login",
-      element: (
-        <PrivateRoute>
-          <Profil />
-        </PrivateRoute>
-      ),
+      element: <PrivateRoute children={Profil} />,
+    },
+    {
+      path: "*",
+      element: <PageNotFound />,
     },
   ]);
   return (

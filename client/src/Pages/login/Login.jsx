@@ -69,7 +69,7 @@ const Login = () => {
             <div className="inscription pt-5 d-flex align-items-center justify-content-evenly flex-wrap">
               <span>Vous n'avez pas encore de compte ?</span>
               <Link to="/register">
-                <Button>Inscription</Button>
+                <Button type="button">Inscription</Button>
               </Link>
             </div>
           </div>

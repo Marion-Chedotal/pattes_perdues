@@ -1,0 +1,25 @@
+@import "../../App";
+
+.notFound {
+
+  hr {
+    border: 2px solid $beige-color;
+    opacity: 1;
+  }
+
+  .redirect {
+    .imgNotFound {
+      max-height: 400px;
+      max-width: 300px;
+    }
+
+    Button {
+      padding: 10px 25px;
+      border-radius: 25px;
+      &:hover {
+        color: $blue-color;
+        background-color: $beige-color;
+      }
+    }
+  }
+}
