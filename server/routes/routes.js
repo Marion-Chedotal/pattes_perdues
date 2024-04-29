@@ -48,7 +48,7 @@ router.post(
 );
 router.get("/post/:id", PostController.findById);
 router.get("/posts", PostController.findAll);
-router.get("/posts/user/:id", PostController.findByUser);
+router.get("/posts/user/:login", PostController.findByUser);
 router.get("/posts/address/:postalCode", PostController.findByAddress);
 router.get(
   "/posts/:userId",

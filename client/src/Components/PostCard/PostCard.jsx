@@ -21,14 +21,14 @@ const PostCard = ({ post }) => {
       <Card style={{ width: "18rem" }} className="bold-text">
         <Card.Body className="d-flex flex-column align-items-center">
           <div className="d-flex justify-content-evenly w-100 mb-2">
-            <Card.Title>{post.Type.label.toUpperCase()}</Card.Title>
+            <Card.Title>{post?.Type?.label.toUpperCase()}</Card.Title>
             <Card.Title className="ms-2">
-              {post.Pet_category.label.toUpperCase()}
+              {post?.Pet_category?.label.toUpperCase()}
             </Card.Title>
           </div>
           <div className="d-flex align-items-baseline">
             <FontAwesomeIcon icon={faIdCard} className="me-2" />
-            <Card.Title className="mb-0 ms-2">{post.name}</Card.Title>
+            <Card.Title className="mb-0 ms-2">{post?.name}</Card.Title>
           </div>
           {post?.picture ? (
             <Card.Img
@@ -52,12 +52,12 @@ const PostCard = ({ post }) => {
             </div>
             <div className="d-flex align-items-center">
               <FontAwesomeIcon icon={faVenusMars} />
-              <p className="mb-0 ms-2">{post.gender}</p>
+              <p className="mb-0 ms-2">{post?.gender}</p>
             </div>
           </div>
           <div className="d-flex align-items-baseline mt-3">
             <FontAwesomeIcon icon={faLocationDot} />
-            <p className="mb-0 ms-2">{post.Address.city}</p>
+            <p className="mb-0 ms-2">{post?.Address?.city}</p>
           </div>
           <Link to={`/annonce/${post.id}`} className="my-4">
             <Button type="button">Détails</Button>

@@ -1,4 +1,5 @@
 const PostService = require("../service/PostService");
+const UserService = require("../service/UserService");
 const AuthenticationService = require("../service/AuthenticationService");
 const AddressService = require("../service/AddressService");
 const { escapeHtml } = require("../utils/htmlEscape");
@@ -132,7 +133,9 @@ const findAll = async (req, res) => {
  * @throws {object} error
  */
 const findByUser = async (req, res) => {
-  const userId = parseInt(req.params.id, 10);
+  const login = req.params.login;
+  const user = await UserService.getByLogin(login);
+  const userId = user.id;
 
   try {
     const post = await PostService.getAllByUser(userId);
@@ -155,7 +158,7 @@ const findByUser = async (req, res) => {
  */
 const numberPostsByUser = async (req, res) => {
   const currentUserId = req.userId;
-  
+
   try {
     const post = await PostService.countPostsByUser(currentUserId);
     if (post.length === 0) {

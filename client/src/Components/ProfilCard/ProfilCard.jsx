@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./ProfilCard.scss";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import UserService from "../../Services/UserService";
 import postService from "../../Services/PostService";
 import { capitalizeFirstLetter } from "../../Utils/format";
@@ -9,8 +8,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faNewspaper } from "@fortawesome/free-solid-svg-icons";
 import defaultAvatar from "../../Assets/default_avatar.png";
 import { Tooltip } from "react-tooltip";
+import Button from "../Btn/Button";
 
-const ProfilCard = () => {
+const ProfilCard = ({ showUserPosts }) => {
   const { user, token } = useSelector((state) => state.auth);
   const currentUserId = user.id;
   const [userData, setUserData] = useState(null);
@@ -19,18 +19,11 @@ const ProfilCard = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        // fetch global user information
         const data = await UserService.getUserInformation(currentUserId, token);
         setUserData(data);
-      } catch (err) {
-        console.error("Error fetching posts:", err);
-      }
-    };
-    fetchUserData();
-  }, [currentUserId, token]);
 
-  useEffect(() => {
-    const fetchNumberOfPost = async () => {
-      try {
+        // fetch user's post
         const number = await postService.getUserNumberOfPost(
           currentUserId,
           token
@@ -40,7 +33,7 @@ const ProfilCard = () => {
         console.error("Error fetching posts:", err);
       }
     };
-    fetchNumberOfPost();
+    fetchUserData();
   }, [currentUserId, token]);
 
   return (
@@ -81,7 +74,7 @@ const ProfilCard = () => {
             </div>
           </div>
           <div>
-            <Link to={`/profil/${user?.login}`} className="goToMesAnnonces">
+            <button type="button" onClick={showUserPosts} className="MyBtn" >
               <div
                 className="d-flex align-items-center flex-column gap-2"
                 data-tip
@@ -92,7 +85,7 @@ const ProfilCard = () => {
                 <span className="fw-bold">{postNumber}</span>
                 <Tooltip id="tooltip-annonce" effect="solid"></Tooltip>
               </div>
-            </Link>
+            </button>
           </div>
         </div>
       </div>

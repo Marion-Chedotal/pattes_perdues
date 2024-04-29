@@ -1,7 +1,6 @@
 @import "../../App";
 
 .profil {
-
   .profilCard {
     border: 1px solid $blue-color;
     max-width: 500px;
@@ -9,8 +8,8 @@
     padding: 20px;
     border-radius: 20px;
 
-    @media (max-width: 576px) { 
-      border: none; 
+    @media (max-width: 576px) {
+      border: none;
     }
   }
 
@@ -21,11 +20,12 @@
     border: 3px solid $beige-color;
   }
 
-  .goToMesAnnonces {
-    text-decoration: none;
-    color: inherit;
+  .MyBtn {
+    background-color: inherit;
+    border: none;
+    color: $blue-color;
   }
-  
+
   .icons {
     color: $beige-color;
     font-size: 2rem;
