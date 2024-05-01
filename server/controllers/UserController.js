@@ -75,11 +75,9 @@ const updateUser = async (req, res) => {
   // Validate user input
   const { error } = validateInput(req.body);
   if (error) {
+    console.log(error);
     return res.status(400).json({ error: "Invalid input format" });
   }
-
-  // sanitize input TODO: à voir car logiquement je reprends l'api
-  city = escapeHtml(city);
 
   const currentUser = await UserService.getById(id);
 
@@ -87,7 +85,7 @@ const updateUser = async (req, res) => {
     try {
       // Check if user already exist: same email
       if (currentUser.email !== email) {
-        email = escapeHtml(email.trim());
+        email = escapeHtml(email?.trim());
         const isEmailAlreadyExist = await UserService.checkEmailExists(email);
         if (isEmailAlreadyExist) {
           return res.status(400).json("Email already used");
@@ -96,19 +94,28 @@ const updateUser = async (req, res) => {
 
       // Check if user already exist: same login
       if (currentUser.login !== login) {
+        login = escapeHtml(login?.trim());
         const isLoginAlreadyExist = await UserService.checkLoginExists(login);
         if (isLoginAlreadyExist) {
           return res.status(400).json("Login already used");
         }
       }
-
+      let hashPassword;
       if (password) {
-        const hashPassword = await bcrypt.hash(password, 10);
+        hashPassword = await bcrypt.hash(password, 10);
         req.body.password = hashPassword;
       }
-      await AddressService.editAddress(currentUser.AddressId, req.body);
 
-      const user = await UserService.editUser(id, req.body);
+      const user = await UserService.editUser(id, {
+        login: login,
+        password: hashPassword,
+        email: email,
+      });
+
+      await AddressService.editAddress(currentUser.AddressId, {
+        postalCode: postalCode,
+        city: city,
+      });
 
       if (!user) {
         return res.status(400).json({ error: `User ${id} doesn't exist` });

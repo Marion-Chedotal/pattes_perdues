@@ -5,6 +5,7 @@ import Footer from "../../Components/Footer/Footer";
 import Button from "../../Components/Btn/Button";
 import UserPosts from "../../Components/UserPosts/UserPosts";
 import ProfilCard from "../../Components/ProfilCard/ProfilCard";
+import UpdateProfil from "../../Components/UpdateProfil/UpdateProfil";
 import { useNavigate, useParams } from "react-router-dom";
 import userService from "../../Services/UserService";
 import { useSelector, useDispatch } from "react-redux";
@@ -76,7 +77,7 @@ const Profil = () => {
             </Button>
           </Col>
           <Col className="text-center ">
-            <Button type="button" className="d-flex flex-column">
+            <Button type="button" className="d-flex flex-column" onClick={() => setActiveSection("modification-profil")}>
               <FontAwesomeIcon icon={faSliders} className="icons" />
               <span className="d-none d-md-block">Modifier mon profil</span>
             </Button>
@@ -134,6 +135,7 @@ const Profil = () => {
         </Row>
       </Container>
       {activeSection === "profil" && <ProfilCard showUserPosts={handleShowUserPosts} />}
+      {activeSection === "modification-profil" && <UpdateProfil />}
       {activeSection === "mes-annonces" && <UserPosts />}
       <Footer/>
     </div>

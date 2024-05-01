@@ -8,13 +8,14 @@ import axios from "axios";
  */
 const getUserInformation = async (id, token) => {
   try {
-    return await axios.get(`http://localhost:3001/api/user/${id}`, {
+    const response = await axios.get(`http://localhost:3001/api/user/${id}`, {
       withCredentials: true,
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     });
+    return response.data;
   } catch (error) {
     throw error.response.data;
   }
