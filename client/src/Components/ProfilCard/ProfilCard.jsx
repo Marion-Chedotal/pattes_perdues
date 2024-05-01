@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from "react";
 import "./ProfilCard.scss";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUser } from "../../store/authActions";
 import UserService from "../../Services/UserService";
 import postService from "../../Services/PostService";
 import { capitalizeFirstLetter } from "../../Utils/format";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faNewspaper } from "@fortawesome/free-solid-svg-icons";
+import { faNewspaper, faSave } from "@fortawesome/free-solid-svg-icons";
 import defaultAvatar from "../../Assets/default_avatar.png";
 import { Tooltip } from "react-tooltip";
 import Button from "../Btn/Button";
 
 const ProfilCard = ({ showUserPosts }) => {
   const { user, token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const currentUserId = user.id;
   const [userData, setUserData] = useState(null);
   const [postNumber, setPostNumber] = useState(0);
+  const [editedLogin, setEditedLogin] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -36,6 +40,26 @@ const ProfilCard = ({ showUserPosts }) => {
     fetchUserData();
   }, [currentUserId, token]);
 
+  // update user information
+  const handleSaveChanges = async () => {
+    try {
+      // Call the UserService to update user information
+      const updatedUser = await UserService.updateUserInformation(
+        currentUserId,
+        {
+          login: editedLogin,
+        },
+        token
+      );
+
+      dispatch(updateUser(updatedUser.data.login));
+      // Exit editing mode
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating user information:", error);
+    }
+  };
+
   return (
     <div className="profil my-5 py-5">
       <div className="profilCard">
@@ -45,7 +69,15 @@ const ProfilCard = ({ showUserPosts }) => {
             src={user?.avatar ? user.avatar : defaultAvatar}
             alt="avatar"
           />
-          <p className="fs-4">{user?.login}</p>
+          {isEditing ? (
+            <input
+              type="text"
+              value={editedLogin}
+              onChange={(e) => setEditedLogin(e.target.value)}
+            />
+          ) : (
+            <p className="fs-4">{user?.login}</p>
+          )}
         </div>
         <div className="d-flex justify-content-evenly mt-5">
           <div>
@@ -69,12 +101,14 @@ const ProfilCard = ({ showUserPosts }) => {
                 {userData?.data?.Address?.postalCode}
               </span>
               <span>
-                {capitalizeFirstLetter(userData?.data?.Address?.city)}
+                {userData?.data?.Address?.city
+                  ? capitalizeFirstLetter(userData.data.Address.city)
+                  : ""}
               </span>
             </div>
           </div>
           <div>
-            <button type="button" onClick={showUserPosts} className="MyBtn" >
+            <button type="button" onClick={showUserPosts} className="MyBtn">
               <div
                 className="d-flex align-items-center flex-column gap-2"
                 data-tip
@@ -87,6 +121,17 @@ const ProfilCard = ({ showUserPosts }) => {
               </div>
             </button>
           </div>
+
+          {isEditing ? (
+            <Button type="button" onClick={handleSaveChanges}>
+              <FontAwesomeIcon icon={faSave} className="icons" />
+              <span className="fw-bold">Enregistrer</span>
+            </Button>
+          ) : (
+            <button type="button" onClick={() => setIsEditing(true)}>
+              Modifier
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -20,7 +20,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 
-const NavBarProfil = () => {
+const Profil = () => {
   const { login } = useParams();
   const { token } = useSelector((state) => state.auth);
   const [showModal, setShowModal] = useState(false);
@@ -140,4 +140,4 @@ const NavBarProfil = () => {
   );
 };
 
-export default NavBarProfil;
+export default Profil;

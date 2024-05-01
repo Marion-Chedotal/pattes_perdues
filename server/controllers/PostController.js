@@ -173,29 +173,6 @@ const numberPostsByUser = async (req, res) => {
 };
 
 /**
- * Find post by address
- * @param {object} req
- * @param {object} res
- * @throws {object} error
- */
-const findByAddress = async (req, res) => {
-  const postalCode = req.params.postalCode;
-
-  try {
-    const post = await PostService.getByAddress(postalCode);
-    if (post.length === 0) {
-      return res.status(400).json({ error: `Address doesn't have post` });
-    }
-
-    res.status(200).json(post);
-  } catch (error) {
-    res.status(500).json({
-      error: `Error when fetching post, ${error}`,
-    });
-  }
-};
-
-/**
  * Find post by type
  * @param {object} req
  * @param {object} res
@@ -248,6 +225,22 @@ const findByPetCategory = async (req, res) => {
  * @throws {object} error
  */
 const updatePost = async (req, res) => {
+  const idPost = parseInt(req.params.id, 10);
+  const currentUserId = req.userId;
+  const postToEdit = await PostService.getById(idPost);
+
+  const isUserAllowed = AuthenticationService.checkUserPermission(
+    postToEdit.UserId,
+    currentUserId
+  );
+
+  // sanitize input
+  const fieldsToSanitize = ["description", "name", "distinctive_signs"];
+
+  fieldsToSanitize.forEach((fieldName) => {
+    req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
+  });
+
   let {
     gender,
     alert_date,
@@ -264,22 +257,6 @@ const updatePost = async (req, res) => {
     TypeId,
     PetCategoryId,
   } = req.body;
-
-  const idPost = parseInt(req.params.id, 10);
-  const currentUserId = req.userId;
-  const postToEdit = await PostService.getById(idPost);
-
-  const isUserAllowed = AuthenticationService.checkUserPermission(
-    postToEdit.UserId,
-    currentUserId
-  );
-
-  // sanitize input
-  const fieldsToSanitize = ["description", "name", "distinctive_signs"];
-
-  fieldsToSanitize.forEach((fieldName) => {
-    req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
-  });
 
   if (isUserAllowed) {
     try {
@@ -356,7 +333,6 @@ module.exports = {
   findAll,
   findByUser,
   numberPostsByUser,
-  findByAddress,
   findByType,
   findByPetCategory,
   updatePost,

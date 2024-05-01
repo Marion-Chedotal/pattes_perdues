@@ -29,7 +29,7 @@ const findById = async (req, res) => {
   }
 };
 
-/**
+/** TODO: intérêt?
  * Get user by his login
  * @param {object} req
  * @param {object} res
@@ -45,7 +45,6 @@ const findByLogin = async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: `User ${login} doesn't exist` });
     }
-  
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({
@@ -63,7 +62,7 @@ const findByLogin = async (req, res) => {
  */
 const updateUser = async (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const currentUserId = req.user.id;
+  const currentUserId = req.userId;
 
   // Get user input
   let { login, password, email, postalCode, city } = req.body;
@@ -114,7 +113,11 @@ const updateUser = async (req, res) => {
       if (!user) {
         return res.status(400).json({ error: `User ${id} doesn't exist` });
       }
-      res.status(200).json(`The user ${login} has been successfully updated`);
+      res.status(200).json({
+        user: user,
+        login: login,
+        message: `The user ${login} has been successfully updated`,
+      });
     } catch (error) {
       res.status(500).json({
         error: `Error when updating user, ${error}`,

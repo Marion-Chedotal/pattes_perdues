@@ -18,6 +18,7 @@ const createMessage = async (req, res) => {
   const postUserId = post.UserId;
   const senderId = req.user.id;
 
+  // TODO: p-e revoir like PostController si pb
   req.body.receiverId = post.UserId;
   req.body.UserId = senderId;
 

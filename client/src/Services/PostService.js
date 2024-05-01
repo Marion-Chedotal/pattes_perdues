@@ -27,7 +27,7 @@ const register = async (formData, token) => {
 
 /**
  * Get all posts
- * @returns {Promise<object>} - Promise resolving to the response object from the post endpoint
+ * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */
 const getAll = async () => {
   try {
@@ -46,7 +46,7 @@ const getAll = async () => {
 /**
  * Get post details
  * @param {integer} id - id of the post
- * @returns {Promise<object>} - Promise resolving to the response object from the post endpoint
+ * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */
 const getOne = async (id) => {
   try {
@@ -63,21 +63,48 @@ const getOne = async (id) => {
 };
 
 /**
- * Get number of posts 
+ * Get number of posts
  * @param {integer} userId - id of the current user
  * @param {string} token - token
- * @returns {Promise<object>} - Promise resolving to the response object from the post endpoint
+ * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */
 const getUserNumberOfPost = async (userId, token) => {
-  
   try {
-    const response = await axios.get(`http://localhost:3001/api/posts/${userId}`, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `http://localhost:3001/api/posts/${userId}`,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.message;
+  }
+};
+
+/**
+ * Get user's posts
+ * @param {integer} userId - id of the current user
+ * @param {string} token - token
+ * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
+ */
+const getUserPosts = async (login, token) => {
+
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/posts/user/${login}`,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     throw error.message;
@@ -134,6 +161,7 @@ const postService = {
   getAll,
   getOne,
   getUserNumberOfPost,
+  getUserPosts,
   isPostOwner,
   update,
   deletePost,

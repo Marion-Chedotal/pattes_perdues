@@ -27,7 +27,7 @@ const UserPosts = () => {
       <div className="row gy-5">
         {noResults ? (
           <p className="text-center fw-bold">
-            Aucune annonce correspondant aux critères de recherche.
+            Vous n'avez pas encore publié d'annonce.
           </p>
         ) : (
           posts.map((post) => (
