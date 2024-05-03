@@ -59,10 +59,9 @@ const register = async (req, res) => {
 
     //
     if (!(login && password && email && postalCode && city)) {
-      console.log(res);
       return res.status(400).json({
         errorCode: "fieldsToFill",
-        errorMessage: errors.authentication.register.fieldsToFill,
+        errorMessage: errors.authentication.global.fieldsToFill,
       });
     }
     // Check input format
@@ -137,7 +136,10 @@ const login = async (req, res) => {
     let { login, password } = req.body;
 
     if (!(login && password)) {
-      return res.status(400).json({ error: "Please fill in all fields" });
+      return res.status(400).json({
+        errorCode: "fieldsToFill",
+        errorMessage: errors.authentication.global.fieldsToFill,
+      });
     }
 
     // Check input format
@@ -149,14 +151,18 @@ const login = async (req, res) => {
     const { error } = schema.validate(req.body);
     if (error) {
       return res.status(400).json({
-        error: "Invalid combinaison",
+        errorCode: "invalidInformations",
+        errorMessage: errors.authentication.global.invalidInformations,
       });
     }
 
     const user = await UserService.getByLogin(login);
 
     if (!user) {
-      return res.status(404).json({ error: "Invalid informations" });
+      return res.status(404).json({
+        errorCode: "invalidInformations",
+        errorMessage: errors.authentication.global.invalidInformations,
+      });
     }
 
     const dbPassword = user.password;
@@ -165,7 +171,10 @@ const login = async (req, res) => {
       dbPassword
     );
     if (!passwordMatch) {
-      return res.status(401).json({ error: "Invalid informations" });
+      return res.status(401).json({
+        errorCode: "invalidInformations",
+        errorMessage: errors.authentication.global.invalidInformations,
+      });
     }
 
     const accessToken = AuthenticationService.createToken(user.login, user.id);

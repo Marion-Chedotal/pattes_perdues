@@ -42,7 +42,7 @@ const login = async (userData) => {
     const response = await axiosInstance.post("/login", userData);
     return response.data;
   } catch (error) {
-    throw error;
+    throw error.response.data;
   }
 };
 

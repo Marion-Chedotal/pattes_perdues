@@ -1,10 +1,11 @@
 {
   "authentication": {
-    "register": {
+    "global": {
       "fieldsToFill": "Please fill in all fields",
       "invalidInput": "Invalid input format.",
       "emailExist": "Email already used",
-      "loginExist": "Login already used"
+      "loginExist": "Login already used",
+      "invalidInformations": "Invalid Informations"
     }
   }
 }

@@ -97,7 +97,6 @@ const Register = () => {
       });
       navigate("/");
     } catch (err) {
-      console.log(err.errorCode);
       const errorMessage = t(`authentication.${err?.errorCode}`);
       setErrMsg(errorMessage);
       window.scroll({
@@ -187,7 +186,7 @@ const Register = () => {
               </Link>
             </div>
           </div>
-          <div className="right d-none d-md-block col-md-2"></div>
+          <div className="right d-none d-md-block col-md-6"></div>
         </div>
       </div>
     </div>

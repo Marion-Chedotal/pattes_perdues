@@ -12,7 +12,7 @@
     .right {
       flex: 1;
       height: 90%;
-      margin:auto;
+      margin: auto;
       width: 100%;
       background: url("../../Assets/chat_login.jpg") center;
       background-size: cover;
@@ -47,11 +47,6 @@
           padding: 10px;
           border: none;
           border-bottom: 1px solid;
-        }
-
-        .error-message {
-          color: $blue-color;
-          font-style: italic;
         }
       }
       .connection {
