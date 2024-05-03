@@ -100,6 +100,10 @@ const Register = () => {
       console.log(err.errorCode);
       const errorMessage = t(`authentication.${err?.errorCode}`);
       setErrMsg(errorMessage);
+      window.scroll({
+        top: 0,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -125,9 +129,7 @@ const Register = () => {
                 onChange={handleChange}
               />
               {validation.login && (
-                <div className="alert alert-danger">
-                  {validation.login}
-                </div>
+                <div className="alert alert-danger">{validation.login}</div>
               )}
               <input
                 type="email"
@@ -136,9 +138,7 @@ const Register = () => {
                 onChange={handleChange}
               />
               {validation.email && (
-                <div className="alert alert-danger">
-                  {validation.email}
-                </div>
+                <div className="alert alert-danger">{validation.email}</div>
               )}
               <input
                 type="password"
@@ -147,9 +147,7 @@ const Register = () => {
                 onChange={handleChange}
               />
               {validation.password && (
-                <div className="alert alert-danger">
-                  {validation.password}
-                </div>
+                <div className="alert alert-danger">{validation.password}</div>
               )}
               <input
                 type="text"
@@ -164,9 +162,7 @@ const Register = () => {
                 </div>
               )}
               {validation.noCity && (
-                <div className="alert alert-danger">
-                  {validation.noCity}
-                </div>
+                <div className="alert alert-danger">{validation.noCity}</div>
               )}
               <select name="selectedCity" onChange={handleChange} required>
                 <option value="">Sélectionner votre ville</option>
