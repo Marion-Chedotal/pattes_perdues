@@ -54,47 +54,63 @@ const validateUpdateInput = (data) => {
  */
 const register = async (req, res) => {
   try {
-    // Get user input
-    let { login, password, email, postalCode, city } = req.body;
-
-    //
-    if (!(login && password && email && postalCode && city)) {
+    if (
+      !(
+        req.body.login &&
+        req.body.password &&
+        req.body.email &&
+        req.body.postalCode &&
+        req.body.city
+      )
+    ) {
       return res.status(400).json({
         errorCode: "fieldsToFill",
         errorMessage: errors.authentication.global.fieldsToFill,
       });
     }
+
+    // sanitize input
+    const fieldsToSanitize = [
+      "login",
+      "password",
+      "email",
+      "postalCode",
+      "city",
+    ];
+
+    fieldsToSanitize.forEach((fieldName) => {
+      req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
+    });
+
     // Check input format
     const { error } = validateInput(req.body);
     if (error) {
       return res.status(400).json({
         errorCode: "invalidInput",
-        errorMessage: errors.authentication.register.invalidInput,
+        errorMessage: errors.authentication.global.invalidInput,
       });
     }
 
-    // sanitize input
-    email = escapeHtml(email.trim());
+    // Get user input
+    let { login, password, email, postalCode, city } = req.body;
 
     // Check if user already exist: same email
-    const isEmailAlreadyExist = await UserService.checkEmailExists(
-      req.body.email
-    );
+    const isEmailAlreadyExist = await UserService.checkEmailExists(email);
+
     if (isEmailAlreadyExist) {
       return res.status(409).json({
         errorCode: "emailExist",
-        errorMessage: errors.authentication.register.emailExist,
+        errorMessage: errors.authentication.global.emailExist,
       });
     }
 
     // Check if user already exist: same login
-    const isLoginAlreadyExist = await UserService.checkLoginExists(
-      req.body.login
-    );
+    const isLoginAlreadyExist = await UserService.checkLoginExists(login);
+
     if (isLoginAlreadyExist) {
       return res.status(409).json({
         errorCode: "loginExist",
-        errorMessage: errors.authentication.register.loginExist,
+        errorMessage: errors.authentication.global.loginExist,
       });
     }
 
@@ -133,9 +149,7 @@ const register = async (req, res) => {
  */
 const login = async (req, res) => {
   try {
-    let { login, password } = req.body;
-
-    if (!(login && password)) {
+    if (!(req.body.login && req.body.password)) {
       return res.status(400).json({
         errorCode: "fieldsToFill",
         errorMessage: errors.authentication.global.fieldsToFill,
@@ -155,6 +169,8 @@ const login = async (req, res) => {
         errorMessage: errors.authentication.global.invalidInformations,
       });
     }
+
+    let { login, password } = req.body;
 
     const user = await UserService.getByLogin(login);
 
