@@ -4,10 +4,11 @@ const { escapeHtml } = require("../utils/htmlEscape");
 const AuthenticationService = require("../service/AuthenticationService");
 const UserService = require("../service/UserService");
 const AddressService = require("../service/AddressService");
+const errors = require("../utils/errors.json");
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()_+])[A-Za-z\d!@#$%&*()_+]{10,32}$/;
-const loginRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{8,20}$/;
+const loginRegex = /^[a-zA-Z0-9-_]{8,}$/;
 
 /**
  * Validate register input using a Joi schema.
@@ -31,6 +32,19 @@ const validateInput = (data) => {
   return schema.validate(data);
 };
 
+const validateUpdateInput = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().email(),
+    password: Joi.string(),
+    login: Joi.string().regex(new RegExp(loginRegex)),
+    postalCode: Joi.number().integer(),
+    city: Joi.string(),
+    avatar: Joi.string().allow(null),
+  });
+
+  return schema.validate(data);
+};
+
 /**
  * Register a new user
  * @param {object} req
@@ -43,10 +57,21 @@ const register = async (req, res) => {
     // Get user input
     let { login, password, email, postalCode, city } = req.body;
 
+    //
+    if (!(login && password && email && postalCode && city)) {
+      console.log(res);
+      return res.status(400).json({
+        errorCode: "fieldsToFill",
+        errorMessage: errors.authentication.register.fieldsToFill,
+      });
+    }
     // Check input format
     const { error } = validateInput(req.body);
     if (error) {
-      return res.status(400).json({ error: "Invalid input format" });
+      return res.status(400).json({
+        errorCode: "invalidInput",
+        errorMessage: errors.authentication.register.invalidInput,
+      });
     }
 
     // sanitize input
@@ -57,7 +82,10 @@ const register = async (req, res) => {
       req.body.email
     );
     if (isEmailAlreadyExist) {
-      return res.status(409).json("Email already used");
+      return res.status(409).json({
+        errorCode: "emailExist",
+        errorMessage: errors.authentication.register.emailExist,
+      });
     }
 
     // Check if user already exist: same login
@@ -65,7 +93,10 @@ const register = async (req, res) => {
       req.body.login
     );
     if (isLoginAlreadyExist) {
-      return res.status(409).json("Login already used");
+      return res.status(409).json({
+        errorCode: "loginExist",
+        errorMessage: errors.authentication.register.loginExist,
+      });
     }
 
     // Encrypt user password
@@ -118,7 +149,7 @@ const login = async (req, res) => {
     const { error } = schema.validate(req.body);
     if (error) {
       return res.status(400).json({
-        error: "Invalid input format",
+        error: "Invalid combinaison",
       });
     }
 
@@ -148,5 +179,4 @@ const login = async (req, res) => {
   }
 };
 
-
-module.exports = { validateInput, register, login };
+module.exports = { validateInput, validateUpdateInput, register, login };

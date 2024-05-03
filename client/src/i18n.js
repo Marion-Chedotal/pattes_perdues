@@ -1,8 +1,7 @@
-// i18n.js
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import i18nTranslation from '../src/Utils/i18.json'; // Chemin vers votre fichier de traductions
+import i18nTranslation from '../src/Utils/i18n.json'; // Chemin vers votre fichier de traductions
 
 i18n
   .use(initReactI18next)

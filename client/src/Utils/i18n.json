@@ -1,0 +1,10 @@
+{
+  "authentication": {
+    "fieldsToFill": "Merci de remplir tous les champs.",
+    "invalidInput": "Merci de respecter le format attendu.",
+    "emailExist": "Email déjà utilisé.",
+    "loginExist": "Nom d'utilisateur déjà utilisé.",
+    "Invalid informations": "Identifiant ou mot de passe incorrect.",
+    "Invalid combinaison": "Login et mot de passe ne respectant pas le format attendu."
+  }
+}
