@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "./Axios";
 
 /**
  * Get user informations from API
@@ -8,8 +8,7 @@ import axios from "axios";
  */
 const getUserInformation = async (id, token) => {
   try {
-    const response = await axios.get(`http://localhost:3001/api/user/${id}`, {
-      withCredentials: true,
+    const response = await axiosInstance.get(`/user/${id}`, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
@@ -29,15 +28,14 @@ const getUserInformation = async (id, token) => {
  */
 const updateUserInformation = async (id, userData, token) => {
   try {
-    return await axios.put(`http://localhost:3001/api/user/${id}`, userData, {
-      withCredentials: true,
+    return await axiosInstance.put(`/user/${id}`, userData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     });
   } catch (error) {
-    console.log(error)
+
     throw error.response.data;
   }
 };
@@ -50,8 +48,7 @@ const updateUserInformation = async (id, userData, token) => {
  */
 const deleteUser = async (id, token) => {
   try {
-    return await axios.delete(`http://localhost:3001/api/user/${id}`, {
-      withCredentials: true,
+    return await axiosInstance.delete(`/user/${id}`, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,

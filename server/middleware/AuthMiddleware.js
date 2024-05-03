@@ -25,7 +25,10 @@ const validateToken = (req, res, next) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ error: error });
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "JWT is expired" });
+    }
+    return res.status(500).json({ message: error });
   }
 };
 

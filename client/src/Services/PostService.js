@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "./Axios";
 
 /**
  * Register a post
@@ -8,17 +8,12 @@ import axios from "axios";
  */
 const register = async (formData, token) => {
   try {
-    const response = await axios.post(
-      "http://localhost:3001/api/post",
-      formData,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axiosInstance.post("/post", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error.message;
@@ -31,8 +26,7 @@ const register = async (formData, token) => {
  */
 const getAll = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/api/posts", {
-      withCredentials: true,
+    const response = await axiosInstance.get("/posts", {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -50,8 +44,7 @@ const getAll = async () => {
  */
 const getOne = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:3001/api/post/${id}`, {
-      withCredentials: true,
+    const response = await axiosInstance.get(`/post/${id}`, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -70,16 +63,12 @@ const getOne = async (id) => {
  */
 const getUserNumberOfPost = async (userId, token) => {
   try {
-    const response = await axios.get(
-      `http://localhost:3001/api/posts/${userId}`,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axiosInstance.get(`/posts/${userId}`, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error.message;
@@ -93,18 +82,13 @@ const getUserNumberOfPost = async (userId, token) => {
  * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */
 const getUserPosts = async (login, token) => {
-
   try {
-    const response = await axios.get(
-      `http://localhost:3001/api/posts/user/${login}`,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axiosInstance.get(`/posts/user/${login}`, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error.message;
@@ -121,17 +105,12 @@ const isPostOwner = (currentUserId, userPostId) => {
 
 const update = async (id, formData, token) => {
   try {
-    const response = await axios.put(
-      `http://localhost:3001/api/post/${id}`,
-      formData,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axiosInstance.put(`/post/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error.message;
@@ -140,16 +119,12 @@ const update = async (id, formData, token) => {
 
 const deletePost = async (id, token) => {
   try {
-    const response = await axios.delete(
-      `http://localhost:3001/api/post/${id}`,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axiosInstance.delete(`/post/${id}`, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error.message;

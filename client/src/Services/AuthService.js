@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import axiosInstance from "./Axios";
 /**
  * Get postalCode from API carto
  * @param {number} postalCode - Postal code to query
@@ -25,10 +25,7 @@ const getCity = async (postalCode) => {
  */
 const register = async (userData) => {
   try {
-    const response = await axios.post(
-      "http://localhost:3001/api/register",
-      userData
-    );
+    const response = await axiosInstance.post("/register", userData);
     return response.data;
   } catch (error) {
     throw error.response.data;
@@ -42,13 +39,7 @@ const register = async (userData) => {
  */
 const login = async (userData) => {
   try {
-    const response = await axios.post(
-      "http://localhost:3001/api/login",
-      userData,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axiosInstance.post("/login", userData);
     return response.data;
   } catch (error) {
     throw error;

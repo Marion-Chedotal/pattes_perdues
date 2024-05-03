@@ -32,7 +32,6 @@ const registerUser = async (userData) => {
  * @returns {Promise<Object>}
  */
 const getByLogin = async (login) => {
-
   return await User.findOne({
     where: {
       login,
@@ -47,6 +46,7 @@ const getByLogin = async (login) => {
  */
 const getById = async (id) => {
   return await User.findByPk(id, {
+    attributes: { exclude: ["password"] },
     include: {
       model: Address,
       attributes: ["street", "postalCode", "city"],

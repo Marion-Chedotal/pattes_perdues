@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "./Axios";
 
 /**
  * Get pet category from API
@@ -6,12 +6,7 @@ import axios from "axios";
  */
 const getPetCategory = async () => {
   try {
-    const petCategory = await axios.get(
-      "http://localhost:3001/api/petCategory",
-      {
-        withCredentials: true,
-      }
-    );
+    const petCategory = await axiosInstance.get("/petCategory");
     return petCategory;
   } catch (error) {
     throw error.response.data;
