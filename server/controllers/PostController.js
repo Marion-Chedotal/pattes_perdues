@@ -253,7 +253,9 @@ const updatePost = async (req, res) => {
     picture,
     is_active,
     UserId,
-    AddressId,
+    street,
+    postalCode,
+    city,
     TypeId,
     PetCategoryId,
   } = req.body;
@@ -275,6 +277,13 @@ const updatePost = async (req, res) => {
         TypeId,
         PetCategoryId,
       });
+
+      await AddressService.editAddress(postToEdit.AddressId, {
+        street: street,
+        postalCode: postalCode,
+        city: city,
+      });
+
       if (post.length === 0) {
         return res.status(400).json({ error: `Post doesn't exist` });
       }
