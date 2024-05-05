@@ -211,8 +211,6 @@ const UpdatingForm = () => {
     }
   };
 
-  console.log(formData.selectedCity);
-
   return (
     <div>
       <Header />
