@@ -32,7 +32,8 @@
   }
 
   label.required::before,
-  select.required::before {
+  select.required::before,
+  p.required::before {
     content: "*";
     color: red;
     margin-right: 5px;
@@ -41,5 +42,14 @@
   Button {
     border-radius: 30px;
     padding: 12px 20px;
+  }
+
+  @media (max-width: 575.98px) {
+    .questionsForm {
+      p,
+      label {
+        font-size: 0.8rem;
+      }
+    }
   }
 }

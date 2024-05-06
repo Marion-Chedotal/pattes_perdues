@@ -5,5 +5,11 @@
     "emailExist": "Email déjà utilisé.",
     "loginExist": "Nom d'utilisateur déjà utilisé.",
     "invalidInformations": "Identifiant et/ou mot de passe incorrect."
+  },
+  "post": {
+    "fieldsToFill": "Merci de remplir tous les champs (ceux ayant une astérisque rouge).",
+    "invalidInput": "Merci de respecter le format attendu.",
+    "badImgFormat": "Seules les photos au format jpg, jpeg et png sont autorisées.",
+    "LIMIT_FILE_SIZE": "La photo dépasse la taille autorisée: 1 Mo."
   }
 }

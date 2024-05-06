@@ -1,7 +1,8 @@
 const multer = require("multer");
+const errors = require("../utils/errors.json");
 
 const acceptedExtension = ["image/png", "image/jpeg", "image/jpg"];
-const maxSize = 1048576; // 1Mo 
+const maxSize = 1048576; // 1Mo
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -21,12 +22,23 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     if (!acceptedExtension.includes(file.mimetype)) {
       cb(null, false);
-      return cb(
-        new Error("Only .png, .jpg and .jpeg format allowed !")
-      );
+      const error = new Error(errors.postForm.badImgFormat);
+      error.code = "badImgFormat";
+      return cb(error);
     }
     cb(null, true);
   },
-});
+}).single("picture");
 
-module.exports = upload;
+module.exports = (req, res, next) => {
+  upload(req, res, function (err) {
+    if (err instanceof Error) {
+      return res
+        .status(400)
+        .json({ errorCode: err.code, errorMessage: err.message });
+    } else if (err) {
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    next();
+  });
+};

@@ -3,6 +3,42 @@ const UserService = require("../service/UserService");
 const AuthenticationService = require("../service/AuthenticationService");
 const AddressService = require("../service/AddressService");
 const { escapeHtml } = require("../utils/htmlEscape");
+const errors = require("../utils/errors.json");
+const Joi = require("joi");
+
+/**
+ * Validate post input using a Joi schema.
+ * @param {object} data - The data to be validated.
+ * @param {string} data.email - email
+ * @param {string} data.password - password.
+ * @param {string} data.login - login.
+ * @param {number} data.postalCode - postal code .
+ * @param {string} data.city - city.
+ * @returns {Joi.ValidationResult<object>} - The result of the validation.
+ */
+const validateInput = (data) => {
+  const schema = Joi.object({
+    gender: Joi.string(),
+    alert_date: Joi.date(),
+    description: Joi.string(),
+    name: Joi.string().allow(""),
+    tattoo: Joi.string(),
+    microchip: Joi.string(),
+    collar: Joi.string(),
+    distinctive_signs: Joi.string().allow(""),
+    picture: Joi.string().dataUri().allow(""),
+    is_active: Joi.boolean(),
+    street: Joi.string(),
+    postalCode: Joi.number().integer(),
+    city: Joi.string(),
+    UserId: Joi.number().integer(),
+    TypeId: Joi.number().integer(),
+    PetCategoryId: Joi.number().integer(),
+  });
+
+  return schema.validate(data);
+};
+
 /**
  * Register a new post
  * @param {object} req
@@ -10,6 +46,42 @@ const { escapeHtml } = require("../utils/htmlEscape");
  * @throws {object} error
  */
 const createPost = async (req, res) => {
+
+  // sanitize input
+  const fieldsToSanitize = [
+    "gender",
+    "alert_date",
+    "description",
+    "name",
+    "tattoo",
+    "microchip",
+    "collar",
+    "distinctive_signs",
+    "picture",
+    "is_active",
+    "street",
+    "postalCode",
+    "city",
+    "UserId",
+    "TypeId",
+    "PetCategoryId",
+  ];
+
+  fieldsToSanitize.forEach((fieldName) => {
+    if (req.body[fieldName]) {
+      req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
+    }
+  });
+
+  // Check input format
+  const { error } = validateInput(req.body);
+  if (error) {
+    return res.status(400).json({
+      errorCode: "fieldsToFill",
+      errorMessage: errors.authentication.global.fieldsToFill,
+    });
+  }
+
   let {
     gender,
     alert_date,
@@ -29,22 +101,7 @@ const createPost = async (req, res) => {
     PetCategoryId,
   } = req.body;
 
-  // sanitize input
-  const fieldsToSanitize = ["description", "name", "distinctive_signs"];
-
-  fieldsToSanitize.forEach((fieldName) => {
-    req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
-  });
-
   try {
-    // get current user information
-    // const currentUserId = req.user.id;
-    // const currentUser = await UserService.getById(currentUserId);
-    // // req.body.UserId = currentUserId;
-    // // req.body.AddressId = currentUser.AddressId;
-    // req.body.UserId = currentUserId;
-    // req.body.AddressId = currentUser.AddressId;
-
     // create a new post
     const post = await PostService.addPost({
       gender,

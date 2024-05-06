@@ -175,7 +175,7 @@ const Post = () => {
                     <FontAwesomeIcon icon={faIdCard} className="me-3 icon" />
                     <div>
                       <h6 className="mb-0">Nom</h6>
-                      <span>{name}</span>
+                      <span>{name || "Inconnu"}</span>
                     </div>
                   </div>
                 </Col>
@@ -184,7 +184,7 @@ const Post = () => {
                     <FontAwesomeIcon icon={faMarker} className="me-3 icon" />
                     <div>
                       <h6 className="mb-0">Tatouage</h6>
-                      <span>{post?.tattoo ? "Oui" : "Non"}</span>
+                      <span>{post?.tattoo}</span>
                     </div>
                   </div>
                 </Col>
@@ -205,7 +205,7 @@ const Post = () => {
                     <FontAwesomeIcon icon={faMicrochip} className="me-4 icon" />
                     <div>
                       <h6 className="mb-0">Puce</h6>
-                      <span>{post?.microchip ? "Oui" : "Non"}</span>
+                      <span>{post?.microchip}</span>
                     </div>
                   </div>
                 </Col>
@@ -214,7 +214,7 @@ const Post = () => {
                     <FontAwesomeIcon icon={faRing} className="me-4 icon" />
                     <div>
                       <h6 className="mb-0">Collier</h6>
-                      <span>{post?.collar ? "Oui" : "Non"}</span>
+                      <span>{post?.collar}</span>
                     </div>
                   </div>
                 </Col>

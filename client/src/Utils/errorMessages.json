@@ -6,5 +6,11 @@
     "postalCode": "Le code postal doit comprendre 5 chiffres",
     "cityNotSelected": "Merci de sélectionner une ville.",
     "cityNotFound": "Aucune commune trouvée pour ce code postal."
+  },
+  "post": {
+    "fieldsToFill": "Merci de remplir ce champs",
+    "postalCode": "Le code postal doit comprendre 5 chiffres",
+    "cityNotSelected": "Merci de sélectionner une ville.",
+    "cityNotFound": "Aucune commune trouvée pour ce code postal."
   }
 }

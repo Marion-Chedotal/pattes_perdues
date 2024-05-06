@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import authService from "../../Services/AuthService";
 import Button from "../../Components/Btn/Button";
-import validateInputs from "../../Utils/errorRegister";
+import { validateRegisterInputs } from "../../Utils/errorInputs";
 import errorMessage from "../../Utils/errorMessages.json";
 import { useTranslation } from "react-i18next";
 
@@ -81,7 +81,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const inputErrors = validateInputs(inputs);
+    const inputErrors = validateRegisterInputs(inputs);
 
     if (Object.keys(inputErrors).length > 0) {
       setValidation(inputErrors);

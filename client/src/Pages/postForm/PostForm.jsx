@@ -8,14 +8,17 @@ import postService from "../../Services/PostService";
 import Button from "../../Components/Btn/Button";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import { Row, Col, FormLabel } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import { Tooltip } from "react-tooltip";
 import "./postForm.scss";
 import errorMessage from "../../Utils/errorMessages.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
+import { validatePostInputs } from "../../Utils/errorInputs";
 
 const PostForm = () => {
+  const { t } = useTranslation();
   const { user, token } = useSelector((state) => state.auth);
   const currentUserId = user?.id;
 
@@ -25,8 +28,10 @@ const PostForm = () => {
   const [selectedCatId, setSelectedCatId] = useState("");
   const [picture, setPicture] = useState(null);
 
-  // errors from format input
-  const [validationErrors, setValidationErrors] = useState({});
+  // validation input
+  const [validation, setValidation] = useState({});
+  // global errors
+  const [errMsg, setErrMsg] = useState("");
 
   const [formData, setFormData] = useState({
     gender: "",
@@ -105,7 +110,7 @@ const PostForm = () => {
       }));
 
       if (value.length === 5) {
-        setValidationErrors((prevErrors) => ({
+        setValidation((prevErrors) => ({
           ...prevErrors,
           postalCode: undefined,
         }));
@@ -117,18 +122,18 @@ const PostForm = () => {
           }));
 
           if (!cityNames || cityNames.length === 0) {
-            setValidationErrors((prevErrors) => ({
+            setValidation((prevErrors) => ({
               ...prevErrors,
-              noCity: errorMessage.register.cityNotFound,
+              noCity: errorMessage.post.cityNotFound,
             }));
           } else {
-            setValidationErrors((prevErrors) => ({
+            setValidation((prevErrors) => ({
               ...prevErrors,
               noCity: undefined,
             }));
           }
         } catch (error) {
-          setValidationErrors({ postalCode: error.message });
+          setValidation({ postalCode: error.message });
         }
       }
     }
@@ -146,25 +151,40 @@ const PostForm = () => {
       setSelectedCatId(value);
     }
 
-    setValidationErrors((prevErrors) => ({
+    setValidation((prevErrors) => ({
       ...prevErrors,
-      [name]: validationErrors[name],
+      [name]: null,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const inputErrors = validatePostInputs(formData);
+
+    if (Object.keys(inputErrors).length > 0) {
+      setValidation(inputErrors);
+    }
+
     try {
       const pictureUpload = new FormData();
       pictureUpload.append("picture", picture);
 
       const response = await postService.register(
         {
-          ...formData,
+          gender: formData.gender,
+          alert_date: formData.alert_date,
+          description: formData.description,
+          name: formData.name,
+          tattoo: formData.tattoo,
+          microchip: formData.microchip,
+          collar: formData.collar,
+          distinctive_signs: formData.distinctive_signs,
           PetCategoryId: selectedCatId,
           UserId: currentUserId,
           TypeId: selectedTypeId,
           is_active: true,
+          street: formData.street,
+          postalCode: formData.postalCode,
           city: formData.selectedCity,
           picture: picture,
         },
@@ -173,7 +193,13 @@ const PostForm = () => {
 
       navigate(`/annonce/${response.postId}`);
     } catch (err) {
-      // console.log(err);
+      console.log(err);
+      const errorMessage = t(`post.${err?.errorCode}`);
+      setErrMsg(errorMessage);
+      window.scroll({
+        top: 0,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -188,6 +214,7 @@ const PostForm = () => {
         action="/upload"
         encType="multipart/form-data"
       >
+        {errMsg && <div className="alert alert-danger">{errMsg}</div>}
         <Row className="mb-3 mx-5 align-items-center justify-content-center">
           <Col md={6}>
             <label className="required">
@@ -196,7 +223,6 @@ const PostForm = () => {
                 onChange={handleChange}
                 name="selectedTypeId"
                 className="form-select"
-                required
               >
                 <option value="">Sélectionner : </option>
                 {types.map((type) => (
@@ -205,6 +231,11 @@ const PostForm = () => {
                   </option>
                 ))}
               </select>
+              {validation.selectedTypeId && (
+                <div className="alert alert-danger">
+                  {validation.selectedTypeId}
+                </div>
+              )}
             </label>
           </Col>
           <Col md={6}>
@@ -214,7 +245,6 @@ const PostForm = () => {
                 onChange={handleChange}
                 name="selectedCatId"
                 className="form-select"
-                required
               >
                 <option value="">Sélectionner : </option>
                 {petCategories.map((petCategory) => (
@@ -223,14 +253,25 @@ const PostForm = () => {
                   </option>
                 ))}
               </select>
+              {validation.selectedCatId && (
+                <div className="alert alert-danger">
+                  {validation.selectedCatId}
+                </div>
+              )}
             </label>
           </Col>
         </Row>
         <Row className="mb-3 mx-5 align-items-center justify-content-center">
           <Col md={6}>
-            {" "}
-            <label>
+            <label
+              className="tooltip-img"
+              data-tip
+              data-tooltip-id="tooltip-img"
+              data-tooltip-content="Format attendu: jpg/png/jpeg, Taille maximale autorisée: 1Mo."
+            >
               Image :
+              <FontAwesomeIcon icon={faCircleInfo} className="ms-3" />
+              <Tooltip id="tooltip-img" effect="solid"></Tooltip>
               <input
                 type="file"
                 name="picture"
@@ -257,13 +298,15 @@ const PostForm = () => {
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                required
               >
                 <option value="">Sélectionner le genre</option>
                 <option value="Mâle">Mâle</option>
                 <option value="Femelle">Femelle</option>
                 <option value="Inconnu">Inconnu</option>
               </select>
+              {validation.gender && (
+                <div className="alert alert-danger">{validation.gender}</div>
+              )}
             </label>
             <label>
               Nom de l'animal :
@@ -289,8 +332,10 @@ const PostForm = () => {
               name="alert_date"
               value={formData.alert_date}
               onChange={handleChange}
-              required
             />
+            {validation.alert_date && (
+              <div className="alert alert-danger">{validation.alert_date}</div>
+            )}
             <label className="required">
               Description :
               <textarea
@@ -299,9 +344,11 @@ const PostForm = () => {
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Expliquer la situation"
-                required
               />
             </label>
+            {validation.description && (
+              <div className="alert alert-danger">{validation.description}</div>
+            )}
             <label>
               Signes Distinctifs de l'animal:
               <textarea
@@ -318,13 +365,11 @@ const PostForm = () => {
           <Col md={6}>
             <label className="required">
               Rue :
-              <input
-                type="text"
-                name="street"
-                onChange={handleChange}
-                required
-              />
+              <input type="text" name="street" onChange={handleChange} />
             </label>
+            {validation.street && (
+              <div className="alert alert-danger">{validation.street}</div>
+            )}
             <label className="required">
               Code postal :
               <input
@@ -332,12 +377,17 @@ const PostForm = () => {
                 name="postalCode"
                 onChange={handlePostalCodeChange}
                 maxLength={5}
-                required
               />
             </label>
+            {validation.postalCode && (
+              <div className="alert alert-danger">{validation.postalCode}</div>
+            )}
+            {validation.noCity && (
+              <div className="alert alert-danger">{validation.noCity}</div>
+            )}
             <label className="required">
               Ville
-              <select name="selectedCity" onChange={handleChange} required>
+              <select name="selectedCity" onChange={handleChange}>
                 <option value="">Sélectionner votre ville</option>
                 {formData.cities &&
                   formData.cities.map((city, index) => (
@@ -346,44 +396,60 @@ const PostForm = () => {
                     </option>
                   ))}
               </select>
+              {validation.selectedCity && (
+                <div className="alert alert-danger">
+                  {validation.selectedCity}
+                </div>
+              )}
             </label>
           </Col>
           <Col md={6}>
-            <div>
+            <div className="questionsForm">
               <div className="d-flex justify-content-between align-items-center">
-                <p>L'animal est-il tatoué ?</p>
+                <p className="required">L'animal est-il tatoué ?</p>
                 <div className="d-flex align-items-center">
                   <label>
-                    {" "}
                     <input
                       type="radio"
                       name="tattoo"
-                      value="true"
+                      value="Oui"
                       onChange={handleChange}
                     />
                     Oui
                   </label>
 
                   <label>
-                    {" "}
                     <input
                       type="radio"
                       name="tattoo"
-                      value="false"
+                      value="Non"
                       onChange={handleChange}
                     />
                     Non
                   </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="tattoo"
+                      value="Ne sais pas"
+                      onChange={handleChange}
+                    />
+                    ?
+                  </label>
                 </div>
               </div>
+              {validation.tattoo && (
+                <div className="alert alert-danger">{validation.tattoo}</div>
+              )}
               <div className="d-flex justify-content-between align-items-center">
-                <p>L'animal est-il pucé ?</p>
+                <p className="required">L'animal est-il pucé ?</p>
                 <div className="d-flex align-items-center">
                   <label>
                     <input
                       type="radio"
                       name="microchip"
-                      value="true"
+                      value="Oui"
                       onChange={handleChange}
                     />
                     Oui
@@ -393,37 +459,61 @@ const PostForm = () => {
                     <input
                       type="radio"
                       name="microchip"
-                      value="false"
+                      value="Non"
                       onChange={handleChange}
                     />
                     Non
                   </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="microchip"
+                      value="Ne sais pas"
+                      onChange={handleChange}
+                    />
+                    ?
+                  </label>
                 </div>
               </div>
+              {validation.microchip && (
+                <div className="alert alert-danger">{validation.microchip}</div>
+              )}
               <div className="d-flex justify-content-between align-items-center">
-                <p>L'animal a-t-il un collier ?</p>
+                <p className="required">L'animal a-t-il un collier ?</p>
                 <div className="d-flex align-items-center">
-                  <FormLabel>
+                  <label>
                     <input
                       type="radio"
                       name="collar"
-                      value="true"
+                      value="Oui"
                       onChange={handleChange}
                     />
                     Oui
-                  </FormLabel>
+                  </label>
 
                   <label>
                     <input
                       type="radio"
                       name="collar"
-                      value="false"
+                      value="Non"
                       onChange={handleChange}
                     />
                     Non
                   </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="collar"
+                      value="Ne sais pas"
+                      onChange={handleChange}
+                    />
+                    ?
+                  </label>
                 </div>
               </div>
+              {validation.collar && (
+                <div className="alert alert-danger">{validation.collar}</div>
+              )}
             </div>
           </Col>
         </Row>

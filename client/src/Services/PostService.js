@@ -16,7 +16,7 @@ const register = async (formData, token) => {
     });
     return response.data;
   } catch (error) {
-    throw error.message;
+    throw error.response.data;
   }
 };
 

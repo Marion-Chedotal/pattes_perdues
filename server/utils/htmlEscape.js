@@ -4,7 +4,7 @@
  * @returns {string} string convert
  */
 function escapeHtml(text) {
-  var map = {
+  const map = {
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",

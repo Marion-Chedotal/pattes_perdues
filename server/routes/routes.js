@@ -28,7 +28,7 @@ router.get(
 router.put(
   "/user/:id",
   AuthMiddleware.validateToken,
-  upload.single("picture"),
+  upload,
   UserController.updateUser
 );
 router.delete(
@@ -43,7 +43,7 @@ router.delete(
 router.post(
   "/post",
   AuthMiddleware.validateToken,
-  upload.single("picture"),
+  upload,
   PostController.createPost
 );
 router.get("/post/:id", PostController.findById);
@@ -57,7 +57,7 @@ router.get(
 router.put(
   "/post/:id",
   AuthMiddleware.validateToken,
-  upload.single("picture"),
+  upload,
   PostController.updatePost
 );
 router.delete(
