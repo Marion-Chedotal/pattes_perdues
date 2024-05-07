@@ -6,6 +6,7 @@ import affiche from "../../Assets/affiche_animal_perdu.jpg";
 import postService from "../../Services/PostService";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../../Components/Btn/Button";
+import SuccessMessage from "../../Components/SuccessMessage/SuccessMessage";
 import { formatDate, capitalizeFirstLetter } from "../../Utils/format";
 import { Image, Container, Row, Col, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
@@ -39,7 +40,6 @@ const Post = () => {
 
   const [post, setPost] = useState(null);
   const [show, setShow] = useState(false);
-  const [deleteMessage, setDeleteMessage] = useState("");
   const [error, setError] = useState(null);
 
   const { user, token } = useSelector((state) => state.auth);
@@ -82,20 +82,21 @@ const Post = () => {
       await postService.deletePost(id, token);
       navigate("/annonces", {
         state: {
-          deleteSuccessMessage: "Votre annonce a été supprimée avec succès !",
+          successMessage: "Votre annonce a été supprimée avec succès !",
         },
       });
     } catch (err) {
       setError("La suppression de l'annonce a échoué. Veuillez réessayer.");
     }
   };
+
   return (
-    <div>
+    <div className="onePost">
       <Header />
-      <Container className="my-5 onePost">
-        <Row className="text-center align-items-center">
-          {" "}
-          <div className="mb-5">
+      <SuccessMessage />
+      <Container className="my-5">
+        <Row className="align-items-center">
+          <div className="mb-5 text-center">
             <h4>Annonce de {post?.User?.login}</h4>
           </div>
           {isPostOwner && (
@@ -109,7 +110,7 @@ const Post = () => {
                 </button>
               </Link>
               <button type="button" onClick={handleShow}>
-                <FontAwesomeIcon icon={faTrash} className="me-5 iconAction" />
+                <FontAwesomeIcon icon={faTrash} className="iconAction" />
               </button>
               <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -138,16 +139,18 @@ const Post = () => {
             </div>
           )}
           {post?.picture ? (
-            <Col md={6}>
+            <Col md={6} className="text-center">
               <Image
                 src={"http://localhost:3001/" + post?.picture}
+                alt="photo de l'animal"
                 style={{ maxWidth: "100%", maxHeight: "500px" }}
               />
             </Col>
           ) : (
-            <Col md={6}>
+            <Col md={6} className="text-center">
               <Image
                 src={affiche}
+                alt="photo générique affiche animal perdu"
                 style={{ maxWidth: "100%", maxHeight: "400px" }}
               />
             </Col>
@@ -163,16 +166,16 @@ const Post = () => {
               <Row className="mt-4">
                 <Col>
                   <div className="d-flex align-items-center mb-3">
-                    <FontAwesomeIcon icon={faVenusMars} className="me-3 icon" />
+                    <FontAwesomeIcon icon={faVenusMars} className="me-4 icon" />
                     <div>
-                      <h6 className="mb-0 align">Genre</h6>
+                      <h6 className="mb-0">Genre</h6>
                       <span>{post?.gender}</span>
                     </div>
                   </div>
                 </Col>
                 <Col>
                   <div className="d-flex align-items-center mb-3">
-                    <FontAwesomeIcon icon={faIdCard} className="me-3 icon" />
+                    <FontAwesomeIcon icon={faIdCard} className="me-4 icon" />
                     <div>
                       <h6 className="mb-0">Nom</h6>
                       <span>{name || "Inconnu"}</span>
@@ -181,10 +184,12 @@ const Post = () => {
                 </Col>
                 <Col>
                   <div className="d-flex align-items-center mb-3">
-                    <FontAwesomeIcon icon={faMarker} className="me-3 icon" />
+                    <FontAwesomeIcon icon={faMarker} className="me-4 icon" />
                     <div>
                       <h6 className="mb-0">Tatouage</h6>
-                      <span>{post?.tattoo}</span>
+                      <span>
+                        {post?.tattoo === "Ne sais pas" ? "?" : post?.tattoo}
+                      </span>
                     </div>
                   </div>
                 </Col>
@@ -193,10 +198,16 @@ const Post = () => {
               <Row className="mb-5">
                 <Col>
                   <div className="d-flex align-items-center mb-3">
-                    <FontAwesomeIcon icon={faCalendar} className="me-2 icon" />
+                    <FontAwesomeIcon icon={faCalendar} className="me-4 icon" />
                     <div>
                       <h6 className="mb-0">Date</h6>
-                      <span>{postDate}</span>
+                      <span className="date">
+                        {new Date(postDate).toLocaleDateString("fr-FR", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "2-digit",
+                        })}
+                      </span>
                     </div>
                   </div>
                 </Col>
@@ -205,7 +216,11 @@ const Post = () => {
                     <FontAwesomeIcon icon={faMicrochip} className="me-4 icon" />
                     <div>
                       <h6 className="mb-0">Puce</h6>
-                      <span>{post?.microchip}</span>
+                      <span>
+                        {post?.microchip === "Ne sais pas"
+                          ? "?"
+                          : post?.microchip}
+                      </span>
                     </div>
                   </div>
                 </Col>
@@ -214,7 +229,9 @@ const Post = () => {
                     <FontAwesomeIcon icon={faRing} className="me-4 icon" />
                     <div>
                       <h6 className="mb-0">Collier</h6>
-                      <span>{post?.collar}</span>
+                      <span>
+                        {post?.collar === "Ne sais pas" ? "?" : post?.collar}
+                      </span>
                     </div>
                   </div>
                 </Col>

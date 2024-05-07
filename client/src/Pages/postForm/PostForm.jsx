@@ -193,7 +193,6 @@ const PostForm = () => {
 
       navigate(`/annonce/${response.postId}`);
     } catch (err) {
-      console.log(err);
       const errorMessage = t(`post.${err?.errorCode}`);
       setErrMsg(errorMessage);
       window.scroll({

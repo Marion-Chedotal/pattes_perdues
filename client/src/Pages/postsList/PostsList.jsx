@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./PostsList.scss";
 import Header from "../../Components/Header/Header";
@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import userService from "../../Services/UserService";
 import { capitalizeFirstLetter } from "../../Utils/format";
+import SuccessMessage from "../../Components/SuccessMessage/SuccessMessage.jsx";
 
 const PostsList = () => {
   const { user, token } = useSelector((state) => state.auth);
@@ -25,23 +26,6 @@ const PostsList = () => {
   const [searchInput, setSearchInput] = useState("");
   const [noResults, setNoResults] = useState(false);
   const [showUserCityInfo, setShowUserCityInfo] = useState(true); // Nouvel état pour contrôler l'affichage des informations sur la ville de l'utilisateur
-
-  const [deleteSuccessMessage, setDeleteSuccessMessage] = useState("");
-  // when owner deleting post, he is redirect here with success message.
-  const location = useLocation();
-  useEffect(() => {
-    if (location.state && location.state.deleteSuccessMessage) {
-      setDeleteSuccessMessage(location.state.deleteSuccessMessage);
-    }
-  }, [location]);
-  useEffect(() => {
-    if (deleteSuccessMessage) {
-      const timer = setTimeout(() => {
-        setDeleteSuccessMessage("");
-      }, 5000); // 5000ms = 5 secondes
-      return () => clearTimeout(timer);
-    }
-  }, [deleteSuccessMessage]);
 
   // fetch all the posts
   useEffect(() => {
@@ -131,11 +115,7 @@ const PostsList = () => {
   return (
     <div className="postList">
       <Header />
-      {deleteSuccessMessage && (
-        <div className="successDelete text-center alert alert-success">
-          {deleteSuccessMessage}
-        </div>
-      )}
+        <SuccessMessage />
       <div className="d-flex justify-content-center my-5">
         <Link to="/deposer-une-annonce" className="publishPost">
           <FontAwesomeIcon
