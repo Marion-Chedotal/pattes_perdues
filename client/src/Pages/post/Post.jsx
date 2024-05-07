@@ -202,11 +202,7 @@ const Post = () => {
                     <div>
                       <h6 className="mb-0">Date</h6>
                       <span className="date">
-                        {new Date(postDate).toLocaleDateString("fr-FR", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "2-digit",
-                        })}
+                        {postDate}
                       </span>
                     </div>
                   </div>

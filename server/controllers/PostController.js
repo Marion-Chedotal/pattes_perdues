@@ -46,7 +46,6 @@ const validateInput = (data) => {
  * @throws {object} error
  */
 const createPost = async (req, res) => {
-
   // sanitize input
   const fieldsToSanitize = [
     "gender",
@@ -78,7 +77,7 @@ const createPost = async (req, res) => {
   if (error) {
     return res.status(400).json({
       errorCode: "fieldsToFill",
-      errorMessage: errors.authentication.global.fieldsToFill,
+      errorMessage: errors.global.fieldsToFill,
     });
   }
 
@@ -292,11 +291,38 @@ const updatePost = async (req, res) => {
   );
 
   // sanitize input
-  const fieldsToSanitize = ["description", "name", "distinctive_signs"];
+  const fieldsToSanitize = [
+    "gender",
+    "alert_date",
+    "description",
+    "name",
+    "tattoo",
+    "microchip",
+    "collar",
+    "distinctive_signs",
+    "picture",
+    "is_active",
+    "street",
+    "postalCode",
+    "city",
+    "UserId",
+    "TypeId",
+    "PetCategoryId",
+  ];
 
   fieldsToSanitize.forEach((fieldName) => {
-    req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
+    if (req.body[fieldName]) {
+      req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
+    }
   });
+  // Check input format
+  const { error } = validateInput(req.body);
+  if (error) {
+    return res.status(400).json({
+      errorCode: "fieldsToFill",
+      errorMessage: errors.global.fieldsToFill,
+    });
+  }
 
   let {
     gender,

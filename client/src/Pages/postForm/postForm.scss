@@ -1,6 +1,15 @@
 @import "../../App";
 
 .post-form {
+  .is-active {
+    width: 600px;
+    margin: auto;
+    border-radius: 50px;
+    padding: 10px;
+    padding-top: 20px;
+    background-color: $beige-color;
+  }
+
   label,
   p {
     display: block;

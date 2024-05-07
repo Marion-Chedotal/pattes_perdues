@@ -65,7 +65,7 @@ const register = async (req, res) => {
     ) {
       return res.status(400).json({
         errorCode: "fieldsToFill",
-        errorMessage: errors.authentication.global.fieldsToFill,
+        errorMessage: errors.global.fieldsToFill,
       });
     }
 
@@ -152,7 +152,7 @@ const login = async (req, res) => {
     if (!(req.body.login && req.body.password)) {
       return res.status(400).json({
         errorCode: "fieldsToFill",
-        errorMessage: errors.authentication.global.fieldsToFill,
+        errorMessage: errors.global.fieldsToFill,
       });
     }
 

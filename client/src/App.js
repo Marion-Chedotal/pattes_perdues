@@ -4,7 +4,6 @@ import Login from "./Pages/login/Login";
 import Register from "./Pages/register/Register";
 import PostForm from "./Pages/postForm/PostForm";
 import PostsList from "./Pages/postsList/PostsList";
-import UpdatePost from "./Pages/updatePost/UpdatePost";
 import Profil from "./Pages/profil/Profil";
 import Post from "./Pages/post/Post";
 import PageNotFound from "./Pages/notFound/notFound";
@@ -51,7 +50,7 @@ function App() {
     },
     {
       path: "/modification-annonce/:id",
-      element: <PrivateRoute children={<UpdatePost/>} />,
+      element: <PrivateRoute children={<PostForm/>} />,
     },
     {
       path: "/profil/:login",
