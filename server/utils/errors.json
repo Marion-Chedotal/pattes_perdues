@@ -1,15 +1,13 @@
 {
   "global": {
-    "fieldsToFill": "Please fill in all fields"
+    "fieldsToFill": "Please fill in all fields",
+    "noCity": "Please select a city corresponding to the postal code.",
+    "invalidInput": "Invalid input format.",
+    "badImgFormat": "Only .png, .jpg and .jpeg format allowed !"
   },
   "authentication": {
-    "invalidInput": "Invalid input format.",
     "emailExist": "Email already used",
     "loginExist": "Login already used",
     "invalidInformations": "Invalid Informations"
-  },
-
-  "postForm": {
-    "badImgFormat": "Only .png, .jpg and .jpeg format allowed !"
   }
 }

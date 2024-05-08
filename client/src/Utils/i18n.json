@@ -11,5 +11,10 @@
     "invalidInput": "Merci de respecter le format attendu.",
     "badImgFormat": "Seules les photos au format jpg, jpeg et png sont autorisées.",
     "LIMIT_FILE_SIZE": "La photo dépasse la taille autorisée: 1 Mo."
+  },
+  "userUpdate": {
+    "noCity": "Merci de sélectionner une ville",
+    "LIMIT_FILE_SIZE": "La photo dépasse la taille autorisée: 1 Mo.",
+    "invalidInput": "Merci de respecter le format attendu."
   }
 }

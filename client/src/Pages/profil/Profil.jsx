@@ -6,6 +6,7 @@ import Button from "../../Components/Btn/Button";
 import UserPosts from "../../Components/UserPosts/UserPosts";
 import ProfilCard from "../../Components/ProfilCard/ProfilCard";
 import UpdateProfil from "../../Components/UpdateProfil/UpdateProfil";
+import SuccessMessage from "../../Components/SuccessMessage/SuccessMessage";
 import { useNavigate, useParams } from "react-router-dom";
 import userService from "../../Services/UserService";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,7 +20,6 @@ import {
   faTrash,
   faNewspaper,
 } from "@fortawesome/free-solid-svg-icons";
-
 
 const Profil = () => {
   const { login } = useParams();
@@ -60,7 +60,8 @@ const Profil = () => {
 
   return (
     <div>
-      <Header/>
+      <Header />
+      <SuccessMessage />
       <Container fluid className="navProfil my-5">
         <Row xs={6} className="py-3 justify-content-center">
           <Col className="text-center">
@@ -77,7 +78,11 @@ const Profil = () => {
             </Button>
           </Col>
           <Col className="text-center ">
-            <Button type="button" className="d-flex flex-column" onClick={() => setActiveSection("modification-profil")}>
+            <Button
+              type="button"
+              className="d-flex flex-column"
+              onClick={() => setActiveSection("modification-profil")}
+            >
               <FontAwesomeIcon icon={faSliders} className="icons" />
               <span className="d-none d-md-block">Modifier mon profil</span>
             </Button>
@@ -134,10 +139,12 @@ const Profil = () => {
           </Col>
         </Row>
       </Container>
-      {activeSection === "profil" && <ProfilCard showUserPosts={handleShowUserPosts} />}
+      {activeSection === "profil" && (
+        <ProfilCard showUserPosts={handleShowUserPosts} />
+      )}
       {activeSection === "modification-profil" && <UpdateProfil />}
       {activeSection === "mes-annonces" && <UserPosts />}
-      <Footer/>
+      <Footer />
     </div>
   );
 };

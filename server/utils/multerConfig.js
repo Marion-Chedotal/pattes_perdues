@@ -21,14 +21,16 @@ const upload = multer({
   },
   fileFilter: (req, file, cb) => {
     if (!acceptedExtension.includes(file.mimetype)) {
-      cb(null, false);
-      const error = new Error(errors.postForm.badImgFormat);
+      const error = new Error(errors.global.badImgFormat);
       error.code = "badImgFormat";
       return cb(error);
     }
     cb(null, true);
   },
-}).single("picture");
+}).fields([
+  { name: "avatar", maxCount: 1 },
+  { name: "picture", maxCount: 1 },
+]);
 
 module.exports = (req, res, next) => {
   upload(req, res, function (err) {

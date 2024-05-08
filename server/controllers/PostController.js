@@ -102,6 +102,11 @@ const createPost = async (req, res) => {
   } = req.body;
 
   try {
+    let picturePath;
+    if (req.files && req.files.picture && req.files.picture.length > 0) {
+      picturePath = req.files.picture[0].path;
+    }
+
     // create a new post
     const post = await PostService.addPost({
       gender,
@@ -112,7 +117,7 @@ const createPost = async (req, res) => {
       microchip,
       collar,
       distinctive_signs,
-      picture: req.file?.path,
+      picture: picturePath,
       is_active,
       UserId,
       TypeId,
@@ -344,8 +349,18 @@ const updatePost = async (req, res) => {
     PetCategoryId,
   } = req.body;
 
-  if (isUserAllowed) {
+   if (isUserAllowed) {
     try {
+      let picturePath;
+      if (req.files && req.files.picture && req.files.picture.length > 0) {
+        picturePath = req.files.picture[0].path;
+
+        // Delete old picture from server
+        if (postToEdit.picture) {
+          fs.unlinkSync(postToEdit.picture);
+        }
+      }
+
       const post = await PostService.editPost(idPost, {
         gender,
         alert_date,
@@ -355,7 +370,7 @@ const updatePost = async (req, res) => {
         microchip,
         collar,
         distinctive_signs,
-        picture: req.file?.path,
+        picture: picturePath,
         is_active,
         UserId,
         TypeId,

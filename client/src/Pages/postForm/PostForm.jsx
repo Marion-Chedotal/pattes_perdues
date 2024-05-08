@@ -35,7 +35,7 @@ const PostForm = () => {
 
   // validation input
   const [validation, setValidation] = useState({});
-  // // global errors
+  // global errors
   const [errMsg, setErrMsg] = useState("");
 
   const [formData, setFormData] = useState({
@@ -109,6 +109,7 @@ const PostForm = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setNewPicture(file);
+
     const reader = new FileReader();
 
     reader.onloadend = () => {
@@ -147,7 +148,7 @@ const PostForm = () => {
           if (!cityNames || cityNames.length === 0) {
             setValidation((prevErrors) => ({
               ...prevErrors,
-              noCity: errorMessage.register.cityNotFound,
+              noCity: errorMessage.post.cityNotFound,
             }));
           } else {
             setValidation((prevErrors) => ({

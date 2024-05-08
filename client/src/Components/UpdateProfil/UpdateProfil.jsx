@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./UpdateProfil.scss";
-import { useSelector, useDispatch } from "react-redux";
-import { updateUser } from "../../store/authActions";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import UserService from "../../Services/UserService";
 import authService from "../../Services/AuthService";
 import defaultAvatar from "../../Assets/default_avatar.png";
@@ -9,49 +9,44 @@ import Button from "../Btn/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip } from "react-tooltip";
-import validateInputs from "../../Utils/errorRegister";
 import errorMessage from "../../Utils/errorMessages.json";
 import { useTranslation } from "react-i18next";
+import { validateUserInputs } from "../../Utils/errorInputs";
 
 const UpdateProfil = () => {
   const { t } = useTranslation();
   const { user, token } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
   const currentUserId = user.id;
-  const [error, setError] = useState(null);
+  const { login } = useParams();
+  const navigate = useNavigate();
 
-  // errors from format input
-  const [validationErrors, setValidationErrors] = useState({});
-  // errors from server
+  const [newPicture, setNewPicture] = useState(null);
+  const [isModified, setIsModified] = useState(false);
+
+  // validation input
+  const [validation, setValidation] = useState({});
+  // global errors
   const [errMsg, setErrMsg] = useState("");
+
   const [formData, setFormData] = useState({
-    login: "",
+    password: "",
     email: "",
+    avatar: "",
     postalCode: "",
     selectedCity: "",
-    avatar: {
-      old: user?.avatar ? user.avatar : defaultAvatar,
-      new: "",
-    },
-    password: "",
   });
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // fetch global user information
+        // Fetch global user information
         const data = await UserService.getUserInformation(currentUserId, token);
-        console.log(data);
         setFormData((prevFormData) => ({
           ...prevFormData,
-          login: data.login,
-          email: data.email,
-          postalCode: data.postalCode,
-          selectedCity: data.city, // Assurez-vous que le nom de la propriété est correct selon ce qui est renvoyé par votre API
-          avatar: {
-            old: data.avatar ? data.avatar : defaultAvatar,
-            new: "",
-          },}));
+          ...data,
+          postalCode: data?.Address?.postalCode,
+          selectedCity: data?.Address?.city,
+        }));
       } catch (err) {
         console.error("Error fetching user data:", err);
       }
@@ -59,35 +54,36 @@ const UpdateProfil = () => {
     fetchUserData();
   }, [currentUserId, token]);
 
-  // Picture
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
+  // Avatar
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setNewPicture(file);
+    setIsModified(true);
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setFormData({ ...formData, avatar: reader.result });
+    };
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({
-          ...formData,
-          avatar: {
-            ...formData.avatar,
-            new: reader.result, // Mettre à jour l'URL du nouvel avatar avec le contenu de l'image lue
-          },
-        });
-      };
       reader.readAsDataURL(file);
     }
   };
 
+  // PostalCode
   const handlePostalCodeChange = async (e) => {
     const value = e.target.value;
+    setIsModified(true);
 
     if (value.length <= 5) {
       setFormData((prevInputs) => ({
         ...prevInputs,
         postalCode: value,
+        selectedCity: "",
       }));
 
       if (value.length === 5) {
-        setValidationErrors((prevErrors) => ({
+        setValidation((prevErrors) => ({
           ...prevErrors,
           postalCode: undefined,
         }));
@@ -99,75 +95,72 @@ const UpdateProfil = () => {
           }));
 
           if (!cityNames || cityNames.length === 0) {
-            setValidationErrors((prevErrors) => ({
+            setValidation((prevErrors) => ({
               ...prevErrors,
-              noCity: errorMessage.register.cityNotFound,
+              noCity: errorMessage.userUpdate.cityNotFound,
             }));
           } else {
-            setValidationErrors((prevErrors) => ({
+            setValidation((prevErrors) => ({
               ...prevErrors,
               noCity: undefined,
             }));
           }
         } catch (error) {
-          setValidationErrors({ postalCode: error.message });
+          setValidation({ postalCode: error.message });
         }
       }
     }
   };
 
-  //TODO: to refacto
+  // Global
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
 
-    if (name === "selectedCity") {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        selectedCity: value,
-      }));
-    }
-    const validationErrors = validateInputs(
-      { ...formData, [name]: value },
-      errorMessage
-    );
-    setValidationErrors((prevErrors) => ({
+    setFormData({ ...formData, [name]: value });
+    setIsModified(true);
+
+    setValidation((prevErrors) => ({
       ...prevErrors,
-      [name]: validationErrors[name],
+      [name]: null,
     }));
   };
 
-  // update user information
+  // Update user information
   const handleSaveChanges = async (e) => {
     e.preventDefault();
-
-    const inputErrors = validateInputs(formData);
-    setValidationErrors(inputErrors);
+    const inputErrors = validateUserInputs(formData);
 
     if (Object.keys(inputErrors).length > 0) {
-      return;
+      setValidation(inputErrors);
     }
 
     try {
+      const pictureUpload = new FormData();
+      pictureUpload.append("avatar", newPicture);
+
       const updatedFormData = {
-        ...formData,
-        city: formData.selectedCity,
+        password: formData.password,
+        email: formData.email,
+        avatar: newPicture,
+        postalCode: formData.postalCode,
+        city: formData.selectedCity !== "" ? formData.selectedCity : "",
       };
 
       // Call the UserService to update user information
-      const updatedUser = await UserService.updateUserInformation(
-        currentUserId,
-        updatedFormData,
-        token
-      );
-
-      dispatch(updateUser(updatedUser.data.login));
+      await UserService.updateUserInformation(login, updatedFormData, token);
+      setIsModified(false);
+      navigate(`/profil/${user.login}`, {
+        state: {
+          successMessage: "Votre profil a bien été modifié avec succès !",
+        },
+      });
     } catch (error) {
-      const errorMessage = t(`modification.${error}`);
+      const errorMessage = t(`userUpdate.${error.errorCode}`);
       setErrMsg(errorMessage);
+      window.scroll({
+        top: 0,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -178,20 +171,36 @@ const UpdateProfil = () => {
       action="/upload"
       encType="multipart/form-data"
     >
-      <div className="profil my-5 py-5">
-        <div className="profilCard">
-          <div className="d-flex align-items-start gap-5">
+      {errMsg && <div className="alert alert-danger text-center">{errMsg}</div>}
+      <div className="updateProfil my-5 py-5">
+        <div className="updateCard text-center pb-5">
+          <h4>Modification de votre profil</h4>
+          <div className="my-4">
             <div className="d-inline-block position-relative changeAvatar me-4">
-              {(formData.avatar?.new || formData.avatar?.old) && (
+              <label htmlFor="avatarInput">
                 <img
                   className="avatar rounded-circle"
-                  src={formData.avatar?.new || formData.avatar?.old}
+                  src={
+                    newPicture
+                      ? URL.createObjectURL(newPicture)
+                      : formData?.avatar
+                      ? "http://localhost:3001/" + formData.avatar
+                      : defaultAvatar
+                  }
                   alt="avatar"
                 />
-              )}
+              </label>
+              <input
+                id="avatarInput"
+                type="file"
+                hidden
+                name="avatar"
+                className="mx-4 my-2 border border-0"
+                onChange={handleFileChange}
+              />
               <label
-                htmlFor="avatar"
-                className="avatarIcon px-2 position-absolute bottom-0 start-100 translate-middle-x"
+                htmlFor="avatarInput"
+                className="avatarTooltip px-2 position-absolute bottom-0 start-100 translate-middle-x"
               >
                 <div
                   className="flex items-center gap-2"
@@ -203,101 +212,71 @@ const UpdateProfil = () => {
                   <Tooltip id="tooltip-profil" effect="solid"></Tooltip>
                 </div>
               </label>
-              <input
-                hidden
-                type="file"
-                name="avatar"
-                className="mx-4 my-2 border border-0"
-                onChange={handleFileChange}
-              />
-            </div>
-            <div className="d-flex flex-column">
-              <div className="d-flex flex-column align-items-start mb-4">
-                <label className="fw-bold">
-                  Nouveau pseudo:{" "}
-                  <input
-                    type="text"
-                    name="login"
-                    value={formData.login}
-                    onChange={handleChange}
-                  />
-                </label>
-                {validationErrors.login && (
-                  <div className="error-message">{validationErrors.login}</div>
-                )}
-              </div>
-              <div className="d-flex flex-column align-items-start">
-                <label htmlFor="password" className="fw-bold">
-                  Nouveau mot de passe:
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-                {validationErrors.email && (
-                  <div className="error-message">
-                    {validationErrors.password}
-                  </div>
-                )}
-              </div>
             </div>
           </div>
-          <div className="d-flex justify-content-evenly mt-5">
-            <div>
-              <div className="d-flex flex-column align-items-start mb-4">
-                <label htmlFor="login" className="fw-bold">
-                  Email:
-                </label>
-                <input
-                  type="text"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-                {validationErrors.email && (
-                  <div className="error-message">{validationErrors.email}</div>
-                )}
-              </div>
-
-              <div className="d-flex align-items-center">
-                <label className="mb-0 me-3">Code postal: </label>
-                <input
-                  type="text"
-                  name="postalCode"
-                  value={formData?.Address?.postalCode}
-                  onChange={handlePostalCodeChange}
-                  maxLength={5}
-                />
-                {validationErrors.postalCode && (
-                  <div className="error-message">
-                    {validationErrors.postalCode}
-                  </div>
-                )}
-                {validationErrors.noCity && (
-                  <div className="error-message">{validationErrors.noCity}</div>
-                )}
-                <select name="selectedCity" value={formData.selectedCity} onChange={handleChange}>
-                  <option value="">Sélectionner votre ville</option>
-                  {formData.cities &&
-                    formData.cities.map((city, index) => (
-                      <option key={index} value={city}>
-                        {city}
-                      </option>
-                    ))}
-                </select>
-                {validationErrors.selectedCity && (
-                  <div className="error-message">
-                    {validationErrors.selectedCity}
-                  </div>
-                )}
-              </div>
-            </div>
-            <Button type="submit">
-              <span className="fw-bold">Enregistrer les modifications</span>
-            </Button>
+          <div className="mb-4">
+            <label className="fw-bold me-4">Mot de passe: </label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="form-control"
+            />
           </div>
+          {validation.password && (
+            <div className="alert alert-danger">{validation.password}</div>
+          )}
+          <div className="mb-4">
+            <label className="fw-bold me-4">Email:</label>
+            <input
+              type="text"
+              name="email"
+              value={formData?.email}
+              onChange={handleChange}
+              className="form-control"
+            />
+          </div>
+          {validation.email && (
+            <div className="alert alert-danger">{validation.email}</div>
+          )}
+          <div className="mb-4">
+            <label className="fw-bold me-4">Code postal: </label>
+            <input
+              type="text"
+              name="postalCode"
+              value={formData?.postalCode}
+              onChange={handlePostalCodeChange}
+              maxLength={5}
+              className="form-control"
+            />
+          </div>
+          {validation.postalCode && (
+            <div className="alert alert-danger">{validation.postalCode}</div>
+          )}
+          {validation.noCity && (
+            <div className="alert alert-danger">{validation.noCity}</div>
+          )}
+          <div className="mb-5">
+            <label className="fw-bold me-4">Ville: </label>
+            <select
+              name="selectedCity"
+              value={formData.selectedCity}
+              onChange={handleChange}
+              className="form-control"
+            >
+              <option value="">Sélectionner votre ville</option>
+              {formData.cities &&
+                formData.cities.map((city, index) => (
+                  <option key={index} value={city}>
+                    {city}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <Button type="submit" disabled={!isModified}>
+            <span className="fw-bold">Enregistrer les modifications</span>
+          </Button>
         </div>
       </div>
     </form>

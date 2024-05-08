@@ -32,19 +32,6 @@ const validateInput = (data) => {
   return schema.validate(data);
 };
 
-const validateUpdateInput = (data) => {
-  const schema = Joi.object({
-    email: Joi.string().email(),
-    password: Joi.string(),
-    login: Joi.string().regex(new RegExp(loginRegex)),
-    postalCode: Joi.number().integer(),
-    city: Joi.string(),
-    avatar: Joi.string().allow(null),
-  });
-
-  return schema.validate(data);
-};
-
 /**
  * Register a new user
  * @param {object} req
@@ -87,7 +74,7 @@ const register = async (req, res) => {
     if (error) {
       return res.status(400).json({
         errorCode: "invalidInput",
-        errorMessage: errors.authentication.global.invalidInput,
+        errorMessage: errors.global.invalidInput,
       });
     }
 
@@ -204,4 +191,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { validateInput, validateUpdateInput, register, login };
+module.exports = { passwordRegex, validateInput, register, login };

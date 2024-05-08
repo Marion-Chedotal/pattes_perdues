@@ -20,6 +20,7 @@ const ProfilCard = ({ showUserPosts }) => {
       try {
         // fetch global user information
         const data = await UserService.getUserInformation(currentUserId, token);
+
         setUserData(data);
         // fetch user's post
         const number = await postService.getUserNumberOfPost(
@@ -40,7 +41,11 @@ const ProfilCard = ({ showUserPosts }) => {
         <div className="d-flex justify-content-evenly align-items-center">
           <img
             className="avatar rounded-circle"
-            src={user?.avatar ? user.avatar : defaultAvatar}
+            src={
+              userData?.avatar
+                ? "http://localhost:3001/" + userData.avatar
+                : defaultAvatar
+            }
             alt="avatar"
           />
           <p className="fs-4">{user?.login}</p>
@@ -54,9 +59,7 @@ const ProfilCard = ({ showUserPosts }) => {
 
             <div className="d-flex align-items-center">
               <h6 className="mb-0 me-3">Ville: </h6>
-              <span className="me-2">
-                {userData?.Address?.postalCode}
-              </span>
+              <span className="me-2">{userData?.Address?.postalCode}</span>
               <span>
                 {userData?.Address?.city
                   ? capitalizeFirstLetter(userData?.Address?.city)

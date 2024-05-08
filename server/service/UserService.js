@@ -36,6 +36,10 @@ const getByLogin = async (login) => {
     where: {
       login,
     },
+    include: {
+      model: Address,
+      attributes: ["street", "postalCode", "city"],
+    },
   });
 };
 

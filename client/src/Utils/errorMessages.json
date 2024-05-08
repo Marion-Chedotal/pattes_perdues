@@ -12,5 +12,12 @@
     "postalCode": "Le code postal doit comprendre 5 chiffres",
     "cityNotSelected": "Merci de sélectionner une ville.",
     "cityNotFound": "Aucune commune trouvée pour ce code postal."
+
+  },
+  "userUpdate": {
+    "emailInvalid": "Format à respecter: pattesperdues@hello.com",
+    "passwordInvalid": "Le mot de passe doit contenir à minima 10 caractères, au moins une lettre minuscule, une lettre majuscule, un chiffre, un caractères spéciaux: !@#$%^*()_+.",
+    "postalCode": "Le code postal doit comprendre 5 chiffres"
+
   }
 }

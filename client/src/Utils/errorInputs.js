@@ -6,7 +6,6 @@ export const validateRegisterInputs = ({
   password,
   postalCode,
   selectedCity,
-  avatar,
 }) => {
   let errors = {};
 
@@ -65,6 +64,34 @@ export const validatePostInputs = (formData) => {
   if (!formData.selectedCity) {
     errors.selectedCity = errorMessages.post.cityNotSelected;
   }
-  
+
+  return errors;
+};
+
+export const validateUserInputs = ({
+  email,
+  password,
+  postalCode,
+}) => {
+  let errors = {};
+
+  if (!/^[^\s@]+@[^\s@]+\.(com|net|org|gov|edu|fr|io)$/.test(email)) {
+    errors.email = errorMessages.userUpdate.emailInvalid;
+  }
+
+  if (password !== "") {
+    if (
+      !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{10,32}/.test(
+        password
+      )
+    ) {
+      errors.password = errorMessages.userUpdate.passwordInvalid;
+    }
+  }
+
+  if (postalCode?.length !== 5) {
+    errors.postalCode = errorMessages.userUpdate.postalCode;
+  }
+
   return errors;
 };

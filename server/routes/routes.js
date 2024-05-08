@@ -20,13 +20,13 @@ router.post("/login", AuthController.login);
  * user route
  */
 router.get("/user/:id", AuthMiddleware.validateToken, UserController.findById);
-router.get(
-  "/user/search/:login",
-  AuthMiddleware.validateToken,
-  UserController.findByLogin
-);
+// router.get(
+//   "/user/search/:login",
+//   AuthMiddleware.validateToken,
+//   UserController.findByLogin
+// );
 router.put(
-  "/user/:id",
+  "/user/:login",
   AuthMiddleware.validateToken,
   upload,
   UserController.updateUser
