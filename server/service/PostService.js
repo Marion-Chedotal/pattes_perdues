@@ -16,7 +16,12 @@ const addPost = async (postData) => {
  */
 const getById = async (id) => {
   return await Post.findByPk(id, {
-    include: [User, Pet_category, Type, Address],
+    include: [
+      { model: User, attributes: { exclude: ["password", "email"] } },
+      Pet_category,
+      Type,
+      Address,
+    ],
   });
 };
 
@@ -60,7 +65,6 @@ const countPostsByUser = async (userId) => {
     },
   });
 };
-
 
 /**
  * Update post

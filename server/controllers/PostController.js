@@ -5,6 +5,7 @@ const AddressService = require("../service/AddressService");
 const { escapeHtml } = require("../utils/htmlEscape");
 const errors = require("../utils/errors.json");
 const Joi = require("joi");
+const fs = require("fs");
 
 /**
  * Validate post input using a Joi schema.
@@ -402,10 +403,18 @@ const removePost = async (req, res) => {
 
   if (isUserAllowed) {
     try {
+      // get the picture to delete it with the post
+      const picture = postToDelete.picture;
       const post = await PostService.deletePost(idPost);
+
       if (post.length === 0) {
         return res.status(400).json({ error: `Post ${id} doesn't exist` });
       }
+
+      if (picture) {
+        fs.unlinkSync(picture);
+      }
+
       res.status(200).json(`Post ${idPost} has been successfully deleted`);
     } catch (error) {
       res.status(500).json({
