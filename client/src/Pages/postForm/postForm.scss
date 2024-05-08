@@ -51,6 +51,15 @@
   Button {
     border-radius: 30px;
     padding: 12px 20px;
+
+    &:hover {
+      color: $beige-color;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 
   @media (max-width: 575.98px) {

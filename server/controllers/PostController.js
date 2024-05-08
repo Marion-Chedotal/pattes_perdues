@@ -349,7 +349,14 @@ const updatePost = async (req, res) => {
     PetCategoryId,
   } = req.body;
 
-   if (isUserAllowed) {
+  if (postalCode !== postToEdit.Address.postalCode && !city) {
+    return res.status(400).json({
+      errorCode: "noCity",
+      errorMessage: errors.global.noCity,
+    });
+  }
+
+  if (isUserAllowed) {
     try {
       let picturePath;
       if (req.files && req.files.picture && req.files.picture.length > 0) {

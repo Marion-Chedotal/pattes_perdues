@@ -26,6 +26,7 @@ const PostForm = () => {
   const navigate = useNavigate();
 
   const [isUpdate, setIsUpdate] = useState(false);
+  const [isModified, setIsModified] = useState(false);
 
   const [types, setTypes] = useState([]);
   const [selectedTypeId, setSelectedTypeId] = useState("");
@@ -67,17 +68,13 @@ const PostForm = () => {
             ...prevFormData,
             ...post,
             is_active: post.is_active ? "true" : "false",
-          }));
-
-          setSelectedTypeId(post.TypeId);
-          setSelectedCatId(post.PetCategoryId);
-
-          setFormData((prevFormData) => ({
-            ...prevFormData,
             street: post?.Address?.street,
             postalCode: post?.Address?.postalCode,
             selectedCity: post?.Address?.city,
           }));
+
+          setSelectedTypeId(post.TypeId);
+          setSelectedCatId(post.PetCategoryId);
         } catch (error) {
           console.error("Error fetching post details:", error);
         }
@@ -109,6 +106,7 @@ const PostForm = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setNewPicture(file);
+    setIsModified(true);
 
     const reader = new FileReader();
 
@@ -126,11 +124,13 @@ const PostForm = () => {
   // PostalCode
   const handlePostalCodeChange = async (e) => {
     const value = e.target.value;
+    setIsModified(true);
 
     if (value.length <= 5) {
       setFormData((prevInputs) => ({
         ...prevInputs,
         postalCode: value,
+        selectedCity: "",
       }));
 
       if (value.length === 5) {
@@ -168,6 +168,7 @@ const PostForm = () => {
     const { name, value } = e.target;
 
     setFormData({ ...formData, [name]: value });
+    setIsModified(true);
 
     // for Type and Pet Category select
     if (name === "selectedTypeId") {
@@ -216,12 +217,13 @@ const PostForm = () => {
         is_active: is_active,
         street: formData.street,
         postalCode: formData.postalCode,
-        city: formData.selectedCity,
+        city: formData.selectedCity !== "" ? formData.selectedCity : "",
         picture: newPicture,
       };
 
       if (isUpdate) {
         await postService.update(id, postData, token);
+        setIsModified(false);
         navigate(`/annonce/${id}`, {
           state: {
             successMessage: "Votre annonce a été modifiée avec succès !",
@@ -460,7 +462,7 @@ const PostForm = () => {
             )}
             <label className="required">
               Ville
-              <select name="selectedCity" onChange={handleChange}>
+              <select name="selectedCity" onChange={handleChange}  value={formData.selectedCity}>
                 <option value="">Sélectionner votre ville</option>
                 {formData?.cities &&
                   formData?.cities.map((city, index) => (
@@ -590,7 +592,7 @@ const PostForm = () => {
           </Col>
         </Row>
         <div className="text-center py-5">
-          <Button type="submit">
+          <Button type="submit" disabled={!isModified}>
             {isUpdate ? "Mettre à jour" : "Publier l'annonce"}
           </Button>
         </div>
