@@ -1,5 +1,6 @@
 import "./Header.scss";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import userService from "../../Services/UserService";
 import { Link } from "react-router-dom";
 import Button from "../Btn/Button";
 import { Navbar, Container, Nav } from "react-bootstrap";
@@ -7,9 +8,30 @@ import logo from "../../Assets/pattes_perdues_logo.png";
 import Logout from "../LogoutBtn/LogoutBtn";
 import { useSelector } from "react-redux";
 import { Tooltip } from "react-tooltip";
+import defaultAvatar from "../../Assets/default_avatar.png";
 
 const Header = () => {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, user, token } = useSelector((state) => state.auth);
+  const currentUserId = user?.id;
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchUserData = async () => {
+        try {
+          // fetch global user information
+          const data = await userService.getUserInformation(
+            currentUserId,
+            token
+          );
+          setUserData(data);
+        } catch (err) {
+          console.error("Error fetching posts:", err);
+        }
+      };
+      fetchUserData();
+    }
+  }, [isAuthenticated, currentUserId, token]);
 
   return (
     <Navbar expand="lg">
@@ -21,24 +43,29 @@ const Header = () => {
         <Navbar.Brand href="/" className="order-lg-1 mx-auto">
           <img src={logo} alt="logo pattes perdues" />
         </Navbar.Brand>
-        <Nav className="order-lg-3 mx-auto d-flex align-items-center">
+        <Nav className="order-lg-3 mx-auto d-flex align-items-center gap-2">
           {isAuthenticated && user ? (
             <>
               <Link to={`/profil/${user?.login}`} className="goToProfil">
                 <div
-                  className="flex items-center gap-2"
+                  className="d-flex flex-lg-column justify-content-center align-items-center gap-1"
                   data-tip
                   data-tooltip-id="tooltip-profil"
                   data-tooltip-content="Voir mon profil"
                 >
-                  {/* TODO: Ajout un avatar par défaut */}
-                  {/* <img
-                    className="h-8 w-8 rounded-full"
-                    src={user?.avatar}
+                  <img
+                    className="h-8 w-8 avatar rounded-circle"
+                    src={
+                      userData?.avatar
+                        ? "http://localhost:3001/" + userData.avatar
+                        : defaultAvatar
+                    }
                     alt="avatar"
-                  /> */}
-                  <span className="me-lg-3 mb-3 mb-lg-0">{user?.login}</span>
-                  <Tooltip id="tooltip-profil" effect="solid"></Tooltip>
+                  />
+                  <div className="d-flex flex-lg-column align-items-center">
+                    <span>{user?.login}</span>
+                    <Tooltip id="tooltip-profil" effect="solid"></Tooltip>
+                  </div>
                 </div>
               </Link>
               <Logout />

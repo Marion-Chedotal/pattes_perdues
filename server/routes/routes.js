@@ -46,14 +46,25 @@ router.post(
   upload,
   PostController.createPost
 );
+
 router.get("/post/:id", PostController.findById);
 router.get("/posts", PostController.findAll);
-router.get("/posts/user/:login",  AuthMiddleware.validateToken,PostController.findByUser);
+router.get("/posts/last-three", PostController.findLastThreePosts);
+router.get(
+  "/posts/last-three-archives",
+  PostController.findLastThreeArchivesPosts
+);
+router.get(
+  "/posts/user/:login",
+  AuthMiddleware.validateToken,
+  PostController.findByUser
+);
 router.get(
   "/posts/:userId",
   AuthMiddleware.validateToken,
   PostController.numberPostsByUser
 );
+
 router.put(
   "/post/:id",
   AuthMiddleware.validateToken,

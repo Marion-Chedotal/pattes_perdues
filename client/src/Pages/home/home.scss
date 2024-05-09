@@ -1,47 +1,66 @@
 @import "../../App";
 
-.presentation {
-  background-color: $beige-color;
-  font-family: $font-eb-garamond;
-  font-size: 1.1rem;
-
-  .card {
-    color: $blue-color;
+.home {
+  .presentation {
     background-color: $beige-color;
+    font-family: $font-eb-garamond;
+    font-size: 1.1rem;
 
-    .card-header {
+    .card {
+      color: $blue-color;
       background-color: $beige-color;
+
+      .card-header {
+        background-color: $beige-color;
+      }
+
+      .introduction {
+        background-color: $white-color;
+        border-radius: 10px 60px 10px 10px;
+        height: 8rem;
+      }
+    }
+    .hr {
+      opacity: 1;
     }
 
-    .introduction {
+    .how {
       background-color: $white-color;
-      border-radius: 10px 60px 10px 10px;
-      height: 8rem;
+      border-radius: 10px 10px 10px 70px;
+      width: fit-content;
+
+      li {
+        font-size: 1rem;
+      }
+    }
+
+    .introImg {
+      width: 18rem;
+      height: auto;
+    }
+
+    .postCard {
+      button {
+        padding: 40px;
+        border-radius: 20px;
+      }
     }
   }
-  .hr {
-    opacity: 1;
-  }
 
-  .how {
-    background-color: $white-color;
-    border-radius: 10px 10px 10px 70px;
-    width: fit-content;
+  .happyEndings {
+    background-color: $blue-color;
 
-    li {
-      font-size: 1rem;
+    h3,
+    span {
+      color: $beige-color;
+    }
+
+    .iconStar {
+      width: 15rem;
+      height: 15rem;
     }
   }
-
-  .introImg {
-    width: 18rem;
-    height: auto;
-  }
-
-  .postCard {
-    button {
-      padding: 40px;
-      border-radius: 20px;
-    }
+  .loupeIcon {
+    font-size: 1.5rem;
   }
 }

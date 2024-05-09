@@ -189,6 +189,50 @@ const findAll = async (req, res) => {
 };
 
 /**
+ * Find the last 3 posts
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
+const findLastThreePosts = async (req, res) => {
+  try {
+    const post = await PostService.getThreeLatestPosts();
+
+    if (post.length === 0) {
+      return res.status(400).json({ error: `There is no posts` });
+    }
+
+    res.status(200).json(post);
+  } catch (error) {
+
+    res.status(500).json({
+      error: `Error when fetching the last 3 post, ${error}`,
+    });
+  }
+};
+
+/**
+ * Find the last 3 archives posts
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
+const findLastThreeArchivesPosts = async (req, res) => {
+  try {
+    const post = await PostService.getThreeLatestArchivesPosts();
+
+    if (post.length === 0) {
+      return res.status(400).json({ error: `There is no posts` });
+    }
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when fetching the last 3 archives post, ${error}`,
+    });
+  }
+};
+
+/**
  * Find user's post
  * @param {object} req
  * @param {object} res
@@ -454,6 +498,8 @@ module.exports = {
   createPost,
   findById,
   findAll,
+  findLastThreePosts,
+  findLastThreeArchivesPosts,
   findByUser,
   numberPostsByUser,
   findByType,

@@ -103,6 +103,40 @@ const isPostOwner = (currentUserId, userPostId) => {
   if (currentUserId === userPostId) return true;
 };
 
+/**
+ * Get the last 3 posts
+ * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
+ */
+const getLastThreePosts = async () => {
+  try {
+    const response = await axiosInstance.get("/posts/last-three", {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+/**
+ * Get the last 3 archives posts (pets found)
+ * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
+ */
+const getLastThreeArchivesPosts = async () => {
+  try {
+    const response = await axiosInstance.get("/posts/last-three-archives", {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 const update = async (id, formData, token) => {
   try {
     const response = await axiosInstance.put(`/post/${id}`, formData, {
@@ -138,6 +172,8 @@ const postService = {
   getUserNumberOfPost,
   getUserPosts,
   isPostOwner,
+  getLastThreePosts,
+  getLastThreeArchivesPosts,
   update,
   deletePost,
 };

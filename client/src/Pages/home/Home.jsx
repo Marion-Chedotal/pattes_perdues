@@ -10,14 +10,19 @@ import {
   faEye,
   faLocationDot,
   faBullhorn,
+  faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import chien from "../../Assets/chien_home.jpg";
+import sparkles from "../../Assets/sparkles.png";
 import Button from "../../Components/Btn/Button";
-
+import postService from "../../Services/PostService";
+import PostCard from "../../Components/PostCard/PostCard";
 
 const Home = () => {
-
+  const [lastThreePosts, setLastThreePosts] = useState([]);
+  const [lastThreeArchivesPosts, setLastThreeArchivesPosts] = useState([]);
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState("");
+
   // when owner deleting his account, he is redirect here with success message.
   const location = useLocation();
   useEffect(() => {
@@ -25,7 +30,7 @@ const Home = () => {
       setDeleteSuccessMessage(location.state.deleteSuccessMessage);
     }
   }, [location]);
-  
+
   useEffect(() => {
     if (deleteSuccessMessage) {
       const timer = setTimeout(() => {
@@ -35,13 +40,40 @@ const Home = () => {
     }
   }, [deleteSuccessMessage]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const postData = await postService.getLastThreeArchivesPosts();
+        setLastThreeArchivesPosts(postData);
+      } catch (error) {
+        console.error("Error fetching the last archives posts:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchLastestPosts = async () => {
+      try {
+        const post = await postService.getLastThreePosts();
+        setLastThreePosts(post);
+      } catch (error) {
+        console.error("Error fetching the last 3 posts:", error);
+      }
+    };
+    fetchLastestPosts();
+  }, []);
+
   return (
     <div>
       <Header />
       {deleteSuccessMessage && (
-        <div className="successDelete text-center alert alert-success">{deleteSuccessMessage}</div>
+        <div className="successDelete text-center alert alert-success">
+          {deleteSuccessMessage}
+        </div>
       )}
-      <main>
+      <main className="home">
         <Container fluid className="presentation mt-5 ">
           <Row>
             <Col
@@ -95,16 +127,6 @@ const Home = () => {
                   </li>
                   <li>Publier une annonce pour informer la communauté !</li>
                 </ol>
-                <div className="d-flex align-items-center py-4">
-                  <FontAwesomeIcon icon={faEye} />
-                  <dt className="ps-3"> Une annonce près de chez vous ? </dt>
-                </div>
-                <ol>
-                  <li>
-                    Informer le propriétaire que vous aller effectuer des
-                    recherches en cliquant sur cette icône !
-                  </li>
-                </ol>
               </dl>
             </Col>
             <Col md={3} className="text-center mt-5 d-none d-md-block">
@@ -137,6 +159,54 @@ const Home = () => {
                 </Link>
               </div>
             </Col>
+          </Row>
+        </Container>
+        <Container fluid className="happyEndings pb-5">
+          <Row className="align-items-center justify-content-center mb-5">
+            <Col className="text-center">
+              <div className="d-flex align-items-center justify-content-center">
+                <Image alt="étoiles" src={sparkles} className="iconStar" />
+                <h3 className="">Happy Endings</h3>
+                <Image alt="étoiles" src={sparkles} className="iconStar" />
+              </div>
+              <span className="fs-4">Ils ont retrouvé leur propriétaire !</span>
+            </Col>
+          </Row>
+          <Row className="">
+            {lastThreeArchivesPosts.map((post) => (
+              <Col
+                key={post.id}
+                lg={4}
+                md={6}
+                sm={12}
+                className="mb-4 d-flex align-items-center justify-content-center"
+              >
+                <PostCard post={post} />
+              </Col>
+            ))}
+          </Row>
+        </Container>
+        <Container fluid className=" pb-5">
+          <Row className="align-items-center justify-content-center my-5">
+            <Col className="text-center">
+              <div className="d-flex align-items-center justify-content-center gap-4">
+                <h3 className="">Dernières annonces parues</h3>
+                <FontAwesomeIcon icon={faMagnifyingGlass} className="loupeIcon" />
+              </div>
+            </Col>
+          </Row>
+          <Row className="">
+            {lastThreePosts.map((post) => (
+              <Col
+                key={post.id}
+                lg={4}
+                md={6}
+                sm={12}
+                className="mb-4 d-flex align-items-center justify-content-center"
+              >
+                <PostCard post={post} />
+              </Col>
+            ))}
           </Row>
         </Container>
       </main>

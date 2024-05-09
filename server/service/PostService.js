@@ -37,6 +37,33 @@ const getAll = async () => {
 };
 
 /**
+ * Find the three latest created posts
+ * @returns {Promise<Array>}
+ */
+const getThreeLatestPosts = async () => {
+  return await Post.findAll({
+    include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    order: [["createdAt", "DESC"]],
+    limit: 3,
+  });
+};
+
+/**
+ * Find the three latest archives posts (pets founded)
+ * @returns {Promise<Array>}
+ */
+const getThreeLatestArchivesPosts = async () => {
+  return await Post.findAll({
+    include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    where: {
+      is_active: false,
+    },
+    order: [["updatedAt", "DESC"]],
+    limit: 3,
+  });
+};
+
+/**
  * Find all post create by user
  * @param {number} userId
  * @returns {Promise<Array>}
@@ -106,6 +133,8 @@ module.exports = {
   addPost,
   getById,
   getAll,
+  getThreeLatestPosts,
+  getThreeLatestArchivesPosts,
   getAllByUser,
   countPostsByUser,
   editPost,
