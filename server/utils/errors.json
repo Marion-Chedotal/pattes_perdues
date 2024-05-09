@@ -1,0 +1,13 @@
+{
+  "global": {
+    "fieldsToFill": "Please fill in all fields",
+    "noCity": "Please select a city corresponding to the postal code.",
+    "invalidInput": "Invalid input format.",
+    "badImgFormat": "Only .png, .jpg and .jpeg format allowed !"
+  },
+  "authentication": {
+    "emailExist": "Email already used",
+    "loginExist": "Login already used",
+    "invalidInformations": "Invalid Informations"
+  }
+}

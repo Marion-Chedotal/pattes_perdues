@@ -16,7 +16,12 @@ const addPost = async (postData) => {
  */
 const getById = async (id) => {
   return await Post.findByPk(id, {
-    include: [User, Pet_category, Type, Address],
+    include: [
+      { model: User, attributes: { exclude: ["password", "email"] } },
+      Pet_category,
+      Type,
+      Address,
+    ],
   });
 };
 
@@ -28,6 +33,47 @@ const getAll = async () => {
   return await Post.findAll({
     include: [{ model: Pet_category }, { model: Type }, { model: Address }],
     order: [["createdAt", "DESC"]],
+  });
+};
+
+/**
+ * Find the three latest created posts
+ * @returns {Promise<Array>}
+ */
+const getThreeLatestPosts = async () => {
+  return await Post.findAll({
+    include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    order: [["createdAt", "DESC"]],
+    limit: 3,
+  });
+};
+
+/**
+ * Find the three latest archives posts (pets founded)
+ * @returns {Promise<Array>}
+ */
+const getThreeLatestArchivesPosts = async () => {
+  return await Post.findAll({
+    include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    where: {
+      is_active: false,
+    },
+    order: [["updatedAt", "DESC"]],
+    limit: 3,
+  });
+};
+
+/**
+ * Find all the archives posts (pets founded)
+ * @returns {Promise<Array>}
+ */
+const getAllArchivesPosts = async () => {
+  return await Post.findAll({
+    include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    where: {
+      is_active: false,
+    },
+    order: [["updatedAt", "DESC"]],
   });
 };
 
@@ -61,7 +107,6 @@ const countPostsByUser = async (userId) => {
   });
 };
 
-
 /**
  * Update post
  * @param {number} idPost
@@ -92,6 +137,9 @@ module.exports = {
   addPost,
   getById,
   getAll,
+  getThreeLatestPosts,
+  getThreeLatestArchivesPosts,
+  getAllArchivesPosts,
   getAllByUser,
   countPostsByUser,
   editPost,

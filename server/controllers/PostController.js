@@ -3,6 +3,43 @@ const UserService = require("../service/UserService");
 const AuthenticationService = require("../service/AuthenticationService");
 const AddressService = require("../service/AddressService");
 const { escapeHtml } = require("../utils/htmlEscape");
+const errors = require("../utils/errors.json");
+const Joi = require("joi");
+const fs = require("fs");
+
+/**
+ * Validate post input using a Joi schema.
+ * @param {object} data - The data to be validated.
+ * @param {string} data.email - email
+ * @param {string} data.password - password.
+ * @param {string} data.login - login.
+ * @param {number} data.postalCode - postal code .
+ * @param {string} data.city - city.
+ * @returns {Joi.ValidationResult<object>} - The result of the validation.
+ */
+const validateInput = (data) => {
+  const schema = Joi.object({
+    gender: Joi.string(),
+    alert_date: Joi.date(),
+    description: Joi.string(),
+    name: Joi.string().allow(""),
+    tattoo: Joi.string(),
+    microchip: Joi.string(),
+    collar: Joi.string(),
+    distinctive_signs: Joi.string().allow(""),
+    picture: Joi.string().dataUri().allow(""),
+    is_active: Joi.boolean(),
+    street: Joi.string(),
+    postalCode: Joi.number().integer(),
+    city: Joi.string(),
+    UserId: Joi.number().integer(),
+    TypeId: Joi.number().integer(),
+    PetCategoryId: Joi.number().integer(),
+  });
+
+  return schema.validate(data);
+};
+
 /**
  * Register a new post
  * @param {object} req
@@ -10,6 +47,41 @@ const { escapeHtml } = require("../utils/htmlEscape");
  * @throws {object} error
  */
 const createPost = async (req, res) => {
+  // sanitize input
+  const fieldsToSanitize = [
+    "gender",
+    "alert_date",
+    "description",
+    "name",
+    "tattoo",
+    "microchip",
+    "collar",
+    "distinctive_signs",
+    "picture",
+    "is_active",
+    "street",
+    "postalCode",
+    "city",
+    "UserId",
+    "TypeId",
+    "PetCategoryId",
+  ];
+
+  fieldsToSanitize.forEach((fieldName) => {
+    if (req.body[fieldName]) {
+      req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
+    }
+  });
+
+  // Check input format
+  const { error } = validateInput(req.body);
+  if (error) {
+    return res.status(400).json({
+      errorCode: "fieldsToFill",
+      errorMessage: errors.global.fieldsToFill,
+    });
+  }
+
   let {
     gender,
     alert_date,
@@ -29,21 +101,11 @@ const createPost = async (req, res) => {
     PetCategoryId,
   } = req.body;
 
-  // sanitize input
-  const fieldsToSanitize = ["description", "name", "distinctive_signs"];
-
-  fieldsToSanitize.forEach((fieldName) => {
-    req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
-  });
-
   try {
-    // get current user information
-    // const currentUserId = req.user.id;
-    // const currentUser = await UserService.getById(currentUserId);
-    // // req.body.UserId = currentUserId;
-    // // req.body.AddressId = currentUser.AddressId;
-    // req.body.UserId = currentUserId;
-    // req.body.AddressId = currentUser.AddressId;
+    let picturePath;
+    if (req.files && req.files.picture && req.files.picture.length > 0) {
+      picturePath = req.files.picture[0].path;
+    }
 
     // create a new post
     const post = await PostService.addPost({
@@ -55,7 +117,7 @@ const createPost = async (req, res) => {
       microchip,
       collar,
       distinctive_signs,
-      picture: req.file?.path,
+      picture: picturePath,
       is_active,
       UserId,
       TypeId,
@@ -122,6 +184,70 @@ const findAll = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       error: `Error when fetching post, ${error}`,
+    });
+  }
+};
+
+/**
+ * Find the last 3 posts
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
+const findLastThreePosts = async (req, res) => {
+  try {
+    const post = await PostService.getThreeLatestPosts();
+
+    if (post.length === 0) {
+      return res.status(400).json({ error: `There is no posts` });
+    }
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when fetching the last 3 post, ${error}`,
+    });
+  }
+};
+
+/**
+ * Find the last 3 archives posts
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
+const findLastThreeArchivesPosts = async (req, res) => {
+  try {
+    const post = await PostService.getThreeLatestArchivesPosts();
+
+    if (post.length === 0) {
+      return res.status(400).json({ error: `There is no posts` });
+    }
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when fetching the last 3 archives post, ${error}`,
+    });
+  }
+};
+
+/**
+ * Find all archives posts
+ * @param {object} req
+ * @param {object} res
+ * @throws {object} error
+ */
+const findAllArchivesPosts = async (req, res) => {
+  try {
+    const post = await PostService.getAllArchivesPosts();
+
+    if (post.length === 0) {
+      return res.status(400).json({ error: `There is no posts` });
+    }
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when fetching the archives post, ${error}`,
     });
   }
 };
@@ -235,11 +361,38 @@ const updatePost = async (req, res) => {
   );
 
   // sanitize input
-  const fieldsToSanitize = ["description", "name", "distinctive_signs"];
+  const fieldsToSanitize = [
+    "gender",
+    "alert_date",
+    "description",
+    "name",
+    "tattoo",
+    "microchip",
+    "collar",
+    "distinctive_signs",
+    "picture",
+    "is_active",
+    "street",
+    "postalCode",
+    "city",
+    "UserId",
+    "TypeId",
+    "PetCategoryId",
+  ];
 
   fieldsToSanitize.forEach((fieldName) => {
-    req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
+    if (req.body[fieldName]) {
+      req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
+    }
   });
+  // Check input format
+  const { error } = validateInput(req.body);
+  if (error) {
+    return res.status(400).json({
+      errorCode: "fieldsToFill",
+      errorMessage: errors.global.fieldsToFill,
+    });
+  }
 
   let {
     gender,
@@ -253,13 +406,32 @@ const updatePost = async (req, res) => {
     picture,
     is_active,
     UserId,
-    AddressId,
+    street,
+    postalCode,
+    city,
     TypeId,
     PetCategoryId,
   } = req.body;
 
+  if (postalCode !== postToEdit.Address.postalCode && !city) {
+    return res.status(400).json({
+      errorCode: "noCity",
+      errorMessage: errors.global.noCity,
+    });
+  }
+
   if (isUserAllowed) {
     try {
+      let picturePath;
+      if (req.files && req.files.picture && req.files.picture.length > 0) {
+        picturePath = req.files.picture[0].path;
+
+        // Delete old picture from server
+        if (postToEdit.picture) {
+          fs.unlinkSync(postToEdit.picture);
+        }
+      }
+
       const post = await PostService.editPost(idPost, {
         gender,
         alert_date,
@@ -269,12 +441,19 @@ const updatePost = async (req, res) => {
         microchip,
         collar,
         distinctive_signs,
-        picture: req.file?.path,
+        picture: picturePath,
         is_active,
         UserId,
         TypeId,
         PetCategoryId,
       });
+
+      await AddressService.editAddress(postToEdit.AddressId, {
+        street: street,
+        postalCode: postalCode,
+        city: city,
+      });
+
       if (post.length === 0) {
         return res.status(400).json({ error: `Post doesn't exist` });
       }
@@ -310,10 +489,18 @@ const removePost = async (req, res) => {
 
   if (isUserAllowed) {
     try {
+      // get the picture to delete it with the post
+      const picture = postToDelete.picture;
       const post = await PostService.deletePost(idPost);
+
       if (post.length === 0) {
         return res.status(400).json({ error: `Post ${id} doesn't exist` });
       }
+
+      if (picture) {
+        fs.unlinkSync(picture);
+      }
+
       res.status(200).json(`Post ${idPost} has been successfully deleted`);
     } catch (error) {
       res.status(500).json({
@@ -331,6 +518,9 @@ module.exports = {
   createPost,
   findById,
   findAll,
+  findLastThreePosts,
+  findLastThreeArchivesPosts,
+  findAllArchivesPosts,
   findByUser,
   numberPostsByUser,
   findByType,

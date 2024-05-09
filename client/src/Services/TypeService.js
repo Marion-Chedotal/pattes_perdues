@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "./Axios";
 
 /**
  * Get type from API
@@ -7,12 +7,7 @@ import axios from "axios";
  */
 const getType = async () => {
   try {
-    const type = await axios.get(
-      "http://localhost:3001/api/type"
-      ,
-      {
-        withCredentials: true,
-      });
+    const type = await axiosInstance.get("/type");
     return type;
   } catch (error) {
     throw error.response.data;

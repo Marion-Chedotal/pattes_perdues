@@ -1,4 +1,3 @@
-// imports
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
@@ -6,13 +5,10 @@ const morgan = require("morgan");
 const db = require("./models");
 const cookieParser = require("cookie-parser");
 
-// Router
 const routes = require("./routes/routes");
 
-// instanciation du serveur
 const app = express();
 
-// configuration du body-parser
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -27,7 +23,6 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api", routes);
 
-// Lancement du serveur
 const port = process.env.PORT || 8080;
 
 try {

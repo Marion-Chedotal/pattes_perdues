@@ -1,0 +1,44 @@
+@import "../../App";
+
+.updateProfil {
+  input,
+  select {
+    max-width: 300px;
+    margin: auto;
+  }
+  .updateCard {
+    border: 3px solid $beige-color;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 20px;
+
+    @media (max-width: 576px) {
+      border: none;
+    }
+  }
+
+  .changeAvatar {
+    .avatar {
+      object-fit: cover;
+      width: 8rem;
+      height: 8rem;
+      border: 3px solid $beige-color;
+    }
+    .avatarTooltip {
+      background-color: $blue-color;
+      color: $white-color;
+      border-radius: 50px;
+    }
+  }
+
+  Button {
+    &:hover {
+      color: $beige-color;
+    }
+    &:disabled {
+      opacity: 0.5; 
+      cursor: not-allowed; 
+    }
+  }
+}

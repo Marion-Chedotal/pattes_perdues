@@ -23,6 +23,13 @@
     color: inherit;
   }
 
+  .avatar {
+    object-fit: cover;
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid $beige-color;
+  }
+
   button {
     border-radius: 30px;
     padding: 5px 20px;

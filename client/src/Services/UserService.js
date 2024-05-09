@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "./Axios";
 
 /**
  * Get user informations from API
@@ -8,13 +8,13 @@ import axios from "axios";
  */
 const getUserInformation = async (id, token) => {
   try {
-    return await axios.get(`http://localhost:3001/api/user/${id}`, {
-      withCredentials: true,
+    const response = await axiosInstance.get(`/user/${id}`, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     });
+    return response.data;
   } catch (error) {
     throw error.response.data;
   }
@@ -22,35 +22,33 @@ const getUserInformation = async (id, token) => {
 
 /**
  * Update user informations from API
- * @param {number} id - user id
+ * @param {number} login -  user login
  * @param {string} token - token
  * @returns {Promise<Array<string>>} - Promise resolving to an array of
  */
-const updateUserInformation = async (id, userData, token) => {
+const updateUserInformation = async (login, userData, token) => {
   try {
-    return await axios.put(`http://localhost:3001/api/user/${id}`, userData, {
-      withCredentials: true,
+    return await axiosInstance.put(`/user/${login}`, userData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     });
   } catch (error) {
-    console.log(error)
+
     throw error.response.data;
   }
 };
 
 /**
  * Delete user account
- * @param {number} id -  user id
+ * @param {number} login -  user login
  * @param {string} token - token
  * @returns {Promise<Array<string>>} - Promise resolving to an array of
  */
-const deleteUser = async (id, token) => {
+const deleteUser = async (login, token) => {
   try {
-    return await axios.delete(`http://localhost:3001/api/user/${id}`, {
-      withCredentials: true,
+    return await axiosInstance.delete(`/user/${login}`, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,

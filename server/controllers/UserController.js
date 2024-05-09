@@ -1,9 +1,24 @@
 const UserService = require("../service/UserService");
 const AddressService = require("../service/AddressService");
 const AuthenticationService = require("../service/AuthenticationService");
-const { validateInput } = require("./AuthenticationController");
+const errors = require("../utils/errors.json");
 const bcrypt = require("bcryptjs");
 const { escapeHtml } = require("../utils/htmlEscape");
+const { passwordRegex } = require("./AuthenticationController");
+const Joi = require("joi");
+const fs = require("fs");
+
+const validateUpdateInput = (data) => {
+  const schema = Joi.object({
+    password: Joi.string().regex(new RegExp(passwordRegex)).allow(""),
+    email: Joi.string().email(),
+    avatar: Joi.string().dataUri().allow(""),
+    postalCode: Joi.number().integer(),
+    city: Joi.string().allow(""),
+  });
+
+  return schema.validate(data);
+};
 
 /**
  * Get user by his id
@@ -61,62 +76,96 @@ const findByLogin = async (req, res) => {
  * @throws {object} error
  */
 const updateUser = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const login = req.params.login;
   const currentUserId = req.userId;
 
-  // Get user input
-  let { login, password, email, postalCode, city } = req.body;
+  const user = await UserService.getByLogin(login);
 
+  const userId = user.id;
+  
   const isUserAllowed = AuthenticationService.checkUserPermission(
     currentUserId,
-    id
+    userId
   );
 
-  // Validate user input
-  const { error } = validateInput(req.body);
+  // sanitize input
+  const fieldsToSanitize = [
+    "password",
+    "email",
+    "avatar",
+    "postalCode",
+    "city",
+  ];
+
+  fieldsToSanitize.forEach((fieldName) => {
+    if (req.body[fieldName]) {
+      req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
+    }
+  });
+
+  // Check input format
+  const { error } = validateUpdateInput(req.body);
+
   if (error) {
-    return res.status(400).json({ error: "Invalid input format" });
+
+    return res.status(400).json({
+      errorCode: "invalidInput",
+      errorMessage: errors.global.invalidInput,
+    });
   }
 
-  // sanitize input TODO: à voir car logiquement je reprends l'api
-  city = escapeHtml(city);
+  let { password, email, avatar, postalCode, city } = req.body;
 
-  const currentUser = await UserService.getById(id);
+  if (postalCode !== user.Address.postalCode && !city) {
+    return res.status(400).json({
+      errorCode: "noCity",
+      errorMessage: errors.global.noCity,
+    });
+  }
 
   if (isUserAllowed) {
     try {
       // Check if user already exist: same email
-      if (currentUser.email !== email) {
-        email = escapeHtml(email.trim());
+      if (user.email !== email) {
         const isEmailAlreadyExist = await UserService.checkEmailExists(email);
         if (isEmailAlreadyExist) {
           return res.status(400).json("Email already used");
         }
       }
+      let hashPassword;
+      if (password) {
+        hashPassword = await bcrypt.hash(password, 10);
+        req.body.password = hashPassword;
+      }
 
-      // Check if user already exist: same login
-      if (currentUser.login !== login) {
-        const isLoginAlreadyExist = await UserService.checkLoginExists(login);
-        if (isLoginAlreadyExist) {
-          return res.status(400).json("Login already used");
+      let avatarPath;
+      if (req.files && req.files.avatar && req.files.avatar.length > 0) {
+        avatarPath = req.files.avatar[0].path;
+
+        // Delete old avatar from server
+        if (user.avatar) {
+          fs.unlinkSync(user.avatar);
         }
       }
 
-      if (password) {
-        const hashPassword = await bcrypt.hash(password, 10);
-        req.body.password = hashPassword;
-      }
-      await AddressService.editAddress(currentUser.AddressId, req.body);
+      const userUpdated = await UserService.editUser(currentUserId, {
+        password: hashPassword,
+        email: email,
+        avatar: avatarPath,
+      });
+      await AddressService.editAddress(user.AddressId, {
+        postalCode: postalCode,
+        city: city,
+      });
 
-      const user = await UserService.editUser(id, req.body);
-
-      if (!user) {
-        return res.status(400).json({ error: `User ${id} doesn't exist` });
+      if (!userUpdated) {
+        return res
+          .status(400)
+          .json({ error: `User ${currentUserId} doesn't exist` });
       }
+
       res.status(200).json({
-        user: user,
-        login: login,
-        message: `The user ${login} has been successfully updated`,
+        message: `The user ${user.login} has been successfully updated`,
       });
     } catch (error) {
       res.status(500).json({

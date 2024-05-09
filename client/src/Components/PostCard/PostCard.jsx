@@ -41,6 +41,8 @@ const PostCard = ({ post }) => {
             <Card.Img
               variant="top"
               src={affiche}
+              alt="pancarte animal perdu"
+              title="Image par Monica Rodriguez de Pixabay"
               className="my-3"
               style={{ height: "250px", objectFit: "cover" }}
             />

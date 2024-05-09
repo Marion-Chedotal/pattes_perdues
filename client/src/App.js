@@ -4,7 +4,6 @@ import Login from "./Pages/login/Login";
 import Register from "./Pages/register/Register";
 import PostForm from "./Pages/postForm/PostForm";
 import PostsList from "./Pages/postsList/PostsList";
-import UpdatePost from "./Pages/updatePost/UpdatePost";
 import Profil from "./Pages/profil/Profil";
 import Post from "./Pages/conversation/Conversation";
 import PageNotFound from "./Pages/notFound/notFound";
@@ -13,6 +12,7 @@ import React, { useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
+import HappyEndings from "./Components/HappyEndings/HappyEndings";
 
 function App() {
   useEffect(() => {
@@ -46,13 +46,17 @@ function App() {
       element: <PostsList />,
     },
     {
+      path: "/happy-endings",
+      element: <HappyEndings />,
+    },
+    {
       path: "/annonce/:id",
       element: <Post />,
     },
-    // {
-    //   path: "/modification-annonce/:id",
-    //   element: <PrivateRoute children={<UpdatePost/>} />,
-    // },
+    {
+      path: "/modification-annonce/:id",
+      element: <PrivateRoute children={<PostForm/>} />,
+    },
     {
       path: "/profil/:login",
       element: <PrivateRoute children={<Profil/>} />,

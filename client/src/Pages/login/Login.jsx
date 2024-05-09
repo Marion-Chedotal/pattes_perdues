@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/authActions";
 
 const Login = () => {
-
   const [inputs, setInputs] = useState({
     login: "",
     password: "",
@@ -30,10 +29,10 @@ const Login = () => {
     e.preventDefault();
     try {
       const data = await authService.login(inputs);
-      dispatch(loginSuccess(data.accessToken, data.user ));
+      dispatch(loginSuccess(data.accessToken, data.user));
       navigate("/");
     } catch (err) {
-      const errorMessage = t(`authentication.${err.error}`);
+      const errorMessage = t(`authentication.${err?.errorCode}`);
       setErrMsg(errorMessage);
     }
   };
@@ -42,7 +41,7 @@ const Login = () => {
     <div className="login container">
       <div className="row ml-5">
         <div className="part d-flex">
-          <div className="left d-none d-sm-block col-md-6"></div>
+          <div className="left d-none d-md-block col-md-6"></div>
           <div className="right col-md-6 d-flex flex-column">
             <div className="logo mx-auto">
               <img src={logo} alt="logo pattes perdues" />
@@ -62,7 +61,7 @@ const Login = () => {
                 onChange={handleChange}
               ></input>
               {errMsg && (
-                <div className="error-message">{errMsg.toString()}</div>
+                <div className="alert alert-danger">{errMsg.toString()}</div>
               )}
               <Button type="submit">Se connecter</Button>
             </form>

@@ -1,6 +1,7 @@
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGOUT = 'LOGOUT';
-export const UPDATEUSER = 'UPDATE_USER';
+export const UPDATE_USER = 'UPDATE_USER';
+export const EXPIRED_TOKEN = 'EXPIRED_TOKEN';
 
 export const loginSuccess = ( accessToken, user  ) => ({
   type: LOGIN_SUCCESS,
@@ -12,6 +13,11 @@ export const logout = () => ({
 });
 
 export const updateUser = (login) => ({
-  type: UPDATEUSER,
+  type: UPDATE_USER,
   payload: { login },
+});
+
+export const expiredToken = (accessToken, user) => ({
+  type: EXPIRED_TOKEN,
+  payload: { accessToken, user },
 });

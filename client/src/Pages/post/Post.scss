@@ -1,6 +1,13 @@
 @import "../../App";
 
 .onePost {
+
+  .founded {
+    background-color: $beige-color;
+    max-width: 400px;
+    margin: auto;
+    border-radius: 40px;
+}
   .isOwnerAction {
     button {
       background-color: transparent;
@@ -27,6 +34,7 @@
   .icon {
     color: $beige-color;
     font-size: 2rem;
+    width: 2rem;
   }
 
   h5,
@@ -63,6 +71,12 @@
     border-radius: 20px;
     &:hover {
       color: $beige-color;
+    }
+  }
+
+  @media (max-width: 575.98px) {
+    .date {
+      font-size: 0.9rem;
     }
   }
 }

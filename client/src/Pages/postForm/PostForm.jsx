@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import typeService from "../../Services/TypeService";
 import categoryService from "../../Services/PetCategoryService";
@@ -8,25 +8,36 @@ import postService from "../../Services/PostService";
 import Button from "../../Components/Btn/Button";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import { Row, Col, FormLabel } from "react-bootstrap";
+import { Row, Col, Image } from "react-bootstrap";
 import { Tooltip } from "react-tooltip";
 import "./postForm.scss";
 import errorMessage from "../../Utils/errorMessages.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
+import { validatePostInputs } from "../../Utils/errorInputs";
+import { formatDate } from "../../Utils/format";
 
 const PostForm = () => {
+  const { t } = useTranslation();
   const { user, token } = useSelector((state) => state.auth);
   const currentUserId = user?.id;
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [isModified, setIsModified] = useState(false);
 
   const [types, setTypes] = useState([]);
   const [selectedTypeId, setSelectedTypeId] = useState("");
   const [petCategories, setPetCategories] = useState([]);
   const [selectedCatId, setSelectedCatId] = useState("");
-  const [picture, setPicture] = useState(null);
+  const [newPicture, setNewPicture] = useState(null);
 
-  // errors from format input
-  const [validationErrors, setValidationErrors] = useState({});
+  // validation input
+  const [validation, setValidation] = useState({});
+  // global errors
+  const [errMsg, setErrMsg] = useState("");
 
   const [formData, setFormData] = useState({
     gender: "",
@@ -44,52 +55,68 @@ const PostForm = () => {
     selectedCity: "",
   });
 
-  // fetch Types
+  // if updating: Fetch post data
   useEffect(() => {
-    const fetchTypes = async () => {
-      try {
-        const { data } = await typeService.getType();
+    if (id) {
+      setIsUpdate(true);
 
-        setTypes(data);
+      const fetchPostDetails = async () => {
+        try {
+          const post = await postService.getOne(id);
+
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            ...post,
+            is_active: post.is_active ? "true" : "false",
+            street: post?.Address?.street,
+            postalCode: post?.Address?.postalCode,
+            selectedCity: post?.Address?.city,
+          }));
+
+          setSelectedTypeId(post.TypeId);
+          setSelectedCatId(post.PetCategoryId);
+        } catch (error) {
+          console.error("Error fetching post details:", error);
+        }
+      };
+
+      fetchPostDetails();
+    }
+  }, [id]);
+
+  // fetch Types & Pet Category
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const typeData = await typeService.getType();
+        setTypes(typeData.data);
+
+        const categoryData = await categoryService.getPetCategory();
+        setPetCategories(categoryData.data);
       } catch (error) {
-        console.error("Error fetching types:", error);
+        console.error("Error fetching types & pet cateogry datas:", error);
       }
     };
-
-    fetchTypes();
+    fetchData();
   }, []);
-
-  // fetch pet category
-  useEffect(() => {
-    const fetchCategory = async () => {
-      try {
-        const { data } = await categoryService.getPetCategory();
-        setPetCategories(data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCategory();
-  }, []);
-
-  const navigate = useNavigate();
 
   // handleChange Parts
 
   // Picture
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    setPicture(file);
+    setNewPicture(file);
+    setIsModified(true);
+
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      // Mettre à jour l'URL de l'image avec l'URL du fichier chargé
+      // update picture URL with upload file
       setFormData({ ...formData, picture: reader.result });
     };
 
     if (file) {
-      // Lecture du contenu du fichier sous forme d'URL
+      // reading url file
       reader.readAsDataURL(file);
     }
   };
@@ -97,15 +124,17 @@ const PostForm = () => {
   // PostalCode
   const handlePostalCodeChange = async (e) => {
     const value = e.target.value;
+    setIsModified(true);
 
     if (value.length <= 5) {
       setFormData((prevInputs) => ({
         ...prevInputs,
         postalCode: value,
+        selectedCity: "",
       }));
 
       if (value.length === 5) {
-        setValidationErrors((prevErrors) => ({
+        setValidation((prevErrors) => ({
           ...prevErrors,
           postalCode: undefined,
         }));
@@ -117,18 +146,18 @@ const PostForm = () => {
           }));
 
           if (!cityNames || cityNames.length === 0) {
-            setValidationErrors((prevErrors) => ({
+            setValidation((prevErrors) => ({
               ...prevErrors,
-              noCity: errorMessage.register.cityNotFound,
+              noCity: errorMessage.post.cityNotFound,
             }));
           } else {
-            setValidationErrors((prevErrors) => ({
+            setValidation((prevErrors) => ({
               ...prevErrors,
               noCity: undefined,
             }));
           }
         } catch (error) {
-          setValidationErrors({ postalCode: error.message });
+          setValidation({ postalCode: error.message });
         }
       }
     }
@@ -137,7 +166,9 @@ const PostForm = () => {
   // Global
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData({ ...formData, [name]: value });
+    setIsModified(true);
 
     // for Type and Pet Category select
     if (name === "selectedTypeId") {
@@ -146,41 +177,80 @@ const PostForm = () => {
       setSelectedCatId(value);
     }
 
-    setValidationErrors((prevErrors) => ({
+    setValidation((prevErrors) => ({
       ...prevErrors,
-      [name]: validationErrors[name],
+      [name]: null,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const inputErrors = validatePostInputs(formData);
+
+    if (Object.keys(inputErrors).length > 0) {
+      setValidation(inputErrors);
+    }
+
     try {
       const pictureUpload = new FormData();
-      pictureUpload.append("picture", picture);
+      pictureUpload.append("picture", newPicture);
 
-      const response = await postService.register(
-        {
-          ...formData,
-          PetCategoryId: selectedCatId,
-          UserId: currentUserId,
-          TypeId: selectedTypeId,
-          is_active: true,
-          city: formData.selectedCity,
-          picture: picture,
-        },
-        token
-      );
+      let is_active;
+      if (isUpdate) {
+        is_active = formData.is_active;
+      } else {
+        is_active = true;
+      }
 
-      navigate(`/annonce/${response.postId}`);
+      const postData = {
+        gender: formData.gender,
+        alert_date: formData.alert_date,
+        description: formData.description,
+        name: formData.name,
+        tattoo: formData.tattoo,
+        microchip: formData.microchip,
+        collar: formData.collar,
+        distinctive_signs: formData.distinctive_signs,
+        PetCategoryId: selectedCatId,
+        UserId: currentUserId,
+        TypeId: selectedTypeId,
+        is_active: is_active,
+        street: formData.street,
+        postalCode: formData.postalCode,
+        city: formData.selectedCity !== "" ? formData.selectedCity : "",
+        picture: newPicture,
+      };
+
+      if (isUpdate) {
+        await postService.update(id, postData, token);
+        setIsModified(false);
+        navigate(`/annonce/${id}`, {
+          state: {
+            successMessage: "Votre annonce a été modifiée avec succès !",
+          },
+        });
+      } else {
+        const response = await postService.register(postData, token);
+        navigate(`/annonce/${response.postId}`);
+      }
     } catch (err) {
-      // console.log(err);
+      const errorMessage = t(`post.${err?.errorCode}`);
+      setErrMsg(errorMessage);
+      window.scroll({
+        top: 0,
+        behavior: "smooth",
+      });
     }
   };
 
   return (
     <div>
       <Header />
-      <h2 className="text-center my-5">Votre annonce</h2>
+      <h2 className="text-center my-5">
+        {isUpdate
+          ? `Modification de l'annonce: ${formData?.name}`
+          : "Votre annonce"}
+      </h2>
       <form
         className="post-form"
         onSubmit={handleSubmit}
@@ -188,7 +258,40 @@ const PostForm = () => {
         action="/upload"
         encType="multipart/form-data"
       >
+        {errMsg && <div className="alert alert-danger">{errMsg}</div>}
+
         <Row className="mb-3 mx-5 align-items-center justify-content-center">
+          {isUpdate && (
+            <Col md={12} className="d-flex justify-content-center mb-5">
+              <div className="is-active d-flex flex-column align-items-center gap-3">
+                <h4 className="text-center">
+                  L'animal a-t-il retrouvé son propriétaire ?
+                </h4>
+                <div className="d-flex  fs-5 gap-2">
+                  <label>
+                    <input
+                      type="radio"
+                      name="is_active"
+                      value="false"
+                      checked={formData?.is_active === "false"}
+                      onChange={handleChange}
+                    />
+                    Oui
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="is_active"
+                      value="true"
+                      checked={formData?.is_active === "true"}
+                      onChange={handleChange}
+                    />
+                    Non
+                  </label>
+                </div>
+              </div>
+            </Col>
+          )}
           <Col md={6}>
             <label className="required">
               Type d'annonce
@@ -196,7 +299,7 @@ const PostForm = () => {
                 onChange={handleChange}
                 name="selectedTypeId"
                 className="form-select"
-                required
+                value={selectedTypeId}
               >
                 <option value="">Sélectionner : </option>
                 {types.map((type) => (
@@ -213,8 +316,8 @@ const PostForm = () => {
               <select
                 onChange={handleChange}
                 name="selectedCatId"
+                value={selectedCatId}
                 className="form-select"
-                required
               >
                 <option value="">Sélectionner : </option>
                 {petCategories.map((petCategory) => (
@@ -228,9 +331,15 @@ const PostForm = () => {
         </Row>
         <Row className="mb-3 mx-5 align-items-center justify-content-center">
           <Col md={6}>
-            {" "}
-            <label>
+            <label
+              className="tooltip-img"
+              data-tip
+              data-tooltip-id="tooltip-img"
+              data-tooltip-content="Format attendu: jpg/png/jpeg, Taille maximale autorisée: 1Mo."
+            >
               Image :
+              <FontAwesomeIcon icon={faCircleInfo} className="ms-3" />
+              <Tooltip id="tooltip-img" effect="solid"></Tooltip>
               <input
                 type="file"
                 name="picture"
@@ -240,42 +349,45 @@ const PostForm = () => {
             </label>
             {formData.picture && (
               <div className="text-center my-3">
-                <h6>Prévisualisation de l'image</h6>
-                <img
-                  src={formData.picture}
-                  alt="Preview"
+                <Image
+                  src={
+                    newPicture
+                      ? URL.createObjectURL(newPicture)
+                      : "http://localhost:3001/" + formData?.picture
+                  }
                   style={{ maxWidth: "100%", maxHeight: "400px" }}
                 />
               </div>
             )}
           </Col>
           <Col md={6}>
-            {" "}
             <label className="required">
               Genre :
               <select
                 name="gender"
-                value={formData.gender}
+                value={formData?.gender}
                 onChange={handleChange}
-                required
               >
                 <option value="">Sélectionner le genre</option>
                 <option value="Mâle">Mâle</option>
                 <option value="Femelle">Femelle</option>
                 <option value="Inconnu">Inconnu</option>
               </select>
+              {validation.gender && (
+                <div className="alert alert-danger">{validation.gender}</div>
+              )}
             </label>
             <label>
               Nom de l'animal :
               <input
                 type="text"
                 name="name"
-                value={formData.name}
+                value={formData?.name}
                 onChange={handleChange}
               />
             </label>
             <label
-              className="required tooltip-date "
+              className="required tooltipDate"
               data-tip
               data-tooltip-id="tooltip-date"
               data-tooltip-content="Indiquer la date à laquelle l'animal a été reccueilli ou vu pour la dernière fois."
@@ -287,27 +399,31 @@ const PostForm = () => {
             <input
               type="date"
               name="alert_date"
-              value={formData.alert_date}
+              value={formData?.alert_date || formatDate(formData?.alert_date)}
               onChange={handleChange}
-              required
             />
+            {validation.alert_date && (
+              <div className="alert alert-danger">{validation.alert_date}</div>
+            )}
             <label className="required">
               Description :
               <textarea
                 type="text"
                 name="description"
-                value={formData.description}
+                value={formData?.description}
                 onChange={handleChange}
                 placeholder="Expliquer la situation"
-                required
               />
             </label>
+            {validation.description && (
+              <div className="alert alert-danger">{validation.description}</div>
+            )}
             <label>
               Signes Distinctifs de l'animal:
               <textarea
                 type="text"
                 name="distinctive_signs"
-                value={formData.distinctive_signs}
+                value={formData?.distinctive_signs}
                 onChange={handleChange}
                 placeholder="Cela peut faciliter l'indentification de l'animal"
               />
@@ -321,70 +437,95 @@ const PostForm = () => {
               <input
                 type="text"
                 name="street"
+                value={formData.street}
                 onChange={handleChange}
-                required
               />
             </label>
+            {validation.street && (
+              <div className="alert alert-danger">{validation.street}</div>
+            )}
             <label className="required">
               Code postal :
               <input
                 type="text"
                 name="postalCode"
+                value={formData.postalCode}
                 onChange={handlePostalCodeChange}
                 maxLength={5}
-                required
               />
             </label>
+            {validation.postalCode && (
+              <div className="alert alert-danger">{validation.postalCode}</div>
+            )}
+            {validation.noCity && (
+              <div className="alert alert-danger">{validation.noCity}</div>
+            )}
             <label className="required">
               Ville
-              <select name="selectedCity" onChange={handleChange} required>
+              <select name="selectedCity" onChange={handleChange}  value={formData.selectedCity}>
                 <option value="">Sélectionner votre ville</option>
-                {formData.cities &&
-                  formData.cities.map((city, index) => (
+                {formData?.cities &&
+                  formData?.cities.map((city, index) => (
                     <option key={index} value={city}>
                       {city}
                     </option>
                   ))}
               </select>
+              {validation.selectedCity && (
+                <div className="alert alert-danger">
+                  {validation.selectedCity}
+                </div>
+              )}
             </label>
           </Col>
           <Col md={6}>
-            <div>
+            <div className="questionsForm">
               <div className="d-flex justify-content-between align-items-center">
-                <p>L'animal est-il tatoué ?</p>
+                <p className="required">L'animal est-il tatoué ?</p>
                 <div className="d-flex align-items-center">
                   <label>
-                    {" "}
                     <input
                       type="radio"
                       name="tattoo"
-                      value="true"
+                      value="Oui"
                       onChange={handleChange}
+                      checked={formData?.tattoo === "Oui"}
                     />
                     Oui
                   </label>
 
                   <label>
-                    {" "}
                     <input
                       type="radio"
                       name="tattoo"
-                      value="false"
+                      value="Non"
                       onChange={handleChange}
+                      checked={formData?.tattoo === "Non"}
                     />
                     Non
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="tattoo"
+                      value="Ne sais pas"
+                      onChange={handleChange}
+                      checked={formData?.tattoo === "Ne sais pas"}
+                    />
+                    ?
                   </label>
                 </div>
               </div>
               <div className="d-flex justify-content-between align-items-center">
-                <p>L'animal est-il pucé ?</p>
+                <p className="required">L'animal est-il pucé ?</p>
                 <div className="d-flex align-items-center">
                   <label>
                     <input
                       type="radio"
                       name="microchip"
-                      value="true"
+                      value="Oui"
                       onChange={handleChange}
+                      checked={formData?.microchip === "Oui"}
                     />
                     Oui
                   </label>
@@ -393,34 +534,57 @@ const PostForm = () => {
                     <input
                       type="radio"
                       name="microchip"
-                      value="false"
+                      value="Non"
                       onChange={handleChange}
+                      checked={formData?.microchip === "Non"}
                     />
                     Non
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="microchip"
+                      value="Ne sais pas"
+                      onChange={handleChange}
+                      checked={formData?.microchip === "Ne sais pas"}
+                    />
+                    ?
                   </label>
                 </div>
               </div>
               <div className="d-flex justify-content-between align-items-center">
-                <p>L'animal a-t-il un collier ?</p>
+                <p className="required">L'animal a-t-il un collier ?</p>
                 <div className="d-flex align-items-center">
-                  <FormLabel>
+                  <label>
                     <input
                       type="radio"
                       name="collar"
-                      value="true"
+                      value="Oui"
                       onChange={handleChange}
+                      checked={formData?.collar === "Oui"}
                     />
                     Oui
-                  </FormLabel>
+                  </label>
 
                   <label>
                     <input
                       type="radio"
                       name="collar"
-                      value="false"
+                      value="Non"
                       onChange={handleChange}
+                      checked={formData?.collar === "Non"}
                     />
                     Non
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="collar"
+                      value="Ne sais pas"
+                      onChange={handleChange}
+                      checked={formData?.collar === "Ne sais pas"}
+                    />
+                    ?
                   </label>
                 </div>
               </div>
@@ -428,10 +592,11 @@ const PostForm = () => {
           </Col>
         </Row>
         <div className="text-center py-5">
-          <Button type="submit">Publier l'annonce</Button>
+          <Button type="submit" disabled={!isModified}>
+            {isUpdate ? "Mettre à jour" : "Publier l'annonce"}
+          </Button>
         </div>
       </form>
-
       <Footer />
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "./PostsList.scss";
 import Header from "../../Components/Header/Header";
 import PostCard from "../../Components/PostCard/PostCard";
@@ -7,9 +8,15 @@ import Footer from "../../Components/Footer/Footer";
 import PostService from "../../Services/PostService";
 import Pagination from "../../Components/Pagination/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faDiamondTurnRight } from "@fortawesome/free-solid-svg-icons";
+import userService from "../../Services/UserService";
+import { capitalizeFirstLetter } from "../../Utils/format";
+import SuccessMessage from "../../Components/SuccessMessage/SuccessMessage.jsx";
 
 const PostsList = () => {
+  const { user, token } = useSelector((state) => state.auth);
+  const currentUserId = user?.id;
+  const [userCity, setUserCity] = useState("");
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [postsPerPage] = useState(6);
@@ -18,25 +25,9 @@ const PostsList = () => {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [searchInput, setSearchInput] = useState("");
   const [noResults, setNoResults] = useState(false);
+  const [showUserCityInfo, setShowUserCityInfo] = useState(true); // Nouvel état pour contrôler l'affichage des informations sur la ville de l'utilisateur
 
-  const [deleteSuccessMessage, setDeleteSuccessMessage] = useState("");
-  // when owner deleting post, he is redirect here with success message.
-  const location = useLocation();
-  useEffect(() => {
-    if (location.state && location.state.deleteSuccessMessage) {
-      setDeleteSuccessMessage(location.state.deleteSuccessMessage);
-    }
-  }, [location]);
-  useEffect(() => {
-    if (deleteSuccessMessage) {
-      const timer = setTimeout(() => {
-        setDeleteSuccessMessage("");
-      }, 5000); // 5000ms = 5 secondes
-      return () => clearTimeout(timer);
-    }
-  }, [deleteSuccessMessage]);
-
-
+  // fetch all the posts
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,8 +42,29 @@ const PostsList = () => {
     fetchData();
   }, []);
 
+  // for connected user, get the user's city
   useEffect(() => {
-    // filtered posts by type / pet category / city
+    const fetchUserCity = async () => {
+      try {
+        const userData = await userService.getUserInformation(
+          currentUserId,
+          token
+        );
+        const result = userData.Address.city;
+        setUserCity(result);
+        setSearchInput(result); // Set the search input to user's city by default
+      } catch (error) {
+        console.error("Error fetching user city:", error);
+      }
+    };
+
+    if (user) {
+      fetchUserCity();
+    }
+  }, [currentUserId, token, user]);
+
+  // filtered posts by type / pet category / city
+  useEffect(() => {
     const filtered = posts
       .filter((post) => post.Type.label === typeFilter || typeFilter === "all")
       .filter(
@@ -82,6 +94,7 @@ const PostsList = () => {
 
   const handleInputChange = (e) => {
     setSearchInput(e.target.value);
+    setShowUserCityInfo(false);
   };
 
   // pagination
@@ -101,16 +114,21 @@ const PostsList = () => {
   return (
     <div className="postList">
       <Header />
-      {deleteSuccessMessage && (
-        <div className="successDelete text-center alert alert-success">{deleteSuccessMessage}</div>
-      )}
-      <div className="d-flex justify-content-center my-5">
+      <SuccessMessage />
+      <div className="d-flex flex-column text-center my-5 gap-3">
         <Link to="/deposer-une-annonce" className="publishPost">
           <FontAwesomeIcon
             icon={faPlus}
-            className="plusIcone me-3 align-middle"
+            className="postListIcon me-3 align-middle"
           />
           Ajouter une annonce ?
+        </Link>
+        <Link to="/happy-endings" className="publishPost mt-5">
+          <FontAwesomeIcon
+            icon={faDiamondTurnRight}
+            className="postListIcon me-3 align-middle border border-0"
+          />
+          Voir les annonces "Happy Endings" ?
         </Link>
       </div>
       <div className="d-flex flex-column flex-sm-row justify-content-around align-items-center my-5">
@@ -141,6 +159,20 @@ const PostsList = () => {
           placeholder="Recherche par ville"
           className="mb-3"
         />
+      </div>
+      <div>
+        {showUserCityInfo && user && (
+          <div>
+            <div className="d-flex justify-content-center gap-3 fw-bold">
+              <p>Annonces trouvées dans votre ville:</p>
+              <p>{capitalizeFirstLetter(userCity)}</p>
+            </div>
+            <p className="text-center mb-5">
+              Utiliser les filtres pour effectuer une recherche plus précise ou
+              dans une autre ville.
+            </p>
+          </div>
+        )}
       </div>
       <div className="row gy-5">
         {noResults ? (
@@ -173,3 +205,4 @@ const PostsList = () => {
 };
 
 export default PostsList;
+

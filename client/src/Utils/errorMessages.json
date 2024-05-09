@@ -1,12 +1,23 @@
 {
   "register": {
-    "loginInvalid": "Le pseudo doit contenir une minuscule, majuscule, un chiffre, et sa longueur doit être comprise entre 8 et 20 caractères",
-    "existingLogin": "Pseudo déjà utilisé",
+    "loginInvalid": "Le pseudo doit contenir à minima 8 caractères et peut contenir des majuscules, des minuscules, des chiffres. Caractères spéciaux autorisés: - et _.",
     "emailInvalid": "Format à respecter: pattesperdues@hello.com",
-    "existingEmail": "Email déjà utilisé",
-    "passwordInvalid": "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre, un caractères spéciaux: !@#$%^*()_+, et une longueur comprise entre 10 et 32 caractères",
+    "passwordInvalid": "Le mot de passe doit contenir à minima 10 caractères, au moins une lettre minuscule, une lettre majuscule, un chiffre, un caractères spéciaux: !@#$%^*()_+.",
     "postalCode": "Le code postal doit comprendre 5 chiffres",
     "cityNotSelected": "Merci de sélectionner une ville.",
     "cityNotFound": "Aucune commune trouvée pour ce code postal."
+  },
+  "post": {
+    "fieldsToFill": "Merci de remplir ce champs",
+    "postalCode": "Le code postal doit comprendre 5 chiffres",
+    "cityNotSelected": "Merci de sélectionner une ville.",
+    "cityNotFound": "Aucune commune trouvée pour ce code postal."
+
+  },
+  "userUpdate": {
+    "emailInvalid": "Format à respecter: pattesperdues@hello.com",
+    "passwordInvalid": "Le mot de passe doit contenir à minima 10 caractères, au moins une lettre minuscule, une lettre majuscule, un chiffre, un caractères spéciaux: !@#$%^*()_+.",
+    "postalCode": "Le code postal doit comprendre 5 chiffres"
+
   }
 }

@@ -2,8 +2,7 @@ const { register } = require("./AuthenticationController");
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{10,32}$/;
-const loginRegex =
-/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{8,20}$/;
+const loginRegex = /^[a-zA-Z0-9-_]{8,}$/;
 
 describe("Policy input for register", () => {
   beforeEach(() => {
@@ -18,17 +17,17 @@ describe("Policy input for register", () => {
     {
       email: "invalid-email-format",
       password: "Password123!",
-      login: "ValidLogin123",
+      login: "validlogin-1",
     },
     {
       email: "email-e@jest-test.fr",
       password: "wrongformat",
-      login: "ValidLogin123",
+      login: "validlogin-1",
     },
     {
       email: "email-e@jest-test.fr",
       password: "Passwsord123!",
-      login: "username123",
+      login: "user-12",
     },
   ];
 
@@ -37,7 +36,7 @@ describe("Policy input for register", () => {
     req.body = {
       email: "email-e@jest-test.fr",
       password: "Passwsord123!",
-      login: "Username123!",
+      login: "validlogin-1",
     };
 
     // Act

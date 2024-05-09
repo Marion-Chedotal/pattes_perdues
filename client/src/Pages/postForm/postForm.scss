@@ -1,6 +1,15 @@
 @import "../../App";
 
 .post-form {
+  .is-active {
+    width: 600px;
+    margin: auto;
+    border-radius: 50px;
+    padding: 10px;
+    padding-top: 20px;
+    background-color: $beige-color;
+  }
+
   label,
   p {
     display: block;
@@ -32,7 +41,8 @@
   }
 
   label.required::before,
-  select.required::before {
+  select.required::before,
+  p.required::before {
     content: "*";
     color: red;
     margin-right: 5px;
@@ -41,5 +51,23 @@
   Button {
     border-radius: 30px;
     padding: 12px 20px;
+
+    &:hover {
+      color: $beige-color;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  @media (max-width: 575.98px) {
+    .questionsForm {
+      p,
+      label {
+        font-size: 0.8rem;
+      }
+    }
   }
 }

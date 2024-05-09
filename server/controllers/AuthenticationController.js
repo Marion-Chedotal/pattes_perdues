@@ -4,10 +4,11 @@ const { escapeHtml } = require("../utils/htmlEscape");
 const AuthenticationService = require("../service/AuthenticationService");
 const UserService = require("../service/UserService");
 const AddressService = require("../service/AddressService");
+const errors = require("../utils/errors.json");
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()_+])[A-Za-z\d!@#$%&*()_+]{10,32}$/;
-const loginRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{8,20}$/;
+const loginRegex = /^[a-zA-Z0-9-_]{8,}$/;
 
 /**
  * Validate register input using a Joi schema.
@@ -40,32 +41,64 @@ const validateInput = (data) => {
  */
 const register = async (req, res) => {
   try {
-    // Get user input
-    let { login, password, email, postalCode, city } = req.body;
+    if (
+      !(
+        req.body.login &&
+        req.body.password &&
+        req.body.email &&
+        req.body.postalCode &&
+        req.body.city
+      )
+    ) {
+      return res.status(400).json({
+        errorCode: "fieldsToFill",
+        errorMessage: errors.global.fieldsToFill,
+      });
+    }
+
+    // sanitize input
+    const fieldsToSanitize = [
+      "login",
+      "password",
+      "email",
+      "postalCode",
+      "city",
+    ];
+
+    fieldsToSanitize.forEach((fieldName) => {
+      req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
+    });
 
     // Check input format
     const { error } = validateInput(req.body);
     if (error) {
-      return res.status(400).json({ error: "Invalid input format" });
+      return res.status(400).json({
+        errorCode: "invalidInput",
+        errorMessage: errors.global.invalidInput,
+      });
     }
 
-    // sanitize input
-    email = escapeHtml(email.trim());
+    // Get user input
+    let { login, password, email, postalCode, city } = req.body;
 
     // Check if user already exist: same email
-    const isEmailAlreadyExist = await UserService.checkEmailExists(
-      req.body.email
-    );
+    const isEmailAlreadyExist = await UserService.checkEmailExists(email);
+
     if (isEmailAlreadyExist) {
-      return res.status(409).json("Email already used");
+      return res.status(409).json({
+        errorCode: "emailExist",
+        errorMessage: errors.authentication.global.emailExist,
+      });
     }
 
     // Check if user already exist: same login
-    const isLoginAlreadyExist = await UserService.checkLoginExists(
-      req.body.login
-    );
+    const isLoginAlreadyExist = await UserService.checkLoginExists(login);
+
     if (isLoginAlreadyExist) {
-      return res.status(409).json("Login already used");
+      return res.status(409).json({
+        errorCode: "loginExist",
+        errorMessage: errors.authentication.global.loginExist,
+      });
     }
 
     // Encrypt user password
@@ -103,10 +136,11 @@ const register = async (req, res) => {
  */
 const login = async (req, res) => {
   try {
-    let { login, password } = req.body;
-
-    if (!(login && password)) {
-      return res.status(400).json({ error: "Please fill in all fields" });
+    if (!(req.body.login && req.body.password)) {
+      return res.status(400).json({
+        errorCode: "fieldsToFill",
+        errorMessage: errors.global.fieldsToFill,
+      });
     }
 
     // Check input format
@@ -118,14 +152,20 @@ const login = async (req, res) => {
     const { error } = schema.validate(req.body);
     if (error) {
       return res.status(400).json({
-        error: "Invalid input format",
+        errorCode: "invalidInformations",
+        errorMessage: errors.authentication.global.invalidInformations,
       });
     }
+
+    let { login, password } = req.body;
 
     const user = await UserService.getByLogin(login);
 
     if (!user) {
-      return res.status(404).json({ error: "Invalid informations" });
+      return res.status(404).json({
+        errorCode: "invalidInformations",
+        errorMessage: errors.authentication.global.invalidInformations,
+      });
     }
 
     const dbPassword = user.password;
@@ -134,7 +174,10 @@ const login = async (req, res) => {
       dbPassword
     );
     if (!passwordMatch) {
-      return res.status(401).json({ error: "Invalid informations" });
+      return res.status(401).json({
+        errorCode: "invalidInformations",
+        errorMessage: errors.authentication.global.invalidInformations,
+      });
     }
 
     const accessToken = AuthenticationService.createToken(user.login, user.id);
@@ -148,5 +191,4 @@ const login = async (req, res) => {
   }
 };
 
-
-module.exports = { validateInput, register, login };
+module.exports = { passwordRegex, validateInput, register, login };
