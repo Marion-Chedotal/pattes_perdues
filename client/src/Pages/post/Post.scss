@@ -1,6 +1,13 @@
 @import "../../App";
 
 .onePost {
+
+  .founded {
+    background-color: $beige-color;
+    max-width: 400px;
+    margin: auto;
+    border-radius: 40px;
+}
   .isOwnerAction {
     button {
       background-color: transparent;

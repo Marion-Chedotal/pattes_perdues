@@ -99,6 +99,13 @@ const Post = () => {
           <div className="mb-5 text-center">
             <h4>Annonce de {post?.User?.login}</h4>
           </div>
+          {post?.is_active === false && (
+            <div>
+              <h4 className="text-center founded py-3 mb-5">
+                A Retrouvé son propriétaire!
+              </h4>
+            </div>
+          )}
           {isPostOwner && (
             <div className="mb-4 d-flex justify-content-center isOwnerAction">
               <Link to={`/modification-annonce/${id}`}>
@@ -150,7 +157,8 @@ const Post = () => {
             <Col md={6} className="text-center">
               <Image
                 src={affiche}
-                alt="photo générique affiche animal perdu"
+                alt="pancarte animal perdu"
+                title="Image par Monica Rodriguez de Pixabay"
                 style={{ maxWidth: "100%", maxHeight: "400px" }}
               />
             </Col>
@@ -201,9 +209,7 @@ const Post = () => {
                     <FontAwesomeIcon icon={faCalendar} className="me-4 icon" />
                     <div>
                       <h6 className="mb-0">Date</h6>
-                      <span className="date">
-                        {postDate}
-                      </span>
+                      <span className="date">{postDate}</span>
                     </div>
                   </div>
                 </Col>

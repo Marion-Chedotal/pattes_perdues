@@ -16,7 +16,7 @@ const SuccessMessage = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
       const timer = setTimeout(() => {
         setSuccessMessage("");
-      }, 10000); // 10 secondes
+      }, 10000); // 10 seconds
       return () => clearTimeout(timer);
     }
   }, [successMessage]);

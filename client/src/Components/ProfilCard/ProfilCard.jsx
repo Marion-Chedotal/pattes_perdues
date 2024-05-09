@@ -46,7 +46,8 @@ const ProfilCard = ({ showUserPosts }) => {
                 ? "http://localhost:3001/" + userData.avatar
                 : defaultAvatar
             }
-            alt="avatar"
+            alt="user avatar"
+            title="defaultAvatar:Photo by FOX on Pexels"
           />
           <p className="fs-4">{user?.login}</p>
         </div>

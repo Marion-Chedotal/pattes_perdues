@@ -2,7 +2,6 @@ import React from "react";
 import "./PrivateRoute.scss";
 import { Link } from "react-router-dom";
 import Header from "../../Components/Header/Header";
-import PostForm from "../../Pages/postForm/PostForm";
 import Button from "../Btn/Button";
 import { Image, Container, Row, Col } from "react-bootstrap";
 import affiche from "../../Assets/affiche_animal_perdu.jpg";
@@ -40,7 +39,7 @@ const PrivateRoute = ({ children }) => {
               </Col>
 
               <Col xs={12} md={6}>
-                <Image alt="pancarte animal perdu" src={affiche} thumbnail />
+                <Image alt="pancarte animal perdu" src={affiche} title="Image par Monica Rodriguez de Pixabay" thumbnail />
               </Col>
             </Row>
           </Container>

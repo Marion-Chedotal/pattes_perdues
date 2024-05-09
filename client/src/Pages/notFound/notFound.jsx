@@ -18,7 +18,7 @@ const notFound = () => {
       </div>
       <div className="text-center redirect">
         <h3 className="mb-5">Page non trouvée</h3>
-        <Image className="imgNotFound mb-5" alt="pancarte animal perdu" src={notFoundPicture}></Image>
+        <Image className="imgNotFound mb-5" alt="chat caché dans feuillage" src={notFoundPicture}  title="Photo by ROCCO STOPPOLONI on Unsplash"></Image>
         <div className="d-flex justify-content-center align-items-center gap-5">
           <p>Retournez à la page d'accueil:</p>
           <Link to="/">

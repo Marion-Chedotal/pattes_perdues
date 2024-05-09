@@ -1,0 +1,20 @@
+@import "../../App";
+
+.happyEndings {
+  .hook {
+    background-color: $beige-color;
+    max-width: 390px;
+    margin: auto;
+    border-radius: 30px;
+  }
+
+  select,
+  input {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 2px solid $beige-color;
+    border-radius: 20px;
+    width: 200px;
+  }
+}

@@ -55,6 +55,10 @@ router.get(
   PostController.findLastThreeArchivesPosts
 );
 router.get(
+  "/posts/archives",
+  PostController.findAllArchivesPosts
+);
+router.get(
   "/posts/user/:login",
   AuthMiddleware.validateToken,
   PostController.findByUser

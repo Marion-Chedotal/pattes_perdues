@@ -137,6 +137,23 @@ const getLastThreeArchivesPosts = async () => {
   }
 };
 
+/**
+ * Get all archives posts (pets found)
+ * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
+ */
+const getAllArchivesPosts = async () => {
+  try {
+    const response = await axiosInstance.get("/posts/archives", {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 const update = async (id, formData, token) => {
   try {
     const response = await axiosInstance.put(`/post/${id}`, formData, {
@@ -174,6 +191,7 @@ const postService = {
   isPostOwner,
   getLastThreePosts,
   getLastThreeArchivesPosts,
+  getAllArchivesPosts,
   update,
   deletePost,
 };

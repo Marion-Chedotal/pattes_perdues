@@ -22,7 +22,7 @@ const UserPosts = () => {
       }
     };
     fetchUserPosts();
-  }, []);
+  }, [login, token]);
 
   return (
     <div>

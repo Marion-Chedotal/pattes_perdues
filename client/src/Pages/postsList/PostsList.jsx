@@ -8,7 +8,7 @@ import Footer from "../../Components/Footer/Footer";
 import PostService from "../../Services/PostService";
 import Pagination from "../../Components/Pagination/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faDiamondTurnRight } from "@fortawesome/free-solid-svg-icons";
 import userService from "../../Services/UserService";
 import { capitalizeFirstLetter } from "../../Utils/format";
 import SuccessMessage from "../../Components/SuccessMessage/SuccessMessage.jsx";
@@ -94,7 +94,6 @@ const PostsList = () => {
 
   const handleInputChange = (e) => {
     setSearchInput(e.target.value);
-    // Lorsque l'input de la ville est modifié, masquer les informations sur la ville de l'utilisateur
     setShowUserCityInfo(false);
   };
 
@@ -115,14 +114,21 @@ const PostsList = () => {
   return (
     <div className="postList">
       <Header />
-        <SuccessMessage />
-      <div className="d-flex justify-content-center my-5">
+      <SuccessMessage />
+      <div className="d-flex flex-column text-center my-5 gap-3">
         <Link to="/deposer-une-annonce" className="publishPost">
           <FontAwesomeIcon
             icon={faPlus}
-            className="plusIcone me-3 align-middle"
+            className="postListIcon me-3 align-middle"
           />
           Ajouter une annonce ?
+        </Link>
+        <Link to="/happy-endings" className="publishPost mt-5">
+          <FontAwesomeIcon
+            icon={faDiamondTurnRight}
+            className="postListIcon me-3 align-middle border border-0"
+          />
+          Voir les annonces "Happy Endings" ?
         </Link>
       </div>
       <div className="d-flex flex-column flex-sm-row justify-content-around align-items-center my-5">
@@ -199,3 +205,4 @@ const PostsList = () => {
 };
 
 export default PostsList;
+

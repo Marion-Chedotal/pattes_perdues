@@ -187,7 +187,8 @@ const UpdateProfil = () => {
                       ? "http://localhost:3001/" + formData.avatar
                       : defaultAvatar
                   }
-                  alt="avatar"
+                  alt="user avatar"
+                  title="defaultAvatar:Photo by FOX on Pexels"
                 />
               </label>
               <input

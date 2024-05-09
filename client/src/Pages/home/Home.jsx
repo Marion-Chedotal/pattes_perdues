@@ -35,7 +35,7 @@ const Home = () => {
     if (deleteSuccessMessage) {
       const timer = setTimeout(() => {
         setDeleteSuccessMessage("");
-      }, 5000); // 5000ms = 5 secondes
+      }, 5000); // 5 seconds
       return () => clearTimeout(timer);
     }
   }, [deleteSuccessMessage]);
@@ -133,6 +133,7 @@ const Home = () => {
               <Image
                 alt="chien type labrador"
                 src={chien}
+                title="Photo de Ryan Walton sur Unsplash"
                 className="introImg"
                 thumbnail
               />

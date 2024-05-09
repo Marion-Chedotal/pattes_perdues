@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import i18nTranslation from '../src/Utils/i18n.json'; // Chemin vers votre fichier de traductions
+import i18nTranslation from '../src/Utils/i18n.json';
 
 i18n
   .use(initReactI18next)
@@ -9,13 +9,13 @@ i18n
     resources: {
       fr: {
         translation: {
-          ...i18nTranslation, // Ajoutez d'autres traductions ici si nécessaire
+          ...i18nTranslation, 
         },
       },
     },
-    lng: 'fr', // Langue par défaut
+    lng: 'fr', 
     interpolation: {
-      escapeValue: false, // Ne pas échapper les variables d'interpolation
+      escapeValue: false,
     },
   });
 

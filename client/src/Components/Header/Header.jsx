@@ -60,7 +60,8 @@ const Header = () => {
                         ? "http://localhost:3001/" + userData.avatar
                         : defaultAvatar
                     }
-                    alt="avatar"
+                    alt="user avatar"
+                    title="defaultAvatar:Photo by FOX on Pexels"
                   />
                   <div className="d-flex flex-lg-column align-items-center">
                     <span>{user?.login}</span>

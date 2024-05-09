@@ -1,5 +1,3 @@
-// Pagination.js
-
 import React from "react";
 import "./Pagination.scss";
 
