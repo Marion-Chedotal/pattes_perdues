@@ -1,4 +1,5 @@
 const ConversationService = require("../service/ConversationService");
+const UserService = require("../service/UserService");
 const AuthenticationService = require("../service/AuthenticationService");
 
 /**
@@ -29,19 +30,21 @@ const createConversation = async (req, res) => {
  * @throws {object} error
  */
 const findConversation = async (req, res) => {
-  const idUser = parseInt(req.params.userId, 10);
-  const currentUserId = req.user.id;
   const idConversation = parseInt(req.params.id, 10);
+  const login = req.params.login;
+  const user = await UserService.getByLogin(login);
+  const userId = user.id;
+  const currentUserId = req.userId;
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
     currentUserId,
-    idUser
+    userId
   );
 
   if (isUserAllowed) {
     try {
       const conversation = await ConversationService.getConversation(
-        idUser,
+        userId,
         idConversation
       );
 
@@ -67,22 +70,24 @@ const findConversation = async (req, res) => {
  * @throws {object} error
  */
 const findConversations = async (req, res) => {
-  const idUser = parseInt(req.params.userId, 10);
-  const currentUserId = req.user.id;
+  const login = req.params.login;
+  const user = await UserService.getByLogin(login);
+  const userId = user.id;
+  const currentUserId = req.userId;
+
   const isUserAllowed = AuthenticationService.checkUserPermission(
     currentUserId,
-    idUser
+    userId
   );
 
   if (isUserAllowed) {
     try {
-      const conversations = await ConversationService.getAllConversationByUser(
-        idUser
+      const conversations = await ConversationService.getAllConversationsByUser(
+        userId
       );
 
       res.status(201).json(conversations);
     } catch (error) {
-      console.error(error);
       res.status(500).json({
         error: `Error when fetching conversations, ${error}`,
       });
@@ -95,4 +100,4 @@ const findConversations = async (req, res) => {
   }
 };
 
-module.exports = { createConversation, findConversation, findConversations };
+module.exports = { createConversation, findConversation, findConversations};

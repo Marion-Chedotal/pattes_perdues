@@ -26,7 +26,7 @@ const getCity = async (postalCode) => {
 const register = async (userData) => {
   try {
     const response = await axios.post(
-      "http://localhost:3001/api/register",
+      "http://localhost:3306/api/register",
       userData
     );
     return response.data;
@@ -43,7 +43,7 @@ const register = async (userData) => {
 const login = async (userData) => {
   try {
     const response = await axios.post(
-      "http://localhost:3001/api/login",
+      "http://localhost:3306/api/login",
       userData,
       {
         withCredentials: true,

@@ -33,7 +33,7 @@ const PostCard = ({ post }) => {
           {post?.picture ? (
             <Card.Img
               variant="top"
-              src={"http://localhost:3001/" + post.picture}
+              src={"http://localhost:3306/" + post.picture}
               className="my-3"
               style={{ height: "250px", objectFit: "cover" }}
             />

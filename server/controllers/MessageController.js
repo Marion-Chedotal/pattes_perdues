@@ -11,60 +11,50 @@ const { escapeHtml } = require("../utils/htmlEscape");
  * @throws {object} error
  */
 const createMessage = async (req, res) => {
-  let { content, receiverId } = req.body;
-  const idPost = parseInt(req.params.id, 10);
-
-  const post = await PostService.getById(idPost);
-  const postUserId = post.UserId;
-  const senderId = req.user.id;
-
-  // TODO: p-e revoir like PostController si pb
-  req.body.receiverId = post.UserId;
-  req.body.UserId = senderId;
-
-  const correctReceiver = await PostService.isCorrectAddressee(
-    postUserId,
-    receiverId
-  );
+  let { content, senderId, receiverId, conversationId } = req.body;
 
   // sanitize input
   content = escapeHtml(content);
-  const isConversationExist = await MessageService.isConversationExist(
+  const doesConversationExist = await MessageService.doesConversationExist(
     senderId,
     receiverId
   );
 
-  if (correctReceiver) {
-    if (!isConversationExist) {
-      if (senderId != receiverId) {
-        const newConversation = await ConversationService.addConversation();
+  if (!doesConversationExist) {
+    if (senderId != receiverId) {
+      const newConversation = await ConversationService.addConversation();
 
-        req.body.ConversationId = newConversation.id;
-        await MessageService.addMessage(req.body);
+      req.body.ConversationId = newConversation.id;
+      await MessageService.addMessage(req.body);
 
-        res.status(201).json(`Your message has been successfully transmitted`);
-      } else {
-        res.status(500).json({
-          error: `You can't send you a message`,
-        });
-      }
+      res.status(201).json(`Your message has been successfully transmitted`);
     } else {
-      req.body.ConversationId = isConversationExist.ConversationId;
-      try {
-        await MessageService.addMessage(req.body);
-
-        res.status(201).json(`Your message has been successfully transmitted`);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({
-          error: `Error when transmitted message, ${error}`,
-        });
-      }
+      res.status(500).json({
+        error: `You can't send you a message`,
+      });
     }
   } else {
-    res.status(500).json({
-      error: `You can't send a message`,
-    });
+    try {
+      const data = {
+        content: content,
+        UserId: senderId,
+        receiverId: receiverId,
+        ConversationId: conversationId
+      }
+      await MessageService.addMessage(data);
+
+      const conversation = await ConversationService.getConversation(
+        senderId,
+        conversationId
+      );
+
+      res.status(201).json(conversation);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        error: `Error when transmitted message, ${error}`,
+      });
+    }
   }
 };
 

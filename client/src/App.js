@@ -6,7 +6,7 @@ import PostForm from "./Pages/postForm/PostForm";
 import PostsList from "./Pages/postsList/PostsList";
 import UpdatePost from "./Pages/updatePost/UpdatePost";
 import Profil from "./Pages/profil/Profil";
-import Post from "./Pages/post/Post";
+import Post from "./Pages/conversation/Conversation";
 import PageNotFound from "./Pages/notFound/notFound";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { useEffect } from "react";
@@ -49,10 +49,10 @@ function App() {
       path: "/annonce/:id",
       element: <Post />,
     },
-    {
-      path: "/modification-annonce/:id",
-      element: <PrivateRoute children={<UpdatePost/>} />,
-    },
+    // {
+    //   path: "/modification-annonce/:id",
+    //   element: <PrivateRoute children={<UpdatePost/>} />,
+    // },
     {
       path: "/profil/:login",
       element: <PrivateRoute children={<Profil/>} />,

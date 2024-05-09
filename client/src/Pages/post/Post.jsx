@@ -21,6 +21,7 @@ import {
   faMicrochip,
   faTrash,
   faPenToSquare,
+  faMessage,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -140,7 +141,7 @@ const Post = () => {
           {post?.picture ? (
             <Col md={6}>
               <Image
-                src={"http://localhost:3001/" + post?.picture}
+                src={"http://localhost:3306/" + post?.picture}
                 style={{ maxWidth: "100%", maxHeight: "500px" }}
               />
             </Col>
@@ -255,9 +256,15 @@ const Post = () => {
           </Col>
           <Col md={6} className="mt-5 mt-lg-0">
             <h4 className="mb-4">Envie d'aider ?</h4>
-            <Button type="button" class>
-              Contacter {post?.User?.login}
-            </Button>
+            <Link to={`/contact/${id}`}>
+              <button type="button">
+                <FontAwesomeIcon
+                  icon={faMessage}
+                  className="iconAction"
+                />
+                &nbsp;Contacter {post?.User?.login}
+              </button>
+            </Link>
             <div className="d-flex justify-content-center gap-2 mt-4 align-items-center mt-5">
               <h6>Partager l'annonce:</h6>
               <EmailShareButton url={shareUrl}>
