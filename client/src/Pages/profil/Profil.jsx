@@ -4,6 +4,7 @@ import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import Button from "../../Components/Btn/Button";
 import UserPosts from "../../Components/UserPosts/UserPosts";
+import UserConversations from "../../Components/UserConversations/UserConversations";
 import ProfilCard from "../../Components/ProfilCard/ProfilCard";
 import UpdateProfil from "../../Components/UpdateProfil/UpdateProfil";
 import SuccessMessage from "../../Components/SuccessMessage/SuccessMessage";
@@ -88,7 +89,11 @@ const Profil = () => {
             </Button>
           </Col>
           <Col className="text-center ">
-            <Button type="button" className="d-flex flex-column">
+            <Button
+              type="button"
+              className="d-flex flex-column"
+              onClick={() => setActiveSection("mes-conversations")}
+            >
               <FontAwesomeIcon icon={faEnvelope} className="icons" />
               <span className="d-none d-md-block">Messagerie</span>
             </Button>
@@ -144,7 +149,8 @@ const Profil = () => {
       )}
       {activeSection === "modification-profil" && <UpdateProfil />}
       {activeSection === "mes-annonces" && <UserPosts />}
-      <Footer />
+      {activeSection === "mes-conversations" && <UserConversations />}
+      <Footer/>
     </div>
   );
 };

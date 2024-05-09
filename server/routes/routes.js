@@ -11,13 +11,13 @@ const AuthMiddleware = require("../middleware/AuthMiddleware");
 const upload = require("../utils/multerConfig");
 
 /**
- * authentication route
+ * authentication routes
  */
 router.post("/register", AuthController.register);
 router.post("/login", AuthController.login);
 
 /**
- * user route
+ * user routes
  */
 router.get("/user/:id", AuthMiddleware.validateToken, UserController.findById);
 // router.get(
@@ -38,7 +38,7 @@ router.delete(
 );
 
 /**
- * post route
+ * post routes
  */
 router.post(
   "/post",
@@ -82,19 +82,19 @@ router.delete(
 );
 
 /**
- * type route
+ * type routes
  */
 router.get("/type/:id", TypeController.findById);
 router.get("/type", TypeController.findAllType);
 
 /**
- * pet category route
+ * pet category routes
  */
 router.get("/petCategory/:id", PetCategoryController.findById);
 router.get("/petCategory", PetCategoryController.findAllPetCategory);
 
 /**
- * message route
+ * message routes
  */
 router.post(
   "/post/:id/contact",
@@ -103,15 +103,15 @@ router.post(
 );
 
 /**
- * conversation route
+ * conversation routes
  */
 router.get(
-  "/user/:userId/conversations",
+  "/user/:login/conversations",
   AuthMiddleware.validateToken,
   ConversationController.findConversations
 );
 router.get(
-  "/user/:userId/conversation/:id",
+  "/user/:login/conversation/:id",
   AuthMiddleware.validateToken,
   ConversationController.findConversation
 );

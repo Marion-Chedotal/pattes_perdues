@@ -5,7 +5,7 @@ import Register from "./Pages/register/Register";
 import PostForm from "./Pages/postForm/PostForm";
 import PostsList from "./Pages/postsList/PostsList";
 import Profil from "./Pages/profil/Profil";
-import Post from "./Pages/post/Post";
+import Post from "./Pages/conversation/Conversation";
 import PageNotFound from "./Pages/notFound/notFound";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { useEffect } from "react";

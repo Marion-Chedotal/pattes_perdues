@@ -132,16 +132,6 @@ const deletePost = async (id) => {
   return post.destroy();
 };
 
-/**
- * Check if userId of a post is the userId to receive a message
- * @param {number} postUserId
- * @param {number} receiverMessageId
- * @returns {boolean}
- */
-const isCorrectAddressee = async (postUserId, receiverMessageId) => {
-  if (postUserId === receiverMessageId) return true;
-};
-
 module.exports = {
   addPost,
   addPost,
@@ -154,5 +144,4 @@ module.exports = {
   countPostsByUser,
   editPost,
   deletePost,
-  isCorrectAddressee,
 };
