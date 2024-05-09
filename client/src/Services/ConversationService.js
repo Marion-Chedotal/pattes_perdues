@@ -9,7 +9,7 @@ import axios from "axios";
 const getUserConversations = async (login, token) => {
   try {
     const response = await axios.get(
-      `http://localhost:3306/api/user/${login}/conversations`,
+      `http://localhost:3001/api/user/${login}/conversations`,
       {
         // withCredentials: true,
         headers: {
@@ -26,7 +26,7 @@ const getUserConversations = async (login, token) => {
 
 const getOne = async (login, id, token) => {
   try {
-    const response = await axios.get(`http://localhost:3306/api/user/${login}/conversation/${id}`,
+    const response = await axios.get(`http://localhost:3001/api/user/${login}/conversation/${id}`,
     {
       withCredentials: true,
       headers: {
