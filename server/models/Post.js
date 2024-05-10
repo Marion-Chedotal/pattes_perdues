@@ -56,6 +56,7 @@ module.exports = (sequelize, DataTypes) => {
     Post.belongsTo(models.Address);
     Post.belongsTo(models.Type);
     Post.belongsTo(models.Pet_category);
+    Post.hasMany(models.Conversation);
   };
 
   return Post;
