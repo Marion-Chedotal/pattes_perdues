@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "./Axios";
 
 /**
  * Get user's conversations
@@ -8,10 +8,9 @@ import axios from "axios";
  */
 const getUserConversations = async (login, token) => {
   try {
-    const response = await axios.get(
-      `http://localhost:3001/api/user/${login}/conversations`,
+    const response = await axiosInstance.get(
+      `/user/${login}/conversations`,
       {
-        // withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -26,9 +25,8 @@ const getUserConversations = async (login, token) => {
 
 const getOne = async (login, id, token) => {
   try {
-    const response = await axios.get(`http://localhost:3001/api/user/${login}/conversation/${id}`,
+    const response = await axiosInstance.get(`/user/${login}/conversation/${id}`,
     {
-      withCredentials: true,
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,

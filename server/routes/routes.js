@@ -20,11 +20,6 @@ router.post("/login", AuthController.login);
  * user routes
  */
 router.get("/user/:id", AuthMiddleware.validateToken, UserController.findById);
-// router.get(
-//   "/user/search/:login",
-//   AuthMiddleware.validateToken,
-//   UserController.findByLogin
-// );
 router.put(
   "/user/:login",
   AuthMiddleware.validateToken,
@@ -84,13 +79,11 @@ router.delete(
 /**
  * type routes
  */
-router.get("/type/:id", TypeController.findById);
 router.get("/type", TypeController.findAllType);
 
 /**
  * pet category routes
  */
-router.get("/petCategory/:id", PetCategoryController.findById);
 router.get("/petCategory", PetCategoryController.findAllPetCategory);
 
 /**

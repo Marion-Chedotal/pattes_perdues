@@ -276,13 +276,10 @@ const Post = () => {
           <Col md={6} className="mt-5 mt-lg-0">
             <h4 className="mb-4">Envie d'aider ?</h4>
             <Link to={`/contact/${id}`}>
-              <button type="button">
-                <FontAwesomeIcon
-                  icon={faMessage}
-                  className="iconAction"
-                />
+              <Button type="button">
+                <FontAwesomeIcon icon={faMessage} className="iconAction" />
                 &nbsp;Contacter {post?.User?.login}
-              </button>
+              </Button>
             </Link>
             <div className="d-flex justify-content-center gap-2 mt-4 align-items-center mt-5">
               <h6>Partager l'annonce:</h6>

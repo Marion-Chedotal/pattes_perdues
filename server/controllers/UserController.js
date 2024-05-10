@@ -44,30 +44,6 @@ const findById = async (req, res) => {
   }
 };
 
-/** TODO: intérêt?
- * Get user by his login
- * @param {object} req
- * @param {object} res
- * @returns {object} user's data
- * @throws {object} error
- */
-const findByLogin = async (req, res) => {
-  const login = req;
-
-  try {
-    const user = await UserService.getByLogin(login);
-
-    if (!user) {
-      return res.status(400).json({ error: `User ${login} doesn't exist` });
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({
-      error: `Error when fetching user, ${error}`,
-    });
-  }
-};
-
 /**
  * Update user's data
  * @param {object} req
@@ -220,4 +196,4 @@ const removeUser = async (req, res) => {
   }
 };
 
-module.exports = { findById, findByLogin, updateUser, removeUser };
+module.exports = { findById, updateUser, removeUser };

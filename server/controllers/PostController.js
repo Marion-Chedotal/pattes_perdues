@@ -299,52 +299,6 @@ const numberPostsByUser = async (req, res) => {
 };
 
 /**
- * Find post by type
- * @param {object} req
- * @param {object} res
- * @throws {object} error
- */
-const findByType = async (req, res) => {
-  const type = req.params.id;
-
-  try {
-    const post = await PostService.getByType(type);
-    if (post.length === 0) {
-      return res.status(400).json({ error: `Type doesn't have post` });
-    }
-
-    res.status(200).json(post);
-  } catch (error) {
-    res.status(500).json({
-      error: `Error when fetching post, ${error}`,
-    });
-  }
-};
-
-/**
- * Find post by pet category
- * @param {object} req
- * @param {object} res
- * @throws {object} error
- */
-const findByPetCategory = async (req, res) => {
-  const petCategory = req.params.id;
-
-  try {
-    const post = await PostService.getByType(petCategory);
-    if (post.length === 0) {
-      return res.status(400).json({ error: `Pet category doesn't have post` });
-    }
-
-    res.status(200).json(post);
-  } catch (error) {
-    res.status(500).json({
-      error: `Error when fetching post, ${error}`,
-    });
-  }
-};
-
-/**
  * Update a post
  * @param {object} req
  * @param {object} res
@@ -523,8 +477,6 @@ module.exports = {
   findAllArchivesPosts,
   findByUser,
   numberPostsByUser,
-  findByType,
-  findByPetCategory,
   updatePost,
   removePost,
 };

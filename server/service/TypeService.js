@@ -1,15 +1,6 @@
 const { Type } = require("../models");
 
-  /**
-   * Find type of post by id
-   * @param {number} id
-   * @returns {Promise<Object>}
-   */
-  const getTypeById= async (id) => {
-    return await Type.findByPk(id);
-  }
-
-  /**
+   /**
    * Find all type of post
    * @returns {Promise<Object[]>}
    */
@@ -18,4 +9,4 @@ const { Type } = require("../models");
   }
 
 
-module.exports = {getTypeById, getAllType};
+module.exports = { getAllType};

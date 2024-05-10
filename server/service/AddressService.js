@@ -11,16 +11,6 @@ const { Address } = require("../models");
     return await Address.create(data);
   }
 
-  // TODO: necessaire? 
-  // /**
-  //  * Find address by his id
-  //  * @param {number} id
-  //  * @returns {Promise<Object>}
-  //  */
-  // static async getAddress(id) {
-  //   return await Address.findByPk(id);
-  // }
-
   /**
    * Update address
    * @param {number} id

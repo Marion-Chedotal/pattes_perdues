@@ -43,9 +43,10 @@ const Login = () => {
         <div className="part d-flex">
           <div className="left d-none d-md-block col-md-6"></div>
           <div className="right col-md-6 d-flex flex-column">
-            <div className="logo mx-auto">
+            <Link to="/" className="logo mx-auto">
               <img src={logo} alt="logo pattes perdues" />
-            </div>
+            </Link>
+            <div></div>
             <h1 className="fs-2 fw-bold">Se connecter</h1>
             <form className="d-flex flex-column" onSubmit={handleSubmit}>
               <input

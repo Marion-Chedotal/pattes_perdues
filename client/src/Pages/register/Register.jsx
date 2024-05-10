@@ -111,9 +111,9 @@ const Register = () => {
       <div className="row ml-5">
         <div className="part d-flex">
           <div className="left col-md-6 d-flex flex-column">
-            <div className="logo mx-auto">
+            <Link to="/" className="logo mx-auto">
               <img src={logo} alt="logo pattes perdues" />
-            </div>
+            </Link>
             <h1 className="fs-2 fw-bold">Créer un compte</h1>
             <form
               className="d-flex flex-column"
