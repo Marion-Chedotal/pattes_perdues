@@ -11,9 +11,7 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 const ConversationCard = ({ conversation }) => {
   const { user, token } = useSelector((state) => state.auth);
   const currentUserId = user.id;
-  // const receiverId = conversation?.Messages[0]?.receiverId;
   const interlocutorData = conversation?.Messages[0];
-  // console.log(interlocutorData);
 
   const [formData, setFormData] = useState({
     content: "",
@@ -48,44 +46,65 @@ const ConversationCard = ({ conversation }) => {
     }
   };
 
+  let previousDate = null;
+  const messagesWithDateDisplay = conversation.Messages.map((message) => {
+    const messageDate = formatDate(message?.createdAt);
+    const shouldDisplayDate = messageDate !== previousDate;
+    previousDate = messageDate;
+    return {
+      ...message,
+      messageDate,
+      shouldDisplayDate,
+    };
+  });
+
   return (
     <div className="conversation">
       <div>
-        {conversation?.Messages.map((message) => (
+        {messagesWithDateDisplay.map((message) => (
           <div key={message.id} className="mb-3">
-            <span>{formatDate(message?.createdAt)}</span>
+            {message.shouldDisplayDate && <span>{message.messageDate}</span>}
             {message?.UserId !== currentUserId && (
-              <div className="d-flex justify-content-start align-items-center gap-2">
-                <img
-                  src={
-                    interlocutorData?.Receiver?.avatar
-                      ? "http://localhost:3001/" +
-                        interlocutorData?.Receiver?.avatar
-                      : defaultAvatar
-                  }
-                  alt="Avatar"
-                  className="avatar rounded-circle"
-                ></img>
-                <p value={message?.id} className="text-start">
-                  {message?.content}
-                </p>
+              <div className="d-flex align-items-start gap-2">
+                <div className="align-self-end">
+                  <img
+                    src={
+                      interlocutorData?.Receiver?.avatar
+                        ? "http://localhost:3001/" +
+                          interlocutorData?.Receiver?.avatar
+                        : defaultAvatar
+                    }
+                    alt="Avatar"
+                    className="avatar rounded-circle"
+                  />
+                </div>
+
+                <div>
+                  <p value={message?.id} className="text-start">
+                    {message?.content}
+                  </p>
+                </div>
               </div>
             )}
             {message?.UserId === currentUserId && (
               <div className="d-flex justify-content-end align-items-center gap-2">
-                <p value={message?.id} className="text-start">
-                  {message?.content}
-                </p>
-                <img
-                  src={
-                    interlocutorData?.Sender?.avatar
-                      ? "http://localhost:3001/" +
-                        interlocutorData?.Sender?.avatar
-                      : defaultAvatar
-                  }
-                  alt="Avatar"
-                  className="avatar rounded-circle"
-                ></img>
+                <div>
+                  <p value={message?.id} className="text-start">
+                    {message?.content}
+                  </p>
+                </div>
+                <div className="align-self-end">
+                  <img
+                    src={
+                      interlocutorData?.Sender?.avatar
+                        ? "http://localhost:3001/" +
+                          interlocutorData?.Sender?.avatar
+                        : defaultAvatar
+                    }
+                    alt="Avatar"
+                    className="avatar rounded-circle"
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -107,7 +126,7 @@ const ConversationCard = ({ conversation }) => {
             ></textarea>
             <Button type="submit">
               Envoyer
-              <FontAwesomeIcon icon={faPaperPlane} className="ps-2"/>
+              <FontAwesomeIcon icon={faPaperPlane} className="ps-2" />
             </Button>
           </form>
         </div>
