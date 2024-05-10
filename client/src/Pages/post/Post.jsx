@@ -187,7 +187,7 @@ const Post = () => {
                     <FontAwesomeIcon icon={faIdCard} className="me-4 icon" />
                     <div>
                       <h6 className="mb-0">Nom</h6>
-                      <span>{name || "Inconnu"}</span>
+                      <span>{name}</span>
                     </div>
                   </div>
                 </Col>

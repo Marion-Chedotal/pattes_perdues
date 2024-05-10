@@ -22,7 +22,7 @@ const validateInput = (data) => {
     gender: Joi.string(),
     alert_date: Joi.date(),
     description: Joi.string(),
-    name: Joi.string().allow(""),
+    name: Joi.string(),
     tattoo: Joi.string(),
     microchip: Joi.string(),
     collar: Joi.string(),

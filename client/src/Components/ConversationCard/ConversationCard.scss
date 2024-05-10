@@ -1,0 +1,12 @@
+@import "../../App";
+
+.conversation {
+  .sendMessage {
+    Button {
+      max-width: 150px;
+      border-radius: 60px;
+      padding: 15px 30px;
+      margin: auto;
+    }
+  }
+}

@@ -36,7 +36,8 @@ const ProfilCard = ({ showUserPosts }) => {
   }, [currentUserId, token]);
 
   return (
-    <div className="profil my-5 py-5">
+    <div className="profil">
+      <h4 className="text-center mb-5">Mon profil</h4>
       <div className="profilCard">
         <div className="d-flex justify-content-evenly align-items-center">
           <img

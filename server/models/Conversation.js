@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Conversation.associate = (models) => {
     Conversation.hasMany(models.Message);
+    Conversation.belongsTo(models.Post);
   };
 
   return Conversation;

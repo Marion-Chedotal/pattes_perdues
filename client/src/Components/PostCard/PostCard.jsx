@@ -18,7 +18,7 @@ const PostCard = ({ post }) => {
 
   return (
     <div>
-      <Card style={{ width: "18rem" }} className="bold-text">
+      <Card style={{ width: "18rem" }} className="bold-text postCard">
         <Card.Body className="d-flex flex-column align-items-center">
           <div className="d-flex justify-content-evenly w-100 mb-2">
             <Card.Title>{post?.Type?.label.toUpperCase()}</Card.Title>
@@ -61,7 +61,7 @@ const PostCard = ({ post }) => {
             <FontAwesomeIcon icon={faLocationDot} />
             <p className="mb-0 ms-2">{post?.Address?.city}</p>
           </div>
-          <Link to={`/annonce/${post.id}`} className="my-4">
+          <Link to={`/annonce/${post.id}`} className="my-4 postCardBtn">
             <Button type="button">Détails</Button>
           </Link>
         </Card.Body>

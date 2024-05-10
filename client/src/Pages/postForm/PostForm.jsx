@@ -332,7 +332,6 @@ const PostForm = () => {
         <Row className="mb-3 mx-5 align-items-center justify-content-center">
           <Col md={6}>
             <label
-              className="tooltip-img"
               data-tip
               data-tooltip-id="tooltip-img"
               data-tooltip-content="Format attendu: jpg/png/jpeg, Taille maximale autorisée: 1Mo."
@@ -377,8 +376,15 @@ const PostForm = () => {
                 <div className="alert alert-danger">{validation.gender}</div>
               )}
             </label>
-            <label>
+            <label
+              className="required"
+              data-tip
+              data-tooltip-id="tooltip-name"
+              data-tooltip-content="Si vous ne connaissez pas le nom, indiquer l'animal et sa race. Exemple: Chien type labrador, Chat de gouttière"
+            >
               Nom de l'animal :
+              <FontAwesomeIcon icon={faCircleInfo} className="ms-2" />
+              <Tooltip id="tooltip-name" effect="solid"></Tooltip>
               <input
                 type="text"
                 name="name"
@@ -387,7 +393,7 @@ const PostForm = () => {
               />
             </label>
             <label
-              className="required tooltipDate"
+              className="required"
               data-tip
               data-tooltip-id="tooltip-date"
               data-tooltip-content="Indiquer la date à laquelle l'animal a été reccueilli ou vu pour la dernière fois."
@@ -462,7 +468,11 @@ const PostForm = () => {
             )}
             <label className="required">
               Ville
-              <select name="selectedCity" onChange={handleChange}  value={formData.selectedCity}>
+              <select
+                name="selectedCity"
+                onChange={handleChange}
+                value={formData.selectedCity}
+              >
                 <option value="">Sélectionner votre ville</option>
                 {formData?.cities &&
                   formData?.cities.map((city, index) => (

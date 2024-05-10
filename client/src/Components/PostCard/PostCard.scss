@@ -1,24 +1,24 @@
 @import "../../App";
 
-.card {
+.postCard {
   font-weight: bold;
   border-radius: 50px !important;
   border: 3px solid $beige-color !important;
 
   .card-body,
   .listgroup,
-  Button {
+  .postCardBtn Button {
     color: $blue-color;
   }
 
   .card-img {
     width: 100%;
-    height: auto!important;
-    max-height: 50px!important; 
-    object-fit: cover!important;
+    height: auto !important;
+    max-height: 50px !important;
+    object-fit: cover !important;
   }
 
-  Button {
+  .postCardBtn Button {
     background-color: $beige-color;
     border-radius: 30px;
     padding: 5px 25px;

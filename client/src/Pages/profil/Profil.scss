@@ -1,10 +1,15 @@
 @import "../../App";
 
 .navProfil {
-    background-color: $blue-color;
+  background-color: $blue-color;
 
-    .icons {
-        color: $beige-color;
-        font-size: 1.5rem;
+  .icons {
+    color: $beige-color;
+    font-size: 1.5rem;
+  }
+  .activeIcon {
+    @media (max-width: 768px) {
+      color: $white-color;
     }
+  }
 }

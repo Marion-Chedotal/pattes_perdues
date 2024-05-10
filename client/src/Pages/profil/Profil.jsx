@@ -20,6 +20,7 @@ import {
   faEnvelope,
   faTrash,
   faNewspaper,
+  faPaw,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Profil = () => {
@@ -76,6 +77,12 @@ const Profil = () => {
                 className="icons fluid-icon"
               />
               <span className="d-none d-md-block">Profil</span>
+              {activeSection === "profil" && (
+                <FontAwesomeIcon
+                  icon={faPaw}
+                  className="icons activeIcon mt-2"
+                />
+              )}
             </Button>
           </Col>
           <Col className="text-center ">
@@ -86,6 +93,12 @@ const Profil = () => {
             >
               <FontAwesomeIcon icon={faSliders} className="icons" />
               <span className="d-none d-md-block">Modifier mon profil</span>
+              {activeSection === "modification-profil" && (
+                <FontAwesomeIcon
+                  icon={faPaw}
+                  className="icons activeIcon mt-2"
+                />
+              )}
             </Button>
           </Col>
           <Col className="text-center ">
@@ -96,16 +109,28 @@ const Profil = () => {
             >
               <FontAwesomeIcon icon={faEnvelope} className="icons" />
               <span className="d-none d-md-block">Messagerie</span>
+              {activeSection === "mes-conversations" && (
+                <FontAwesomeIcon
+                  icon={faPaw}
+                  className="icons activeIcon mt-2"
+                />
+              )}
             </Button>
           </Col>
           <Col className="text-center ">
             <Button
               type="button"
-              className="d-flex flex-column"
               onClick={() => setActiveSection("mes-annonces")}
+              className="d-flex flex-column"
             >
               <FontAwesomeIcon icon={faNewspaper} className="icons" />
               <span className="d-none d-md-block">Mes annonces</span>
+              {activeSection === "mes-annonces" && (
+                <FontAwesomeIcon
+                  icon={faPaw}
+                  className="icons activeIcon mt-2"
+                />
+              )}
             </Button>
           </Col>
           <Col className="text-center ">
@@ -150,7 +175,7 @@ const Profil = () => {
       {activeSection === "modification-profil" && <UpdateProfil />}
       {activeSection === "mes-annonces" && <UserPosts />}
       {activeSection === "mes-conversations" && <UserConversations />}
-      <Footer/>
+      <Footer />
     </div>
   );
 };

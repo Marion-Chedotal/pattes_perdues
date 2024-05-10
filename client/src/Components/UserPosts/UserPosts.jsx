@@ -26,6 +26,7 @@ const UserPosts = () => {
 
   return (
     <div>
+      <h4 className="text-center mb-5">Mes annonces</h4>
       <div className="row gy-5">
         {noResults ? (
           <p className="text-center fw-bold">

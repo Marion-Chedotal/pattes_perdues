@@ -14,7 +14,14 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Message.associate = (models) => {
-    Message.belongsTo(models.User, { foreignKey: "receiverId" });
+    Message.belongsTo(models.User, {
+      foreignKey: "receiverId",
+      as: "Receiver",
+    });
+    Message.belongsTo(models.User, {
+      foreignKey: "UserId",
+      as: "Sender",
+    });
     Message.belongsTo(models.Conversation);
   };
 
