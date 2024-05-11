@@ -87,7 +87,7 @@ const register = async (req, res) => {
     if (isEmailAlreadyExist) {
       return res.status(409).json({
         errorCode: "emailExist",
-        errorMessage: errors.authentication.global.emailExist,
+        errorMessage: errors.authentication.emailExist,
       });
     }
 
@@ -97,7 +97,7 @@ const register = async (req, res) => {
     if (isLoginAlreadyExist) {
       return res.status(409).json({
         errorCode: "loginExist",
-        errorMessage: errors.authentication.global.loginExist,
+        errorMessage: errors.authentication.loginExist,
       });
     }
 
@@ -153,7 +153,7 @@ const login = async (req, res) => {
     if (error) {
       return res.status(400).json({
         errorCode: "invalidInformations",
-        errorMessage: errors.authentication.global.invalidInformations,
+        errorMessage: errors.authentication.invalidInformations,
       });
     }
 
@@ -164,7 +164,7 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         errorCode: "invalidInformations",
-        errorMessage: errors.authentication.global.invalidInformations,
+        errorMessage: errors.authentication.invalidInformations,
       });
     }
 
@@ -176,7 +176,7 @@ const login = async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({
         errorCode: "invalidInformations",
-        errorMessage: errors.authentication.global.invalidInformations,
+        errorMessage: errors.authentication.invalidInformations,
       });
     }
 
