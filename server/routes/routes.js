@@ -98,6 +98,11 @@ router.post(
 /**
  * conversation routes
  */
+router.post(
+  "/user/:login/conversation",
+  AuthMiddleware.validateToken,
+  ConversationController.startConversation
+);
 router.get(
   "/user/:login/conversations",
   AuthMiddleware.validateToken,

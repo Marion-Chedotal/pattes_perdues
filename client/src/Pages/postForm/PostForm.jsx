@@ -352,7 +352,7 @@ const PostForm = () => {
                   src={
                     newPicture
                       ? URL.createObjectURL(newPicture)
-                      : `http://localhost:${REACT_APP_PORT}/` + formData?.picture
+                      : `http://localhost:${process.env.REACT_APP_PORT}/` + formData?.picture
                   }
                   style={{ maxWidth: "100%", maxHeight: "400px" }}
                 />

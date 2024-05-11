@@ -38,9 +38,33 @@ const getOne = async (login, id, token) => {
   }
 };
 
+/**
+ * Start conversation with one message
+ * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
+ */
+const start = async (id, formData, token) => {
+  try {
+    const response = await axiosInstance.post(
+      `user/${id}/conversation`,
+      JSON.stringify(formData),
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.message;
+  }
+};
+
 const conversationService = {
   getUserConversations,
   getOne,
+  start,
 };
 
 export default conversationService;

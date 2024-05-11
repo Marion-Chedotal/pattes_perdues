@@ -70,7 +70,7 @@ const ConversationCard = ({ conversation }) => {
                   <img
                     src={
                       interlocutorData?.Receiver?.avatar
-                        ? `http://localhost:${REACT_APP_PORT}/` +
+                        ? `http://localhost:${process.env.REACT_APP_PORT}/` +
                           interlocutorData?.Receiver?.avatar
                         : defaultAvatar
                     }
@@ -97,7 +97,7 @@ const ConversationCard = ({ conversation }) => {
                   <img
                     src={
                       interlocutorData?.Sender?.avatar
-                        ? `http://localhost:${REACT_APP_PORT}/` +
+                        ? `http://localhost:${process.env.REACT_APP_PORT}/` +
                           interlocutorData?.Sender?.avatar
                         : defaultAvatar
                     }

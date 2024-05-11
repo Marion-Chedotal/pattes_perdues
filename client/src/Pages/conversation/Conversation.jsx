@@ -275,7 +275,7 @@ const Post = () => {
           </Col>
           <Col md={6} className="mt-5 mt-lg-0">
             <h4 className="mb-4">Envie d'aider ?</h4>
-            <Link to={`/contact/${id}/${post?.User?.id}`}>
+            <Link to={`/contact/${id}`}>
               <Button type="button">
                 <FontAwesomeIcon icon={faMessage} className="iconAction" />
                 &nbsp;Contacter {post?.User?.login}
