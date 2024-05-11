@@ -184,7 +184,7 @@ const UpdateProfil = () => {
                     newPicture
                       ? URL.createObjectURL(newPicture)
                       : formData?.avatar
-                      ? "http://localhost:3001/" + formData.avatar
+                      ? `http://localhost:${REACT_APP_PORT}/` + formData.avatar
                       : defaultAvatar
                   }
                   alt="user avatar"

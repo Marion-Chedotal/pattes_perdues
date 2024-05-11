@@ -3,7 +3,7 @@ import { store } from "../store/store";
 import { expiredToken } from "../store/authActions";
 
 const instance = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: `http://localhost:${ process.env.REACT_APP_PORT}/api`,
   withCredentials: true,
 });
 

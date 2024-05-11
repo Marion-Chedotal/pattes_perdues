@@ -67,7 +67,7 @@ const UserConversations = () => {
                 <img
                   src={
                     activeConversation?.Messages[0]?.User?.avatar
-                      ? "http://localhost:3001/" +
+                      ? `http://localhost:${REACT_APP_PORT}/` +
                         activeConversation.user.avatar
                       : defaultAvatar
                   }
@@ -113,7 +113,7 @@ const UserConversations = () => {
                           <img
                             src={
                               conversation?.avatar
-                                ? "http://localhost:3001/" + conversation.avatar
+                                ? `http://localhost:${REACT_APP_PORT}/` + conversation.avatar
                                 : defaultAvatar
                             }
                             alt="Avatar"
