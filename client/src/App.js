@@ -24,6 +24,8 @@ function App() {
     favicon.href = "./Assets/pattes_perdues_logo.png";
   }, []);
 
+  const {REACT_APP_PORT} = process.env
+
   const router = createBrowserRouter([
     {
       path: "/",

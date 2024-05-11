@@ -149,7 +149,7 @@ const Post = () => {
           {post?.picture ? (
             <Col md={6} className="text-center">
               <Image
-                src={"http://localhost:3001/" + post?.picture}
+                src={`http://localhost:${REACT_APP_PORT}/` + post?.picture}
                 alt="photo de l'animal"
                 style={{ maxWidth: "100%", maxHeight: "500px" }}
               />

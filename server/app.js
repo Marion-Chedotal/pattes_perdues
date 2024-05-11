@@ -23,7 +23,7 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api", routes);
 
-const port = process.env.PORT || 8080;
+const port = process.env.REACT_APP_PORT || 8080;
 
 try {
   db.sequelize.sync().then(() => {

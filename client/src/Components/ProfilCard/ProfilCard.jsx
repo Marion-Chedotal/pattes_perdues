@@ -44,7 +44,7 @@ const ProfilCard = ({ showUserPosts }) => {
             className="avatar rounded-circle"
             src={
               userData?.avatar
-                ? "http://localhost:3001/" + userData.avatar
+                ? `http://localhost:${REACT_APP_PORT}/` + userData.avatar
                 : defaultAvatar
             }
             alt="user avatar"

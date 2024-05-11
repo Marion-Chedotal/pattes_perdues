@@ -5,7 +5,7 @@ import axios from "axios";
  */
 const getAll = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/api/messages", {
+    const response = await axios.get(`http://localhost:${REACT_APP_PORT}/api/messages`, {
       withCredentials: true,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -24,7 +24,7 @@ const getAll = async () => {
 const addMessage = async (id, formData, token) => {
   try {
     const response = await axios.post(
-      `http://localhost:3001/api/post/${id}/contact`,
+      `http://localhost:${REACT_APP_PORT}/api/post/${id}/contact`,
       JSON.stringify(formData),
       {
         withCredentials: true,
