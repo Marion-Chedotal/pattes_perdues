@@ -20,7 +20,6 @@ const ProfilCard = ({ showUserPosts }) => {
       try {
         // fetch global user information
         const data = await UserService.getUserInformation(currentUserId, token);
-
         setUserData(data);
         // fetch user's post
         const number = await postService.getUserNumberOfPost(

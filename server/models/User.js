@@ -2,6 +2,11 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "User",
     {
+      id_user: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       login: {
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -19,6 +24,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // postalCode: {
+      //   type: DataTypes.CHAR(5),
+      //   allowNull: false,
+      // },
+      // city: {
+      //   type: DataTypes.STRING(32),
+      //   allowNull: false,
+      // },
     },
     {
       tableName: "User",
@@ -28,9 +41,10 @@ module.exports = (sequelize, DataTypes) => {
 
   // add foreign keys
   User.associate = (models) => {
-    User.belongsTo(models.Address);
-    User.hasMany(models.Post);
-    User.hasMany(models.Message);
+    User.belongsTo(models.Address, { foreignKey: "id_address" });
+    User.hasMany(models.Post, { foreignKey: "id_user" });
+    User.hasMany(models.Message, { foreignKey: "id_sender" });
+    User.hasMany(models.Message, { foreignKey: "id_receiver" });
   };
 
   return User;

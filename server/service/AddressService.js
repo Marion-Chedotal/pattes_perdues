@@ -13,14 +13,14 @@ const { Address } = require("../models");
 
   /**
    * Update address
-   * @param {number} id
+   * @param {number} id_address
    * @param {object} data
    * @returns {Promise<Object[]>}
    */
-  const editAddress = async (id, data) => {
+  const editAddress = async (id_address, data) => {
     return await Address.update(data, {
       where: {
-        id,
+        id_address,
       },
     });
   }

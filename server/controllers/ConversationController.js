@@ -33,18 +33,17 @@ const findConversation = async (req, res) => {
   const idConversation = parseInt(req.params.id, 10);
   const login = req.params.login;
   const user = await UserService.getByLogin(login);
-  const userId = user.id;
-  const currentUserId = req.userId;
+  const currentUserId = req.id_user;
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
     currentUserId,
-    userId
+    user.id_user
   );
 
   if (isUserAllowed) {
     try {
       const conversation = await ConversationService.getConversation(
-        userId,
+        currentUserId,
         idConversation
       );
 
@@ -72,18 +71,17 @@ const findConversation = async (req, res) => {
 const findConversations = async (req, res) => {
   const login = req.params.login;
   const user = await UserService.getByLogin(login);
-  const userId = user.id;
-  const currentUserId = req.userId;
+  const currentUserId = req.id_user;
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
     currentUserId,
-    userId
+    user.id_user
   );
 
   if (isUserAllowed) {
     try {
       const conversations = await ConversationService.getAllConversationsByUser(
-        userId
+        currentUserId
       );
 
       res.status(201).json(conversations);
@@ -100,4 +98,4 @@ const findConversations = async (req, res) => {
   }
 };
 
-module.exports = { createConversation, findConversation, findConversations};
+module.exports = { createConversation, findConversation, findConversations };

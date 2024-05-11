@@ -73,8 +73,8 @@ const PostForm = () => {
             selectedCity: post?.Address?.city,
           }));
 
-          setSelectedTypeId(post.TypeId);
-          setSelectedCatId(post.PetCategoryId);
+          setSelectedTypeId(post.id_type);
+          setSelectedCatId(post.id_pet_category);
         } catch (error) {
           console.error("Error fetching post details:", error);
         }
@@ -211,9 +211,9 @@ const PostForm = () => {
         microchip: formData.microchip,
         collar: formData.collar,
         distinctive_signs: formData.distinctive_signs,
-        PetCategoryId: selectedCatId,
-        UserId: currentUserId,
-        TypeId: selectedTypeId,
+        id_pet_category: selectedCatId,
+        id_user: currentUserId,
+        id_type: selectedTypeId,
         is_active: is_active,
         street: formData.street,
         postalCode: formData.postalCode,
@@ -231,7 +231,7 @@ const PostForm = () => {
         });
       } else {
         const response = await postService.register(postData, token);
-        navigate(`/annonce/${response.postId}`);
+        navigate(`/annonce/${response.id_post}`);
       }
     } catch (err) {
       const errorMessage = t(`post.${err?.errorCode}`);
@@ -303,7 +303,7 @@ const PostForm = () => {
               >
                 <option value="">Sélectionner : </option>
                 {types.map((type) => (
-                  <option key={type.id} value={type.id}>
+                  <option key={type.id_type} value={type.id_type}>
                     {type.label}
                   </option>
                 ))}
@@ -321,7 +321,7 @@ const PostForm = () => {
               >
                 <option value="">Sélectionner : </option>
                 {petCategories.map((petCategory) => (
-                  <option key={petCategory.id} value={petCategory.id}>
+                  <option key={petCategory.id_pet_category} value={petCategory.id_pet_category}>
                     {petCategory.label}
                   </option>
                 ))}

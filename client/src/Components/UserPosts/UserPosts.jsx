@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import PostService from "../../Services/PostService";
 import PostCard from "../../Components/PostCard/PostCard";
 import { useParams } from "react-router-dom";
@@ -15,6 +15,7 @@ const UserPosts = () => {
       try {
         const userPosts = await PostService.getUserPosts(login, token);
         setPosts(userPosts);
+        console.log(userPosts);
         if (userPosts.length === 0) return setNoResults(true);
         setNoResults(false);
       } catch (error) {
@@ -35,7 +36,7 @@ const UserPosts = () => {
         ) : (
           posts.map((post) => (
             <div
-              key={post.id}
+              key={post.id_post}
               className="d-flex justify-content-center col-lg-4 col-md-6 col-sm-12"
             >
               <PostCard post={post} />

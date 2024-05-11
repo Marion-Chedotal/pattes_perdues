@@ -53,15 +53,13 @@ const findById = async (req, res) => {
  */
 const updateUser = async (req, res) => {
   const login = req.params.login;
-  const currentUserId = req.userId;
+  const currentUserId = req.id_user;
 
-  const user = await UserService.getByLogin(login);
-
-  const userId = user.id;
-  
+  const userToEdit = await UserService.getByLogin(login);
+ 
   const isUserAllowed = AuthenticationService.checkUserPermission(
     currentUserId,
-    userId
+    userToEdit.id_user
   );
 
   // sanitize input
@@ -92,7 +90,7 @@ const updateUser = async (req, res) => {
 
   let { password, email, avatar, postalCode, city } = req.body;
 
-  if (postalCode !== user.Address.postalCode && !city) {
+  if (postalCode !== userToEdit.Address.postalCode && !city) {
     return res.status(400).json({
       errorCode: "noCity",
       errorMessage: errors.global.noCity,
@@ -102,7 +100,7 @@ const updateUser = async (req, res) => {
   if (isUserAllowed) {
     try {
       // Check if user already exist: same email
-      if (user.email !== email) {
+      if (userToEdit.email !== email) {
         const isEmailAlreadyExist = await UserService.checkEmailExists(email);
         if (isEmailAlreadyExist) {
           return res.status(400).json("Email already used");
@@ -119,7 +117,7 @@ const updateUser = async (req, res) => {
         avatarPath = req.files.avatar[0].path;
 
         // Delete old avatar from server
-        if (user.avatar) {
+        if (userToEdit.avatar) {
           fs.unlinkSync(user.avatar);
         }
       }
@@ -129,7 +127,7 @@ const updateUser = async (req, res) => {
         email: email,
         avatar: avatarPath,
       });
-      await AddressService.editAddress(user.AddressId, {
+      await AddressService.editAddress(userToEdit.id_address, {
         postalCode: postalCode,
         city: city,
       });
@@ -141,7 +139,7 @@ const updateUser = async (req, res) => {
       }
 
       res.status(200).json({
-        message: `The user ${user.login} has been successfully updated`,
+        message: `The user ${userToEdit.login} has been successfully updated`,
       });
     } catch (error) {
       res.status(500).json({
@@ -165,21 +163,20 @@ const updateUser = async (req, res) => {
 const removeUser = async (req, res) => {
   const login = req.params.login;
 
-  const user = await UserService.getByLogin(login);
-  const userId = user.id;
-  const currentUserId = req.userId;
+  const userToRemove = await UserService.getByLogin(login);
+  const currentUserId = req.id_user;
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
     currentUserId,
-    userId
+    userToRemove.id_user
   );
 
   if (isUserAllowed) {
     try {
-      const user = await UserService.deleteUser(userId);
+      const user = await UserService.deleteUser(userToRemove.id_user);
 
       if (!user) {
-        return res.status(400).json({ error: `User ${userId} doesn't exist` });
+        return res.status(400).json({ error: `User ${userToRemove.id_user} doesn't exist` });
       }
       const login = user.login;
 

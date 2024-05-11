@@ -176,7 +176,7 @@ const Home = () => {
           <Row className="">
             {lastThreeArchivesPosts.map((post) => (
               <Col
-                key={post.id}
+                key={post.id_post}
                 lg={4}
                 md={6}
                 sm={12}
@@ -199,7 +199,7 @@ const Home = () => {
           <Row className="">
             {lastThreePosts.map((post) => (
               <Col
-                key={post.id}
+                key={post.id_post}
                 lg={4}
                 md={6}
                 sm={12}

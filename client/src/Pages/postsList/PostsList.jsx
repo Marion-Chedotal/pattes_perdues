@@ -182,7 +182,7 @@ const PostsList = () => {
         ) : (
           visiblePosts.map((post) => (
             <div
-              key={post.id}
+              key={post.id_post}
               className="d-flex justify-content-center col-lg-4 col-md-6 col-sm-12"
             >
               <PostCard post={post} />

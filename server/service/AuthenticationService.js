@@ -4,11 +4,11 @@ const bcrypt = require("bcryptjs");
   /**
  * Create JWT access token for a user
  * @param {string} login
- * @param {number} id
+ * @param {number} id_user
  * @returns {string } JWT
  */
-const createToken = (login, id) => {
-  const accessToken = sign({ login, id }, process.env.JWT_SECRET, {
+const createToken = (login, id_user) => {
+  const accessToken = sign({ login, id_user }, process.env.JWT_SECRET, {
     expiresIn: "2h",
   });
 
@@ -27,13 +27,13 @@ const comparePasswords = (password, dbPassword) => {
 
 /**
  * Check if the user has permission to perform an action on a resource
- * @param {number} userId - ID of the user who is trying to perform the action
- * @param {number} requestedUserId - ID of the user associated with the resource
+ * @param {number} id_user - ID of the user who is trying to perform the action
+ * @param {number} requested_id_user - ID of the user associated with the resource
  * @returns {<boolean>} True if it's match
  */
 
-const checkUserPermission = (userId, requestedUserId) => {
-  return userId === requestedUserId;
+const checkUserPermission = (id_user, requested_id_user) => {
+  return id_user === requested_id_user;
 };
 
 

@@ -60,26 +60,25 @@ const HappyEndings = () => {
   }, [currentUserId, token, user]);
 
   // filtered posts by type / pet category / city
-useEffect(() => {
-  const filtered = archivesPosts
-    .filter((post) => post.Type.label === typeFilter || typeFilter === "all")
-    .filter(
-      (post) =>
-        post.Pet_category.label === categoryFilter || categoryFilter === "all"
-    )
-    .filter((post) =>
-      post.Address.city.toLowerCase().includes(searchInput.toLowerCase())
-    );
+  useEffect(() => {
+    const filtered = archivesPosts
+      .filter((post) => post.Type.label === typeFilter || typeFilter === "all")
+      .filter(
+        (post) =>
+          post.Pet_category.label === categoryFilter || categoryFilter === "all"
+      )
+      .filter((post) =>
+        post.Address.city.toLowerCase().includes(searchInput.toLowerCase())
+      );
 
-  if (filtered.length === 0) {
-    setNoResults(true);
-  } else {
-    setNoResults(false);
-  }
+    if (filtered.length === 0) {
+      setNoResults(true);
+    } else {
+      setNoResults(false);
+    }
 
-  setFilteredPosts(filtered); 
-}, [archivesPosts, typeFilter, categoryFilter, searchInput]);
-
+    setFilteredPosts(filtered);
+  }, [archivesPosts, typeFilter, categoryFilter, searchInput]);
 
   const handleTypeFilterChange = (e) => {
     setTypeFilter(e.target.value);
@@ -171,7 +170,7 @@ useEffect(() => {
           ) : (
             visiblePosts.map((post) => (
               <div
-                key={post.id}
+                key={post.id_post}
                 className="d-flex justify-content-center col-lg-4 col-md-6 col-sm-12"
               >
                 <PostCard post={post} />

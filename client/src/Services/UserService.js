@@ -35,7 +35,6 @@ const updateUserInformation = async (login, userData, token) => {
       },
     });
   } catch (error) {
-
     throw error.response.data;
   }
 };

@@ -61,7 +61,7 @@ const PostCard = ({ post }) => {
             <FontAwesomeIcon icon={faLocationDot} />
             <p className="mb-0 ms-2">{post?.Address?.city}</p>
           </div>
-          <Link to={`/annonce/${post.id}`} className="my-4 postCardBtn">
+          <Link to={`/annonce/${post.id_post}`} className="my-4 postCardBtn">
             <Button type="button">Détails</Button>
           </Link>
         </Card.Body>

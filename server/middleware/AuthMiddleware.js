@@ -13,7 +13,7 @@ const validateToken = (req, res, next) => {
   try {
     const validToken = verify(accessToken, process.env.JWT_SECRET);
 
-    req.userId = validToken.id;
+    req.id_user = validToken.id;
     req.token = accessToken;
 
     if (validToken) {

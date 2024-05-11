@@ -1,9 +1,15 @@
-module.exports = ( sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
   const Address = sequelize.define(
     "Address",
     {
+      id_address: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       street: {
         type: DataTypes.STRING(100),
+        // allowNull: false,
         allowNull: true,
       },
       postalCode: {
@@ -22,8 +28,15 @@ module.exports = ( sequelize, DataTypes) => {
   );
 
   Address.associate = (models) => {
-    Address.hasOne(models.User);
-    Address.hasOne(models.Post);
+    Address.hasOne(models.Post, {
+      foreignKey: "id_address",
+      constraints: true,
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
+    });
+    Address.hasOne(models.User, {
+      foreignKey: "id_user",
+    });
   };
 
   return Address;

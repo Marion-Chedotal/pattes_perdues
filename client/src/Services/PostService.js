@@ -57,13 +57,13 @@ const getOne = async (id) => {
 
 /**
  * Get number of posts
- * @param {integer} userId - id of the current user
+ * @param {integer} id_user - id of the current user
  * @param {string} token - token
  * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */
-const getUserNumberOfPost = async (userId, token) => {
+const getUserNumberOfPost = async (id_user, token) => {
   try {
-    const response = await axiosInstance.get(`/posts/${userId}`, {
+    const response = await axiosInstance.get(`/posts/${id_user}`, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@ const getUserNumberOfPost = async (userId, token) => {
 
 /**
  * Get user's posts
- * @param {integer} userId - id of the current user
+ * @param {integer} login - login of the current user
  * @param {string} token - token
  * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */

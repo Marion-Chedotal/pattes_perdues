@@ -8,7 +8,6 @@ const PetCategoryService = require("../service/PetCategoryService");
  * @throws {object} error
  */
 const findAllPetCategory = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
 
   try {
     const petCategory = await PetCategoryService.getAllPetCategory();

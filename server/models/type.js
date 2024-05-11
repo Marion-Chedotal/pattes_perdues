@@ -2,9 +2,14 @@ module.exports = (sequelize, DataTypes) => {
   const Type = sequelize.define(
     "Type",
     {
+      id_type: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       label: {
         type: DataTypes.ENUM,
-        values: ["perdu", "trouvé", "volé"],
+        values: ["Perdu", "Trouvé", "Volé"],
         allowNull: false,
       },
     },
@@ -13,9 +18,9 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
     }
   );
-
+  
   Type.associate = (models) => {
-    Type.hasMany(models.Post);
+    Type.hasMany(models.Post, { foreignKey: "id_type" });
   };
 
   return Type;

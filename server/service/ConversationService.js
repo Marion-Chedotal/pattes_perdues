@@ -16,21 +16,21 @@ const addConversation = async () => {
 
 /**
  * Get all conversations by User and retrieve login partner conversation
- * @param {number} idSender
- * @param {number} idReceiver
+ * @param {number} id_sender
+ * @param {number} id_receiver
  * @returns {Promise<Object[]>}
  */
-const getAllConversationsByUser = async (userId) => {
+const getAllConversationsByUser = async (id_user) => {
   try {
-    const user = await UserService.getById(userId);
+    const user = await UserService.getById(id_user);
     const userLogin = user.login;
 
     const sqlQuery = `
       SELECT DISTINCT
           c.*,
           p.*,
-          u1.login, u1.id, u1.avatar,
-          u2.login, u2.id, u2.avatar,
+          u1.login, u1.id_sender, u1.avatar,
+          u2.login, u2.id_receiver, u2.avatar,
           m.*,
           CASE
               WHEN u1.login != '${userLogin}' THEN u1.login
@@ -39,16 +39,16 @@ const getAllConversationsByUser = async (userId) => {
       FROM
           Conversation c
       INNER JOIN
-          Message m ON c.id = m.ConversationId
+          Message m ON c.id_conversation = m.id_conversation
       INNER JOIN
-          User u1 ON m.UserId = u1.id
+          User u1 ON m.id_sender = u1.id_sender
       INNER JOIN
-          User u2 ON m.receiverId = u2.id
+          User u2 ON m.id_receiver = u2.id_receiver
       INNER JOIN
-          Post p ON p.id = c.PostId
+          Post p ON p.id_post = c.id_post
       WHERE
-          u1.id = ${userId} OR u2.id = ${userId}
-      GROUP BY m.receiverId 
+          u1.id_sender = ${id_user} OR u2.id_sender = ${id_user}
+      GROUP BY m.id_receiver 
     `;
     return await sequelize.query(sqlQuery, {
       type: sequelize.QueryTypes.SELECT,
@@ -61,18 +61,18 @@ const getAllConversationsByUser = async (userId) => {
 
 /**
  * Get one conversation and its associated messages
- * @param {number} idUser
- * @param {number} idConversation
+ * @param {number} id_user
+ * @param {number} id_conversation
  * @returns {Promise<Object>}
  */
-const getConversation = async (idUser, idConversation) => {
+const getConversation = async (id_user, id_conversation) => {
   return await Conversation.findOne({
-    where: { id: idConversation },
+    where: { id_conversation },
     include: [
       {
         model: Message,
         where: {
-          [Op.or]: [{ UserId: idUser }, { receiverId: idUser }],
+          [Op.or]: [{ id_sender: id_user }, { id_receiver: id_user }],
         },
         include: [
           {

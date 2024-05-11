@@ -2,9 +2,14 @@ module.exports = (sequelize, DataTypes) => {
   const Post = sequelize.define(
     "Post",
     {
+      id_post: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       gender: {
         type: DataTypes.ENUM,
-        values: ["mâle", "femelle"],
+        values: ["Mâle", "Femelle"],
         allowNull: true,
       },
       alert_date: {
@@ -17,18 +22,21 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: {
         type: DataTypes.STRING(32),
-        allowNull: true,
+        allowNull: false,
       },
       tattoo: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
+        type: DataTypes.ENUM,
+        values: ["Oui", "Non", "Ne sais pas"],
+        allowNull: false,
       },
       microchip: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
+        type: DataTypes.ENUM,
+        values: ["Oui", "Non", "Ne sais pas"],
+        allowNull: false,
       },
       collar: {
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.ENUM,
+        values: ["Oui", "Non", "Ne sais pas"],
         allowNull: false,
       },
       distinctive_signs: {
@@ -50,13 +58,25 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  // TODO: ondelete and on cascade later
   Post.associate = (models) => {
-    Post.belongsTo(models.User);
-    Post.belongsTo(models.Address);
-    Post.belongsTo(models.Type);
-    Post.belongsTo(models.Pet_category);
-    Post.hasMany(models.Conversation);
+    Post.belongsTo(models.Address, {
+      foreignKey: "id_address",
+      constraints: true,
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
+    });
+    Post.belongsTo(models.User, {
+      foreignKey: "id_user",
+    });
+
+    Post.belongsTo(models.Type, {
+      foreignKey: "id_type",
+    });
+    Post.belongsTo(models.Pet_category, {
+      foreignKey: "id_pet_category",
+
+    });
+    Post.hasMany(models.Conversation, { foreignKey: "id_post" });
   };
 
   return Post;

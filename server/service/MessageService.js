@@ -8,24 +8,24 @@ const { Op } = require("sequelize");
  */
 const addMessage = async (data) => {
   return await Message.create(data);
-}
+};
 
 /**
  * Check is conversation existe between 2 users
- * @param {number} idSender - id of the sender
- * @param {number} idReceiver - id of the receiver
+ * @param {number} id_sender - id of the sender
+ * @param {number} id_receiver - id of the receiver
  * @returns {boolean}
  */
-const doesConversationExist =  async (idSender, idReceiver) => {
+const doesConversationExist = async (id_sender, id_receiver) => {
   const conversation = await Message.findOne({
     where: {
       [Op.or]: [
-        { UserId: idSender, receiverId: idReceiver },
-        { UserId: idReceiver, receiverId: idSender },
+        { id_sender, receiverId },
+        { id_receiver, id_sender },
       ],
     },
   });
   return !!conversation;
-}
+};
 
-module.exports = {addMessage, doesConversationExist};
+module.exports = { addMessage, doesConversationExist };

@@ -1,21 +1,4 @@
-import axios from "axios";
-/**
- * Get all messages
- * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
- */
-const getAll = async () => {
-  try {
-    const response = await axios.get("http://localhost:3001/api/messages", {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response.data;
-  } catch (error) {
-    throw error.message;
-  }
-};
+import axiosInstance from "./Axios";
 
 /**
  * Create message
@@ -23,11 +6,10 @@ const getAll = async () => {
  */
 const addMessage = async (id, formData, token) => {
   try {
-    const response = await axios.post(
-      `http://localhost:3001/api/post/${id}/contact`,
+    const response = await axiosInstance.post(
+      `/post/${id}/contact`,
       JSON.stringify(formData),
       {
-        withCredentials: true,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -41,7 +23,7 @@ const addMessage = async (id, formData, token) => {
 };
 
 const messageService = {
-  getAll,
+  // getAll,
   addMessage,
 };
 

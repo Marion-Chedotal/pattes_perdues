@@ -45,11 +45,11 @@ const getByLogin = async (login) => {
 
 /**
  * Find user by his id and get his address
- * @param {number} id
+ * @param {number} id_user
  * @returns {Promise<Object>}
  */
-const getById = async (id) => {
-  return await User.findByPk(id, {
+const getById = async (id_user) => {
+  return await User.findByPk(id_user, {
     attributes: { exclude: ["password"] },
     include: {
       model: Address,
@@ -60,25 +60,25 @@ const getById = async (id) => {
 
 /**
  * Update user
- * @param {number} idUser
+ * @param {number} id_user
  * @param {object} data
  * @returns {Promise<Object>}
  */
-const editUser = async (idUser, data) => {
+const editUser = async (id_user, data) => {
   return await User.update(data, {
     where: {
-      id: idUser,
+      id_user,
     },
   });
 };
 
 /**
  * Delete user
- * @param {number} id
+ * @param {number} id_user
  * @returns {Promise}
  */
-const deleteUser = async (id) => {
-  const user = await getById(id);
+const deleteUser = async (id_user) => {
+  const user = await getById(id_user);
 
   return user.destroy();
 };

@@ -32,9 +32,9 @@ const validateInput = (data) => {
     street: Joi.string(),
     postalCode: Joi.number().integer(),
     city: Joi.string(),
-    UserId: Joi.number().integer(),
-    TypeId: Joi.number().integer(),
-    PetCategoryId: Joi.number().integer(),
+    id_user: Joi.number().integer(),
+    id_type: Joi.number().integer(),
+    id_pet_category: Joi.number().integer(),
   });
 
   return schema.validate(data);
@@ -62,9 +62,9 @@ const createPost = async (req, res) => {
     "street",
     "postalCode",
     "city",
-    "UserId",
-    "TypeId",
-    "PetCategoryId",
+    "id_user",
+    "id_type",
+    "id_pet_category",
   ];
 
   fieldsToSanitize.forEach((fieldName) => {
@@ -76,6 +76,7 @@ const createPost = async (req, res) => {
   // Check input format
   const { error } = validateInput(req.body);
   if (error) {
+    console.log(error);
     return res.status(400).json({
       errorCode: "fieldsToFill",
       errorMessage: errors.global.fieldsToFill,
@@ -96,9 +97,9 @@ const createPost = async (req, res) => {
     street,
     postalCode,
     city,
-    UserId,
-    TypeId,
-    PetCategoryId,
+    id_user,
+    id_type,
+    id_pet_category,
   } = req.body;
 
   try {
@@ -119,9 +120,9 @@ const createPost = async (req, res) => {
       distinctive_signs,
       picture: picturePath,
       is_active,
-      UserId,
-      TypeId,
-      PetCategoryId,
+      id_user,
+      id_type,
+      id_pet_category,
     });
 
     const address = await AddressService.addAddress({
@@ -133,7 +134,7 @@ const createPost = async (req, res) => {
     await post.setAddress(address);
 
     res.status(201).json({
-      postId: post.id,
+      id_post,
       message: "Post has been successfully registered",
     });
   } catch (error) {
@@ -162,7 +163,7 @@ const findById = async (req, res) => {
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({
-      error: `Error when fetching post, ${error}`,
+      error: `Error when fetching post by id, ${error}`,
     });
   }
 };
@@ -183,7 +184,7 @@ const findAll = async (req, res) => {
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({
-      error: `Error when fetching post, ${error}`,
+      error: `Error when fetching posts, ${error}`,
     });
   }
 };
@@ -261,17 +262,16 @@ const findAllArchivesPosts = async (req, res) => {
 const findByUser = async (req, res) => {
   const login = req.params.login;
   const user = await UserService.getByLogin(login);
-  const userId = user.id;
+
+  const currentUserId = user.id_user;
 
   try {
-    const post = await PostService.getAllByUser(userId);
-    if (post.length === 0) {
-      return res.status(400).json({ error: `User doesn't have post` });
-    }
+    const post = await PostService.getAllByUser(currentUserId);
+
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({
-      error: `Error when fetching post, ${error}`,
+      error: `Error when fetching post by user, ${error}`,
     });
   }
 };
@@ -283,17 +283,18 @@ const findByUser = async (req, res) => {
  * @throws {object} error
  */
 const numberPostsByUser = async (req, res) => {
-  const currentUserId = req.userId;
+  const currentUserId = req.id_user;
 
   try {
     const post = await PostService.countPostsByUser(currentUserId);
+
     if (post.length === 0) {
       return res.status(400).json({ error: `User doesn't have post yet.` });
     }
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({
-      error: `Error when fetching post, ${error}`,
+      error: `Error when fetching the number of post by user, ${error}`,
     });
   }
 };
@@ -306,11 +307,11 @@ const numberPostsByUser = async (req, res) => {
  */
 const updatePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
-  const currentUserId = req.userId;
+  const currentUserId = req.id_user;
   const postToEdit = await PostService.getById(idPost);
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
-    postToEdit.UserId,
+    postToEdit.id_user,
     currentUserId
   );
 
@@ -329,9 +330,9 @@ const updatePost = async (req, res) => {
     "street",
     "postalCode",
     "city",
-    "UserId",
-    "TypeId",
-    "PetCategoryId",
+    "id_user",
+    "id_type",
+    "id_pet_category",
   ];
 
   fieldsToSanitize.forEach((fieldName) => {
@@ -359,12 +360,12 @@ const updatePost = async (req, res) => {
     distinctive_signs,
     picture,
     is_active,
-    UserId,
+    id_user,
     street,
     postalCode,
     city,
-    TypeId,
-    PetCategoryId,
+    id_type,
+    id_pet_category,
   } = req.body;
 
   if (postalCode !== postToEdit.Address.postalCode && !city) {
@@ -397,12 +398,12 @@ const updatePost = async (req, res) => {
         distinctive_signs,
         picture: picturePath,
         is_active,
-        UserId,
-        TypeId,
-        PetCategoryId,
+        id_user,
+        id_type,
+        id_pet_category,
       });
 
-      await AddressService.editAddress(postToEdit.AddressId, {
+      await AddressService.editAddress(postToEdit.id_address, {
         street: street,
         postalCode: postalCode,
         city: city,
@@ -432,12 +433,12 @@ const updatePost = async (req, res) => {
  */
 const removePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
-  const currentUserId = req.userId;
+  const currentUserId = req.id_user;
 
   const postToDelete = await PostService.getById(idPost);
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
-    postToDelete?.UserId,
+    postToDelete?.id_user,
     currentUserId
   );
 

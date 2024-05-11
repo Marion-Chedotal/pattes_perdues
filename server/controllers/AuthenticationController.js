@@ -87,7 +87,7 @@ const register = async (req, res) => {
     if (isEmailAlreadyExist) {
       return res.status(409).json({
         errorCode: "emailExist",
-        errorMessage: errors.authentication.global.emailExist,
+        errorMessage: errors.authentication.emailExist,
       });
     }
 
@@ -97,7 +97,7 @@ const register = async (req, res) => {
     if (isLoginAlreadyExist) {
       return res.status(409).json({
         errorCode: "loginExist",
-        errorMessage: errors.authentication.global.loginExist,
+        errorMessage: errors.authentication.loginExist,
       });
     }
 
@@ -153,7 +153,7 @@ const login = async (req, res) => {
     if (error) {
       return res.status(400).json({
         errorCode: "invalidInformations",
-        errorMessage: errors.authentication.global.invalidInformations,
+        errorMessage: errors.authentication.invalidInformations,
       });
     }
 
@@ -180,10 +180,13 @@ const login = async (req, res) => {
       });
     }
 
-    const accessToken = AuthenticationService.createToken(user.login, user.id);
+    const accessToken = AuthenticationService.createToken(
+      user.login,
+      user.id_user
+    );
 
     res.status(200).json({
-      user: { login: login, id: user.id },
+      user: { login: login, id: user.id_user },
       accessToken: accessToken,
     });
   } catch (error) {

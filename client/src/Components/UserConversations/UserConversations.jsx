@@ -34,13 +34,13 @@ const UserConversations = () => {
     fetchUserConversations();
   }, [login, token]);
 
-  const switchConversation = async (conversationId) => {
+  const switchConversation = async (id_conversation) => {
     try {
-      if (!isNaN(conversationId)) {
-        setActiveConversationId(conversationId);
+      if (!isNaN(id_conversation)) {
+        setActiveConversationId(id_conversation);
         const conversation = await ConversationService.getOne(
           login,
-          conversationId,
+          id_conversation,
           token
         );
         setActiveConversation(conversation);
@@ -99,8 +99,8 @@ const UserConversations = () => {
                 ) : (
                   conversations?.map((conversation) => (
                     <button
-                      key={conversation?.id}
-                      onClick={() => switchConversation(conversation?.id)}
+                      key={conversation?.id_conversation}
+                      onClick={() => switchConversation(conversation?.id_conversation)}
                       type="button"
                       className={
                         conversation?.id === activeConversationId

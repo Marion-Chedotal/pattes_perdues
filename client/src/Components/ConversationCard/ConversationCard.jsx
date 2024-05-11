@@ -29,12 +29,12 @@ const ConversationCard = ({ conversation }) => {
     try {
       if (formData.content && formData.content.trim() !== "") {
         await MessageService.addMessage(
-          conversation?.id,
+          conversation?.id_conversation,
           {
             ...formData,
-            senderId: currentUserId,
-            receiverId: interlocutorData.receiverId,
-            conversationId: conversation.id,
+            id_sender: currentUserId,
+            id_receiver: interlocutorData.id_receiver,
+            id_conversation: conversation.id_conversation,
           },
           token
         );

@@ -11,11 +11,11 @@ const addPost = async (postData) => {
 
 /**
  * Find post by his id including user information
- * @param {number} id
+ * @param {number} id_post
  * @returns {Promise<Object>}
  */
-const getById = async (id) => {
-  return await Post.findByPk(id, {
+const getById = async (id_post) => {
+  return await Post.findByPk(id_post, {
     include: [
       { model: User, attributes: { exclude: ["password", "email"] } },
       Pet_category,
@@ -32,6 +32,9 @@ const getById = async (id) => {
 const getAll = async () => {
   return await Post.findAll({
     include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    where: {
+      is_active: true,
+    },
     order: [["createdAt", "DESC"]],
   });
 };
@@ -79,13 +82,13 @@ const getAllArchivesPosts = async () => {
 
 /**
  * Find all post create by user
- * @param {number} userId
+ * @param {number} id_user
  * @returns {Promise<Array>}
  */
-const getAllByUser = async (userId) => {
+const getAllByUser = async (id_user) => {
   return await Post.findAll({
     where: {
-      UserId: userId,
+      id_user,
     },
     include: {
       model: User,
@@ -96,38 +99,38 @@ const getAllByUser = async (userId) => {
 
 /**
  * Get the number of post by user
- * @param {number} userId
+ * @param {number} id_user
  * @returns {Promise<Array>}
  */
-const countPostsByUser = async (userId) => {
+const countPostsByUser = async (id_user) => {
   return await Post.count({
     where: {
-      UserId: userId,
+      id_user,
     },
   });
 };
 
 /**
  * Update post
- * @param {number} idPost
+ * @param {number} id_post
  * @param {object} data
  * @returns {Promise<Object>}
  */
-const editPost = async (idPost, data) => {
+const editPost = async (id_post, data) => {
   return await Post.update(data, {
     where: {
-      id: idPost,
+      id_post,
     },
   });
 };
 
 /**
  * Delete post
- * @param {number} id
+ * @param {number} id_post
  * @returns {Promise}
  */
-const deletePost = async (id) => {
-  const post = await getById(id);
+const deletePost = async (id_post) => {
+  const post = await getById(id_post);
 
   return post.destroy();
 };

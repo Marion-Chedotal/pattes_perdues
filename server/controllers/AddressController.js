@@ -41,7 +41,7 @@ const createAddress = async (req, res) => {
  */
 const updateAddress = async (res, req) => {
   const id = parseInt(req.params.id, 10);
-  const currentUserId = req.user.id;
+  const currentUserId = req.id_user;
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
     currentUserId,
