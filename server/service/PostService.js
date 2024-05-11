@@ -32,6 +32,9 @@ const getById = async (id) => {
 const getAll = async () => {
   return await Post.findAll({
     include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    where: {
+      is_active: true,
+    },
     order: [["createdAt", "DESC"]],
   });
 };

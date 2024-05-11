@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
+      read: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
     },
     {
       tableName: "Message",
@@ -22,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "UserId",
       as: "Sender",
     });
-    Message.belongsTo(models.Conversation);
+    Message.belongsTo(models.Conversation, { onDelete: "CASCADE" });
   };
 
   return Message;

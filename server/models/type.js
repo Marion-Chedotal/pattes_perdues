@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       label: {
         type: DataTypes.ENUM,
-        values: ["perdu", "trouvé", "volé"],
+        values: ["Perdu", "Trouvé", "Volé"],
         allowNull: false,
       },
     },
