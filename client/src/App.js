@@ -13,6 +13,7 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 import HappyEndings from "./Components/HappyEndings/HappyEndings";
+import Contact from "./Components/Contact/Contact";
 
 function App() {
   useEffect(() => {
@@ -62,6 +63,10 @@ function App() {
     {
       path: "/profil/:login",
       element: <PrivateRoute children={<Profil/>} />,
+    },
+    {
+      path: "/contact/:postId/:receiverId",
+      element: <Contact />,
     },
     {
       path: "*",

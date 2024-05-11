@@ -1,6 +1,7 @@
 const ConversationService = require("../service/ConversationService");
 const UserService = require("../service/UserService");
 const AuthenticationService = require("../service/AuthenticationService");
+const MessageService = require("../service/MessageService");
 
 /**
  * Create a conversation
@@ -9,9 +10,30 @@ const AuthenticationService = require("../service/AuthenticationService");
  * @returns {string} string success
  * @throws {object} error
  */
-const createConversation = async (req, res) => {
+const startConversation = async (req, res) => {
   try {
-    await ConversationService.addConversation();
+    let {
+      content,
+      senderId,
+      receiverId,
+      PostId,
+    } = req.body;
+
+    // create a new post
+    const conversation = await ConversationService.addConversation({
+      PostId,
+    });
+
+    const messageData = {
+      content: content,
+      UserId: senderId,
+      receiverId: receiverId,
+      ConversationId: conversation.id
+    }
+
+    const message = await MessageService.addMessage(
+      messageData
+    );
 
     res.status(201).json(`Conversation created`);
   } catch (error) {
@@ -100,4 +122,4 @@ const findConversations = async (req, res) => {
   }
 };
 
-module.exports = { createConversation, findConversation, findConversations};
+module.exports = { startConversation, findConversation, findConversations};

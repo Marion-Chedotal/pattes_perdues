@@ -33,7 +33,7 @@ const PostCard = ({ post }) => {
           {post?.picture ? (
             <Card.Img
               variant="top"
-              src={`http://localhost:${REACT_APP_PORT}/` + post.picture}
+              src={`http://localhost:${process.env.REACT_APP_PORT}/` + post.picture}
               className="my-3"
               style={{ height: "250px", objectFit: "cover" }}
             />

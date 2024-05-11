@@ -10,8 +10,8 @@ const { Op } = require("sequelize");
  * Create a new conversation
  * @returns {Promise<Object>}
  */
-const addConversation = async () => {
-  return await Conversation.create();
+const addConversation = async (postData) => {
+  return await Conversation.create(postData);
 };
 
 /**
@@ -48,7 +48,6 @@ const getAllConversationsByUser = async (userId) => {
           Post p ON p.id = c.PostId
       WHERE
           u1.id = ${userId} OR u2.id = ${userId}
-      GROUP BY m.receiverId 
     `;
     return await sequelize.query(sqlQuery, {
       type: sequelize.QueryTypes.SELECT,

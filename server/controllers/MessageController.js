@@ -13,16 +13,21 @@ const { escapeHtml } = require("../utils/htmlEscape");
 const createMessage = async (req, res) => {
   let { content, senderId, receiverId, conversationId } = req.body;
 
+  console.log('here');
+
   // sanitize input
   content = escapeHtml(content);
   const doesConversationExist = await MessageService.doesConversationExist(
     senderId,
     receiverId
   );
+  console.log('doesConversationExist', doesConversationExist);
 
   if (!doesConversationExist) {
     if (senderId != receiverId) {
       const newConversation = await ConversationService.addConversation();
+
+      console.log('not exists', newConversation);
 
       req.body.ConversationId = newConversation.id;
       await MessageService.addMessage(req.body);

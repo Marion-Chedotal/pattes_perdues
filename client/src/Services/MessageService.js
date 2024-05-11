@@ -1,11 +1,12 @@
 import axios from "axios";
+
 /**
  * Get all messages
  * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */
 const getAll = async () => {
   try {
-    const response = await axios.get(`http://localhost:${REACT_APP_PORT}/api/messages`, {
+    const response = await axios.get(`http://localhost:${process.env.REACT_APP_PORT}/api/messages`, {
       withCredentials: true,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -24,7 +25,7 @@ const getAll = async () => {
 const addMessage = async (id, formData, token) => {
   try {
     const response = await axios.post(
-      `http://localhost:${REACT_APP_PORT}/api/post/${id}/contact`,
+      `http://localhost:${process.env.REACT_APP_PORT}/api/post/${id}/contact`,
       JSON.stringify(formData),
       {
         withCredentials: true,
