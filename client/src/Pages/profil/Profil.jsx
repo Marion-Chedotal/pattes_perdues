@@ -105,11 +105,11 @@ const Profil = () => {
             <Button
               type="button"
               className="d-flex flex-column"
-              onClick={() => setActiveSection("mes-conversations")}
+              onClick={() => setActiveSection("messagerie")}
             >
               <FontAwesomeIcon icon={faEnvelope} className="icons" />
               <span className="d-none d-md-block">Messagerie</span>
-              {activeSection === "mes-conversations" && (
+              {activeSection === "messagerie" && (
                 <FontAwesomeIcon
                   icon={faPaw}
                   className="icons activeIcon mt-2"
@@ -174,7 +174,7 @@ const Profil = () => {
       )}
       {activeSection === "modification-profil" && <UpdateProfil />}
       {activeSection === "mes-annonces" && <UserPosts />}
-      {activeSection === "mes-conversations" && <UserConversations />}
+      {activeSection === "messagerie" && <UserConversations />}
       <Footer />
     </div>
   );

@@ -1,7 +1,29 @@
 const MessageService = require("../service/MessageService");
 const ConversationService = require("../service/ConversationService");
-const PostService = require("../service/PostService");
 const { escapeHtml } = require("../utils/htmlEscape");
+const errors = require("../utils/errors.json");
+const Joi = require("joi");
+
+/**
+ * Validate message input using a Joi schema.
+ * @param {object} data - The data to be validated.
+ * @param {string} data.email - email
+ * @param {string} data.password - password.
+ * @param {string} data.login - login.
+ * @param {number} data.postalCode - postal code .
+ * @param {string} data.city - city.
+ * @returns {Joi.ValidationResult<object>} - The result of the validation.
+ */
+const validateMessageInput = (data) => {
+  const schema = Joi.object({
+    content: Joi.string(),
+    UserId: Joi.number(),
+    receiverId: Joi.number(),
+    ConversationId: Joi.number(),
+  });
+
+  return schema.validate(data);
+};
 
 /**
  * Create a new message
@@ -11,55 +33,34 @@ const { escapeHtml } = require("../utils/htmlEscape");
  * @throws {object} error
  */
 const createMessage = async (req, res) => {
-  let { content, senderId, receiverId, conversationId } = req.body;
-
-  console.log('here');
-
   // sanitize input
-  content = escapeHtml(content);
-  const doesConversationExist = await MessageService.doesConversationExist(
-    senderId,
-    receiverId
-  );
-  console.log('doesConversationExist', doesConversationExist);
+  req.body.content = escapeHtml(req.body.content);
 
-  if (!doesConversationExist) {
-    if (senderId != receiverId) {
-      const newConversation = await ConversationService.addConversation();
+  // Check input format
+  const { error } = validateMessageInput(req.body);
+  if (error) {
+    return res.status(400).json({
+      errorCode: "fieldsToFill",
+      errorMessage: errors.global.fieldsToFill,
+    });
+  }
 
-      console.log('not exists', newConversation);
+  // UserId = senderId
+  let { content, UserId, receiverId, ConversationId } = req.body;
 
-      req.body.ConversationId = newConversation.id;
-      await MessageService.addMessage(req.body);
+  try {
+    await MessageService.addMessage(req.body);
 
-      res.status(201).json(`Your message has been successfully transmitted`);
-    } else {
-      res.status(500).json({
-        error: `You can't send you a message`,
-      });
-    }
-  } else {
-    try {
-      const data = {
-        content: content,
-        UserId: senderId,
-        receiverId: receiverId,
-        ConversationId: conversationId
-      }
-      await MessageService.addMessage(data);
+    const conversation = await ConversationService.getConversation(
+      UserId,
+      ConversationId
+    );
 
-      const conversation = await ConversationService.getConversation(
-        senderId,
-        conversationId
-      );
-
-      res.status(201).json(conversation);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        error: `Error when transmitted message, ${error}`,
-      });
-    }
+    res.status(201).json(conversation);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when transmitted message, ${error}`,
+    });
   }
 };
 

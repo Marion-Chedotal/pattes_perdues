@@ -48,6 +48,7 @@ const getAllConversationsByUser = async (userId) => {
           Post p ON p.id = c.PostId
       WHERE
           u1.id = ${userId} OR u2.id = ${userId}
+      GROUP BY c.id
     `;
     return await sequelize.query(sqlQuery, {
       type: sequelize.QueryTypes.SELECT,
@@ -85,6 +86,7 @@ const getConversation = async (idUser, idConversation) => {
             as: "Sender",
           },
         ],
+        order: [["createdAt", "ASC"]],
       },
       {
         model: Post,
@@ -94,8 +96,29 @@ const getConversation = async (idUser, idConversation) => {
   });
 };
 
+/**
+ * Check if post's conversation exist between 2 users
+ * @param {number} idConversation - id of the conversation
+ * @param {number} idSender - id of the sender
+ * @param {number} idReceiver - id of the receiver
+ * @returns {boolean}
+ */
+const doesConversationExist = async (idConversation, idSender, idReceiver) => {
+  const conversation = await Conversation.findOne({
+    where: {
+      id: idConversation,
+      [Op.or]: [
+        { UserId: idSender, receiverId: idReceiver },
+        { UserId: idReceiver, receiverId: idSender },
+      ],
+    },
+  });
+  return !!conversation;
+};
+
 module.exports = {
   addConversation,
   getAllConversationsByUser,
   getConversation,
+  doesConversationExist,
 };

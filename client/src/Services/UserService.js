@@ -22,7 +22,7 @@ const getUserInformation = async (id, token) => {
 
 /**
  * Update user informations from API
- * @param {number} login -  user login
+ * @param {string} login -  user login
  * @param {string} token - token
  * @returns {Promise<Array<string>>} - Promise resolving to an array of
  */
@@ -42,7 +42,7 @@ const updateUserInformation = async (login, userData, token) => {
 
 /**
  * Delete user account
- * @param {number} login -  user login
+ * @param {string} login -  user login
  * @param {string} token - token
  * @returns {Promise<Array<string>>} - Promise resolving to an array of
  */

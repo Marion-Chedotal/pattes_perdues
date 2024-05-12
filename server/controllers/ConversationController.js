@@ -2,7 +2,29 @@ const ConversationService = require("../service/ConversationService");
 const UserService = require("../service/UserService");
 const AuthenticationService = require("../service/AuthenticationService");
 const MessageService = require("../service/MessageService");
+const { escapeHtml } = require("../utils/htmlEscape");
+const errors = require("../utils/errors.json");
+const Joi = require("joi");
 
+/**
+ * Validate message input using a Joi schema.
+ * @param {object} data - The data to be validated.
+ * @param {string} data.content - content of message
+ * @param {string} data.senderId - id of the current user.
+ * @param {string} data.receiverId - id of the receiver
+ * @param {number} data.Conversationid - id of the conversation
+ * @returns {Joi.ValidationResult<object>} - The result of the validation.
+ */
+const validateInput = (data) => {
+  const schema = Joi.object({
+    content: Joi.string(),
+    senderId: Joi.number(),
+    receiverId: Joi.number(),
+    PostId: Joi.number(),
+  });
+
+  return schema.validate(data);
+};
 /**
  * Create a conversation
  * @param {object} req
@@ -11,35 +33,48 @@ const MessageService = require("../service/MessageService");
  * @throws {object} error
  */
 const startConversation = async (req, res) => {
-  try {
-    let {
-      content,
-      senderId,
-      receiverId,
-      PostId,
-    } = req.body;
+  // sanitize input
+  req.body.content = escapeHtml(req.body.content);
 
-    // create a new post
-    const conversation = await ConversationService.addConversation({
-      PostId,
+  // Check input format
+  const { error } = validateInput(req.body);
+  if (error) {
+    return res.status(400).json({
+      errorCode: "fieldsToFill",
+      errorMessage: errors.global.fieldsToFill,
     });
+  }
 
-    const messageData = {
-      content: content,
-      UserId: senderId,
-      receiverId: receiverId,
-      ConversationId: conversation.id
+  let { content, senderId, receiverId, PostId } = req.body;
+
+  //TODO: check if conversation post between 2 users exist + errors handle
+  if (senderId != receiverId) {
+    try {
+      // create a new post
+
+      const conversation = await ConversationService.addConversation({
+        PostId,
+      });
+
+      const messageData = {
+        content: content,
+        UserId: senderId,
+        receiverId: receiverId,
+        ConversationId: conversation.id,
+      };
+
+      await MessageService.addMessage(messageData);
+
+      res.status(201).json(`Conversation created`);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        error: `Error when creating conversation, ${error}`,
+      });
     }
-
-    const message = await MessageService.addMessage(
-      messageData
-    );
-
-    res.status(201).json(`Conversation created`);
-  } catch (error) {
-    console.error(error);
+  } else {
     res.status(500).json({
-      error: `Error when creating conversation, ${error}`,
+      error: `You can't send you a message`,
     });
   }
 };
@@ -69,7 +104,6 @@ const findConversation = async (req, res) => {
         userId,
         idConversation
       );
-
       await res.status(201).json(conversation);
     } catch (error) {
       console.error(error);
@@ -122,4 +156,4 @@ const findConversations = async (req, res) => {
   }
 };
 
-module.exports = { startConversation, findConversation, findConversations};
+module.exports = { startConversation, findConversation, findConversations };

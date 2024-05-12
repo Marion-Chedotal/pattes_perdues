@@ -10,11 +10,8 @@ const { escapeHtml } = require("../utils/htmlEscape");
  * @throws {object} error
  */
 const createAddress = async (req, res) => {
+  // already sanitize and escape in post controller
   let { street, postalCode, city } = req.body;
-
-  // sanitize input
-  street = escapeHtml(street.trim());
-  postalCode = escapeHtml(postalCode);
 
   try {
     await AddressService.addAddress({
@@ -40,8 +37,9 @@ const createAddress = async (req, res) => {
  * @throws {object} error
  */
 const updateAddress = async (res, req) => {
+  // already sanitize and escape in post controller
   const id = parseInt(req.params.id, 10);
-  const currentUserId = req.user.id;
+  const currentUserId = req.userId;
 
   const isUserAllowed = AuthenticationService.checkUserPermission(
     currentUserId,

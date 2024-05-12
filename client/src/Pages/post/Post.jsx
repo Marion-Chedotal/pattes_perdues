@@ -7,6 +7,8 @@ import postService from "../../Services/PostService";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../../Components/Btn/Button";
 import SuccessMessage from "../../Components/SuccessMessage/SuccessMessage";
+import ConversationService from "../../Services/ConversationService";
+import { Tooltip } from "react-tooltip";
 import { formatDate, capitalizeFirstLetter } from "../../Utils/format";
 import { Image, Container, Row, Col, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
@@ -23,6 +25,7 @@ import {
   faTrash,
   faPenToSquare,
   faMessage,
+  faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -40,19 +43,34 @@ const Post = () => {
   const { id } = useParams();
 
   const [post, setPost] = useState(null);
-  const [show, setShow] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
   const [error, setError] = useState(null);
+  const [content, setContent] = useState("");
 
   const { user, token } = useSelector((state) => state.auth);
+  const currentUserId = user?.id;
+  const receiverId = post?.User?.id;
 
   //modal management
-  const handleClose = () => {
-    setShow(false);
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
     setError(null);
   };
 
-  const handleShow = () => setShow(true);
+  const handleShowDeleteModal = () => setShowDeleteModal(true);
 
+  const handleCloseContactModal = () => {
+    setShowContactModal(false);
+    setError(null);
+  };
+
+  const handleShowContactModal = () => {
+    if (user) {
+      setShowContactModal(true);
+      return;
+    }
+  };
   const isPostOwner = postService.isPostOwner(user?.id, post?.User?.id);
 
   const postDate = post ? formatDate(post.alert_date) : "";
@@ -91,6 +109,30 @@ const Post = () => {
     }
   };
 
+  function handleContentChange(e) {
+    setContent({
+      content: e.target.value,
+    });
+  }
+
+  const handleContact = async (e) => {
+    e.preventDefault();
+    try {
+      await ConversationService.start(
+        receiverId,
+        {
+          ...content,
+          senderId: currentUserId,
+          receiverId,
+          PostId: id,
+        },
+        token
+      );
+      navigate(`/profil/${user?.login}`);
+    } catch (err) {
+      console.error("Failed startConversation().", err);
+    }
+  };
   return (
     <div className="onePost">
       <Header />
@@ -117,10 +159,10 @@ const Post = () => {
                   />
                 </button>
               </Link>
-              <button type="button" onClick={handleShow}>
+              <button type="button" onClick={handleShowDeleteModal}>
                 <FontAwesomeIcon icon={faTrash} className="iconAction" />
               </button>
-              <Modal show={show} onHide={handleClose}>
+              <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
                 <Modal.Header closeButton>
                   <div>
                     <p>Êtes-vous sûr de vouloir supprimer cette annonce ?</p>
@@ -138,7 +180,7 @@ const Post = () => {
                   <button
                     type="button"
                     className="p-2 text-black border border border-0 rounded"
-                    onClick={handleClose}
+                    onClick={handleCloseDeleteModal}
                   >
                     Non
                   </button>
@@ -149,7 +191,10 @@ const Post = () => {
           {post?.picture ? (
             <Col md={6} className="text-center">
               <Image
-                src={`http://localhost:${process.env.REACT_APP_PORT}/` + post?.picture}
+                src={
+                  `http://localhost:${process.env.REACT_APP_PORT}/` +
+                  post?.picture
+                }
                 alt="photo de l'animal"
                 style={{ maxWidth: "100%", maxHeight: "500px" }}
               />
@@ -273,14 +318,54 @@ const Post = () => {
               </Col>
             </Row>
           </Col>
-          <Col md={6} className="mt-5 mt-lg-0">
+          <Col
+            md={6}
+            className="mt-5 mt-lg-0"
+            data-tip
+            data-tooltip-id="tooltip-contact"
+            data-tooltip-content="Vous devez être connecté pour contacter le propriétaire"
+          >
             <h4 className="mb-4">Envie d'aider ?</h4>
-            <Link to={`/contact/${id}/${post?.User?.id}`}>
-              <Button type="button">
-                <FontAwesomeIcon icon={faMessage} className="iconAction" />
-                &nbsp;Contacter {post?.User?.login}
-              </Button>
-            </Link>
+
+            <Button
+              type="button"
+              onClick={handleShowContactModal}
+              disabled={!user}
+            >
+              <FontAwesomeIcon icon={faMessage} className="iconAction" />
+              &nbsp;Contacter {post?.User?.login}
+              {!user && <Tooltip id="tooltip-contact" effect="solid"></Tooltip>}
+            </Button>
+            <Modal show={showContactModal} onHide={handleCloseContactModal}>
+              <Modal.Header closeButton>
+                <div>
+                  <p>
+                    Contacter {post?.User?.login} pour l'annonce de {name}
+                  </p>
+                  {error && <div className="alert alert-danger">{error}</div>}
+                </div>
+              </Modal.Header>
+              <Modal.Body>
+                <form
+                  className="d-flex flex-column"
+                  onSubmit={handleContact}
+                  method="POST"
+                  encType="multipart/form-data"
+                >
+                  <textarea
+                    className="form-control mb-4"
+                    aria-label="With textarea"
+                    placeholder="Message"
+                    name="content"
+                    onChange={handleContentChange}
+                  ></textarea>
+                  <Button type="submit">
+                    Envoyer
+                    <FontAwesomeIcon icon={faPaperPlane} className="ps-2" />
+                  </Button>
+                </form>
+              </Modal.Body>
+            </Modal>
             <div className="d-flex justify-content-center gap-2 mt-4 align-items-center mt-5">
               <h6>Partager l'annonce:</h6>
               <EmailShareButton url={shareUrl}>

@@ -2,21 +2,18 @@ import axiosInstance from "./Axios";
 
 /**
  * Get user's conversations
- * @param {integer} login - login of the current user
+ * @param {string} login - login
  * @param {string} token - token
  * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */
 const getUserConversations = async (login, token) => {
   try {
-    const response = await axiosInstance.get(
-      `/user/${login}/conversations`,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axiosInstance.get(`/conversations/user/${login}`, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error.message;
@@ -25,8 +22,7 @@ const getUserConversations = async (login, token) => {
 
 const getOne = async (login, id, token) => {
   try {
-    const response = await axiosInstance.get(`/user/${login}/conversation/${id}`,
-    {
+    const response = await axiosInstance.get(`/conversation/${login}/${id}`, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
@@ -42,13 +38,12 @@ const getOne = async (login, id, token) => {
  * Start conversation with one message
  * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */
-const start = async (id, formData, token) => {
+const start = async (receiverId, formData, token) => {
   try {
     const response = await axiosInstance.post(
-      `user/${id}/conversation`,
-      JSON.stringify(formData),
+      `conversation/${receiverId}`,
+      formData,
       {
-        withCredentials: true,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

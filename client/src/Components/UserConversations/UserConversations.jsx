@@ -83,9 +83,9 @@ const UserConversations = () => {
               </div>
 
               <div className="mt-5">
-                  <div className="conversationCard py-5 px-5">
-                    <ConversationCard conversation={activeConversation} />
-                  </div>
+                <div className="conversationCard py-5 px-5">
+                  <ConversationCard conversation={activeConversation} />
+                </div>
               </div>
             </div>
           ) : (
@@ -93,17 +93,17 @@ const UserConversations = () => {
               <h5 className="mb-5 text-center">Discussions</h5>
               <div className="list-group discussions">
                 {noResults ? (
-                  <p className="text-center fw-bold">
+                  <p className="text-center fw-bold mt-2">
                     Vous n'avez pas encore de conversations.
                   </p>
                 ) : (
                   conversations?.map((conversation) => (
                     <button
-                      key={conversation?.id}
-                      onClick={() => switchConversation(conversation?.id)}
+                      key={conversation?.ConversationId}
+                      onClick={() => switchConversation(conversation?.ConversationId)}
                       type="button"
                       className={
-                        conversation?.id === activeConversationId
+                        conversation?.ConversationId === activeConversationId
                           ? "list-group-item list-group-item-action active border border-0"
                           : "list-group-item list-group-item-action border border-0"
                       }
@@ -113,7 +113,8 @@ const UserConversations = () => {
                           <img
                             src={
                               conversation?.avatar
-                                ? `http://localhost:${process.env.REACT_APP_PORT}/` + conversation.avatar
+                                ? `http://localhost:${process.env.REACT_APP_PORT}/` +
+                                  conversation.avatar
                                 : defaultAvatar
                             }
                             alt="Avatar"

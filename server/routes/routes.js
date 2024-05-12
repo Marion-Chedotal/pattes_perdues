@@ -90,7 +90,7 @@ router.get("/petCategory", PetCategoryController.findAllPetCategory);
  * message routes
  */
 router.post(
-  "/post/:id/contact",
+  "/conversation/:id/message",
   AuthMiddleware.validateToken,
   MessageController.createMessage
 );
@@ -99,17 +99,17 @@ router.post(
  * conversation routes
  */
 router.post(
-  "/user/:login/conversation",
+  "/conversation/:receiverId",
   AuthMiddleware.validateToken,
   ConversationController.startConversation
 );
 router.get(
-  "/user/:login/conversations",
+  "/conversations/user/:login",
   AuthMiddleware.validateToken,
   ConversationController.findConversations
 );
 router.get(
-  "/user/:login/conversation/:id",
+  "/conversation/:login/:id",
   AuthMiddleware.validateToken,
   ConversationController.findConversation
 );

@@ -13,34 +13,24 @@ const ConversationCard = ({ conversation }) => {
   const currentUserId = user.id;
   const interlocutorData = conversation?.Messages[0];
 
-  const [formData, setFormData] = useState({
-    content: "",
-  });
+  const [content, setContent] = useState("");
 
-  function handleContentChange(e) {
-    setFormData({
-      ...formData,
-      content: e.target.value,
-    });
+  const handleContentChange = async (e) => {
+    setContent(e.target.value);
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (formData.content && formData.content.trim() !== "") {
-        await MessageService.addMessage(
-          conversation?.id,
-          {
-            ...formData,
-            senderId: currentUserId,
-            receiverId: interlocutorData.receiverId,
-            conversationId: conversation.id,
-          },
-          token
-        );
+      const newMessage = {
+        content: content,
+        UserId: currentUserId,
+        receiverId: interlocutorData.receiverId,
+        ConversationId: conversation.id,
+      };
 
-        // TODO: refresh conversation
-      }
+      await MessageService.addMessage(conversation?.id, newMessage, token);
+      //TODO: refresh conversation
     } catch (err) {
       console.error("Failed sendMessage().", err);
     }
@@ -121,7 +111,7 @@ const ConversationCard = ({ conversation }) => {
               aria-label="With textarea"
               placeholder="Message"
               name="content"
-              value={formData.content}
+              value={content}
               onChange={handleContentChange}
             ></textarea>
             <Button type="submit">
