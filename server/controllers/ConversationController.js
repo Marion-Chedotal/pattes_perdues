@@ -47,7 +47,20 @@ const startConversation = async (req, res) => {
 
   let { content, senderId, receiverId, PostId } = req.body;
 
-  //TODO: check if conversation post between 2 users exist + errors handle
+  const existingConversation =
+    await ConversationService.doesConversationExist(
+      PostId,
+      senderId,
+      receiverId
+    );
+
+  if (existingConversation) {
+    return res.status(400).json({
+      errorCode: "conversationExist",
+      errorMessage: errors.conversation.conversationExist,
+    });
+  }
+
   if (senderId != receiverId) {
     try {
       // create a new post

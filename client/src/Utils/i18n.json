@@ -16,5 +16,8 @@
     "noCity": "Merci de sélectionner une ville",
     "LIMIT_FILE_SIZE": "La photo dépasse la taille autorisée: 1 Mo.",
     "invalidInput": "Merci de respecter le format attendu."
+  },
+  "conversation": {
+    "conversationExist": "Une conversation existe déjà, rdv dans votre messagerie pour continuer l'échange!"
   }
 }

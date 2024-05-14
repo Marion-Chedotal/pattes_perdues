@@ -98,22 +98,36 @@ const getConversation = async (idUser, idConversation) => {
 
 /**
  * Check if post's conversation exist between 2 users
- * @param {number} idConversation - id of the conversation
+ * @param {number} idPost - id of the post
  * @param {number} idSender - id of the sender
  * @param {number} idReceiver - id of the receiver
  * @returns {boolean}
  */
-const doesConversationExist = async (idConversation, idSender, idReceiver) => {
-  const conversation = await Conversation.findOne({
-    where: {
-      id: idConversation,
-      [Op.or]: [
-        { UserId: idSender, receiverId: idReceiver },
-        { UserId: idReceiver, receiverId: idSender },
+const doesConversationExist = async (postId, senderId, receiverId) => {
+  try {
+    const conversation = await Conversation.findOne({
+      where: {
+        PostId: postId,
+      },
+      include: [
+        {
+          model: Message,
+          attributes: ['receiverId', 'UserId'],
+          where: {
+            [Op.or]: [
+              { UserId: senderId, receiverId: receiverId },
+              { UserId: receiverId, receiverId: senderId },
+            ],
+          },
+        },
       ],
-    },
-  });
-  return !!conversation;
+    });
+
+    return !!conversation;
+  } catch (error) {
+    console.error("Error checking conversation existence:", error);
+    throw error;
+  }
 };
 
 module.exports = {

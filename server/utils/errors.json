@@ -9,5 +9,8 @@
     "emailExist": "Email already used",
     "loginExist": "Login already used",
     "invalidInformations": "Invalid Informations"
+  },
+  "conversation": {
+    "conversationExist": "A conversation already exists between these users for this post"
   }
 }

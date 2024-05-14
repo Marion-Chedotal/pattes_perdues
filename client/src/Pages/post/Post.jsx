@@ -12,6 +12,7 @@ import { Tooltip } from "react-tooltip";
 import { formatDate, capitalizeFirstLetter } from "../../Utils/format";
 import { Image, Container, Row, Col, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faVenusMars,
@@ -26,6 +27,7 @@ import {
   faPenToSquare,
   faMessage,
   faPaperPlane,
+  faPaw,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -47,10 +49,13 @@ const Post = () => {
   const [showContactModal, setShowContactModal] = useState(false);
   const [error, setError] = useState(null);
   const [content, setContent] = useState("");
+  const [isContentModified, setIsContentModified] = useState(false);
 
   const { user, token } = useSelector((state) => state.auth);
   const currentUserId = user?.id;
   const receiverId = post?.User?.id;
+
+  const { t } = useTranslation();
 
   //modal management
   const handleCloseDeleteModal = () => {
@@ -66,7 +71,8 @@ const Post = () => {
   };
 
   const handleShowContactModal = () => {
-    if (user) {
+    // we can contact owner only if you're connected and if you're not the owner
+    if (user && !isPostOwner) {
       setShowContactModal(true);
       return;
     }
@@ -113,6 +119,7 @@ const Post = () => {
     setContent({
       content: e.target.value,
     });
+    setIsContentModified(true);
   }
 
   const handleContact = async (e) => {
@@ -128,9 +135,16 @@ const Post = () => {
         },
         token
       );
-      navigate(`/profil/${user?.login}`);
+      navigate(`/profil/${user?.login}`, {
+        state: {
+          successMessage:
+            "Votre message a bien été envoyé. Vous pouvez retrouver la conversation dans votre messagerie",
+        },
+      });
     } catch (err) {
-      console.error("Failed startConversation().", err);
+      console.log(err);
+      const errorMessage = t(`conversation.${err?.errorCode}`);
+      setError(errorMessage);
     }
   };
   return (
@@ -210,7 +224,7 @@ const Post = () => {
             </Col>
           )}
           <Col md={6}>
-            <div>
+            <div className="postInformations">
               <div className="d-flex justify-content-around my-3">
                 {" "}
                 <h6 className="tag">{post?.Type?.label}</h6>
@@ -325,24 +339,53 @@ const Post = () => {
             data-tooltip-id="tooltip-contact"
             data-tooltip-content="Vous devez être connecté pour contacter le propriétaire"
           >
-            <h4 className="mb-4">Envie d'aider ?</h4>
-
-            <Button
-              type="button"
-              onClick={handleShowContactModal}
-              disabled={!user}
-            >
-              <FontAwesomeIcon icon={faMessage} className="iconAction" />
-              &nbsp;Contacter {post?.User?.login}
-              {!user && <Tooltip id="tooltip-contact" effect="solid"></Tooltip>}
-            </Button>
+            {post?.is_active === true && (
+              <div>
+                <h4 className="mb-4">Envie d'aider ?</h4>
+                <Button
+                  type="button"
+                  onClick={handleShowContactModal}
+                  disabled={!user}
+                >
+                  <FontAwesomeIcon icon={faMessage} className="iconAction" />
+                  &nbsp;Contacter {post?.User?.login}
+                  {!user && (
+                    <Tooltip id="tooltip-contact" effect="solid"></Tooltip>
+                  )}
+                </Button>
+                <div className="d-flex justify-content-center gap-2 mt-4 align-items-center mt-5">
+                  <h6>Partager l'annonce:</h6>
+                  <EmailShareButton url={shareUrl}>
+                    <EmailIcon size={32} round={true} />
+                  </EmailShareButton>
+                  <FacebookMessengerShareButton url={shareUrl}>
+                    <FacebookMessengerIcon size={32} round={true} />
+                  </FacebookMessengerShareButton>
+                  <FacebookShareButton url={shareUrl}>
+                    <FacebookIcon size={32} round={true} />
+                  </FacebookShareButton>
+                  <WhatsappShareButton url={shareUrl}>
+                    <WhatsappIcon size={32} round={true} />
+                  </WhatsappShareButton>
+                </div>
+              </div>
+            )}
             <Modal show={showContactModal} onHide={handleCloseContactModal}>
-              <Modal.Header closeButton>
+              <Modal.Header
+                closeButton
+                className="border border-0 text-secondary"
+              >
                 <div>
-                  <p>
-                    Contacter {post?.User?.login} pour l'annonce de {name}
-                  </p>
-                  {error && <div className="alert alert-danger">{error}</div>}
+                  <h4 className="mt-2 text-center lh-base">
+                    Contacter <em>{post?.User?.login} </em>
+                    pour l'annonce de <FontAwesomeIcon icon={faPaw} />
+                    <em> {name}</em>
+                  </h4>
+                  {error && (
+                    <div className="alert alert-danger mt-4 text-center">
+                      {error}
+                    </div>
+                  )}
                 </div>
               </Modal.Header>
               <Modal.Body>
@@ -357,30 +400,21 @@ const Post = () => {
                     aria-label="With textarea"
                     placeholder="Message"
                     name="content"
+                    rows="10"
                     onChange={handleContentChange}
                   ></textarea>
-                  <Button type="submit">
+                  <Button type="submit" disabled={!isContentModified}>
                     Envoyer
-                    <FontAwesomeIcon icon={faPaperPlane} className="ps-2" />
+                    <FontAwesomeIcon
+                      icon={faPaperPlane}
+                      className={
+                        !isContentModified ? "ps-2 text-muted" : "ps-2"
+                      }
+                    />
                   </Button>
                 </form>
               </Modal.Body>
             </Modal>
-            <div className="d-flex justify-content-center gap-2 mt-4 align-items-center mt-5">
-              <h6>Partager l'annonce:</h6>
-              <EmailShareButton url={shareUrl}>
-                <EmailIcon size={32} round={true} />
-              </EmailShareButton>
-              <FacebookMessengerShareButton url={shareUrl}>
-                <FacebookMessengerIcon size={32} round={true} />
-              </FacebookMessengerShareButton>
-              <FacebookShareButton url={shareUrl}>
-                <FacebookIcon size={32} round={true} />
-              </FacebookShareButton>
-              <WhatsappShareButton url={shareUrl}>
-                <WhatsappIcon size={32} round={true} />
-              </WhatsappShareButton>
-            </div>
           </Col>
         </Row>
       </Container>

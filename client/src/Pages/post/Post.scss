@@ -1,13 +1,13 @@
 @import "../../App";
 
 .onePost {
-
   .founded {
     background-color: $beige-color;
     max-width: 400px;
     margin: auto;
     border-radius: 40px;
-}
+  }
+
   .isOwnerAction {
     button {
       background-color: transparent;
@@ -23,38 +23,44 @@
     }
   }
 
-  .tag {
-    font-weight: bold;
-    background-color: $blue-color;
-    color: $beige-color;
-    padding: 8px 30px;
-    border-radius: 20px;
-  }
+  .postInformations {
+    .tag {
+      font-weight: bold;
+      background-color: $blue-color;
+      color: $beige-color;
+      padding: 8px 30px;
+      border-radius: 20px;
+    }
 
-  .icon {
-    color: $beige-color;
-    font-size: 2rem;
-    width: 2rem;
-  }
+    .icon {
+      color: $beige-color;
+      font-size: 2rem;
+      width: 2rem;
+    }
 
-  h5,
-  p {
-    text-align: left;
-  }
+    h5,
+    p {
+      text-align: left;
+    }
 
-  span {
-    text-align: start;
-  }
+    span {
+      text-align: start;
+    }
 
-  .details {
-    background-color: $beige-color;
-    border-radius: 25px;
-    padding: 15px;
-    font-weight: bold;
+    .details {
+      background-color: $beige-color;
+      border-radius: 25px;
+      padding: 15px;
+      font-weight: bold;
 
-    h5 {
-      text-decoration: underline;
-      padding-bottom: 5px;
+      h5 {
+        text-decoration: underline;
+        padding-bottom: 5px;
+      }
+    }
+
+    .city {
+      white-space: nowrap;
     }
   }
 
@@ -62,13 +68,10 @@
     color: $beige-color;
   }
 
-  .city {
-    white-space: nowrap;
-  }
-
   button {
     padding: 15px 20px;
     border-radius: 20px;
+
     &:hover {
       color: $beige-color;
     }

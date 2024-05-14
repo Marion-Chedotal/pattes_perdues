@@ -52,7 +52,7 @@ const start = async (receiverId, formData, token) => {
     );
     return response.data;
   } catch (error) {
-    throw error.message;
+    throw error.response.data;
   }
 };
 
