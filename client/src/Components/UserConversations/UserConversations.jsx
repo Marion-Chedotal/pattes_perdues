@@ -84,7 +84,10 @@ const UserConversations = () => {
 
               <div className="mt-5">
                 <div className="conversationCard py-5 px-5">
-                  <ConversationCard conversation={activeConversation} />
+                  <ConversationCard
+                    conversation={activeConversation}
+                    setConversation={setActiveConversation}
+                  />
                 </div>
               </div>
             </div>
@@ -100,7 +103,9 @@ const UserConversations = () => {
                   conversations?.map((conversation) => (
                     <button
                       key={conversation?.ConversationId}
-                      onClick={() => switchConversation(conversation?.ConversationId)}
+                      onClick={() =>
+                        switchConversation(conversation?.ConversationId)
+                      }
                       type="button"
                       className={
                         conversation?.ConversationId === activeConversationId

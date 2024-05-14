@@ -142,7 +142,6 @@ const Post = () => {
         },
       });
     } catch (err) {
-      console.log(err);
       const errorMessage = t(`conversation.${err?.errorCode}`);
       setError(errorMessage);
     }

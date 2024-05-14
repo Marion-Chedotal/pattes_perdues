@@ -1,4 +1,9 @@
 export const formatDate = (dateToFormat) => {
+  // to deal with a new message in conversation
+  if (!dateToFormat) {
+    return "";
+  }
+
   const date = new Date(dateToFormat);
 
   const day = date.getDate().toString().padStart(2, "0");

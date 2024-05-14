@@ -8,16 +8,18 @@ import defaultAvatar from "../../Assets/default_avatar.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-const ConversationCard = ({ conversation }) => {
+const ConversationCard = ({ conversation, setConversation }) => {
   const { user, token } = useSelector((state) => state.auth);
   const currentUserId = user.id;
   const interlocutorData = conversation?.Messages[0];
 
   const [content, setContent] = useState("");
+  const [isContentModified, setIsContentModified] = useState(false);
 
   const handleContentChange = async (e) => {
     setContent(e.target.value);
-  }
+    setIsContentModified(true);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,8 +31,12 @@ const ConversationCard = ({ conversation }) => {
         ConversationId: conversation.id,
       };
 
+      const updatedMessages = [...conversation.Messages, newMessage];
+      setConversation({ ...conversation, Messages: updatedMessages });
+      setIsContentModified(false);
+
       await MessageService.addMessage(conversation?.id, newMessage, token);
-      //TODO: refresh conversation
+      setContent("");
     } catch (err) {
       console.error("Failed sendMessage().", err);
     }
@@ -114,9 +120,16 @@ const ConversationCard = ({ conversation }) => {
               value={content}
               onChange={handleContentChange}
             ></textarea>
-            <Button type="submit">
+            <Button
+              type="submit"
+              disabled={!isContentModified}
+              className={!isContentModified ? "ps-2 text-muted" : "ps-2"}
+            >
               Envoyer
-              <FontAwesomeIcon icon={faPaperPlane} className="ps-2" />
+              <FontAwesomeIcon
+                icon={faPaperPlane}
+                className={!isContentModified ? "ps-2 text-muted" : "ps-2"}
+              />
             </Button>
           </form>
         </div>
