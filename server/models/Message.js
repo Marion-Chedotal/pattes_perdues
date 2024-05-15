@@ -6,10 +6,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      // read: {
-      //   type: DataTypes.BOOLEAN,
-      //   allowNull: false,
-      // },
+      read: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
     },
     {
       tableName: "Message",

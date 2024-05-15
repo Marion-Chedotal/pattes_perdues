@@ -30,6 +30,15 @@
     border: 3px solid $beige-color;
   }
 
+  .badge {
+    background-color: #f85a3e;
+    font-weight: normal;
+    border-radius: 30px;
+    position: absolute;
+    bottom: 0.1em;
+    right: -20%;
+  }
+
   button {
     border-radius: 30px;
     padding: 5px 20px;

@@ -1,6 +1,7 @@
 import "./Header.scss";
 import React, { useEffect, useState } from "react";
 import userService from "../../Services/UserService";
+import messageService from "../../Services/MessageService";
 import { Link } from "react-router-dom";
 import Button from "../Btn/Button";
 import { Navbar, Container, Nav } from "react-bootstrap";
@@ -9,11 +10,14 @@ import Logout from "../LogoutBtn/LogoutBtn";
 import { useSelector } from "react-redux";
 import { Tooltip } from "react-tooltip";
 import defaultAvatar from "../../Assets/default_avatar.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 const Header = () => {
   const { isAuthenticated, user, token } = useSelector((state) => state.auth);
   const currentUserId = user?.id;
   const [userData, setUserData] = useState(null);
+  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -25,6 +29,14 @@ const Header = () => {
             token
           );
           setUserData(data);
+
+          // check for unread messages
+          const hasUnreadMessages = await messageService.userUnreadMessages(
+            currentUserId,
+            token
+          );
+
+          setHasUnreadMessages(hasUnreadMessages);
         } catch (err) {
           console.error("Error fetching posts:", err);
         }
@@ -53,18 +65,27 @@ const Header = () => {
                   data-tooltip-id="tooltip-profil"
                   data-tooltip-content="Voir mon profil"
                 >
-                  <img
-                    className="h-8 w-8 avatar rounded-circle"
-                    src={
-                      userData?.avatar
-                        ? `http://localhost:${process.env.REACT_APP_PORT}/` + userData.avatar
-                        : defaultAvatar
-                    }
-                    alt="user avatar"
-                    title="defaultAvatar:Photo by FOX on Pexels"
-                  />
+                  <div className="flex items-center gap-2 position-relative">
+                    <img
+                      className="h-8 w-8 avatar rounded-circle"
+                      src={
+                        userData?.avatar
+                          ? `http://localhost:${process.env.REACT_APP_PORT}/` +
+                            userData.avatar
+                          : defaultAvatar
+                      }
+                      alt="user avatar"
+                      title="defaultAvatar:Photo by FOX on Pexels"
+                    />
+                    {hasUnreadMessages && (
+                      <span className="badge p-2 ">
+                        <FontAwesomeIcon icon={faEnvelope} />
+                      </span>
+                    )}
+                  </div>
                   <div className="d-flex flex-lg-column align-items-center">
-                    <span>{user?.login}</span>
+                    <span className="me-2 pe-2">{user?.login}</span>
+
                     <Tooltip id="tooltip-profil" effect="solid"></Tooltip>
                   </div>
                 </div>

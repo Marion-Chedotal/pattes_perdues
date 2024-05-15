@@ -49,10 +49,7 @@ router.get(
   "/posts/last-three-archives",
   PostController.findLastThreeArchivesPosts
 );
-router.get(
-  "/posts/archives",
-  PostController.findAllArchivesPosts
-);
+router.get("/posts/archives", PostController.findAllArchivesPosts);
 router.get(
   "/posts/user/:login",
   AuthMiddleware.validateToken,
@@ -93,6 +90,11 @@ router.post(
   "/conversation/:id/message",
   AuthMiddleware.validateToken,
   MessageController.createMessage
+);
+router.get(
+  "/conversation/:userId/unreadMessages",
+  AuthMiddleware.validateToken,
+  MessageController.hasUnreadMessages
 );
 
 /**

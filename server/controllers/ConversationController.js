@@ -21,6 +21,7 @@ const validateInput = (data) => {
     senderId: Joi.number(),
     receiverId: Joi.number(),
     PostId: Joi.number(),
+    read: Joi.boolean(),
   });
 
   return schema.validate(data);
@@ -47,12 +48,11 @@ const startConversation = async (req, res) => {
 
   let { content, senderId, receiverId, PostId } = req.body;
 
-  const existingConversation =
-    await ConversationService.doesConversationExist(
-      PostId,
-      senderId,
-      receiverId
-    );
+  const existingConversation = await ConversationService.doesConversationExist(
+    PostId,
+    senderId,
+    receiverId
+  );
 
   if (existingConversation) {
     return res.status(400).json({
@@ -74,6 +74,7 @@ const startConversation = async (req, res) => {
         UserId: senderId,
         receiverId: receiverId,
         ConversationId: conversation.id,
+        read: false,
       };
 
       await MessageService.addMessage(messageData);
