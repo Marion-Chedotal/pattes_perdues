@@ -63,8 +63,7 @@ const startConversation = async (req, res) => {
 
   if (senderId != receiverId) {
     try {
-      // create a new post
-
+      // create a new conversation
       const conversation = await ConversationService.addConversation({
         PostId,
       });

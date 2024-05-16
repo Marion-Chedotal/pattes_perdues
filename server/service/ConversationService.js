@@ -27,15 +27,15 @@ const getAllConversationsByUser = async (userId) => {
 
     const sqlQuery = `
       SELECT DISTINCT
-          c.*,
-          p.*,
-          u1.login, u1.id, u1.avatar,
-          u2.login, u2.id, u2.avatar,
-          m.*,
-          CASE
-              WHEN u1.login != '${userLogin}' THEN u1.login
-              ELSE u2.login
-          END AS conversation_partner
+          c.id,
+          p.name,
+          u1.login as userLogin, u1.id as userId, u1.avatar as userAvatar,
+          u2.login as receiverLogin, u2.id as receiverId, u2.avatar as receiverAvatar,
+          m.read, m.updatedAt as messageUpdatedAt, m.ConversationId, m.ReceiverId, m.UserId,
+          CASE 
+            WHEN u1.login != '${userLogin}' THEN u1.login
+            ELSE u2.login
+          END AS myInterlocutor
       FROM
           Conversation c
       INNER JOIN
@@ -77,12 +77,12 @@ const getConversation = async (idUser, idConversation) => {
         include: [
           {
             model: User,
-            attributes: ["login", "avatar"],
+            attributes: ["id", "login", "avatar"],
             as: "Receiver",
           },
           {
             model: User,
-            attributes: ["login", "avatar"],
+            attributes: ["id", "login", "avatar"],
             as: "Sender",
           },
         ],
@@ -112,7 +112,7 @@ const doesConversationExist = async (postId, senderId, receiverId) => {
       include: [
         {
           model: Message,
-          attributes: ['receiverId', 'UserId'],
+          attributes: ["receiverId", "UserId"],
           where: {
             [Op.or]: [
               { UserId: senderId, receiverId: receiverId },

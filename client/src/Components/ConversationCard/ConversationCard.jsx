@@ -11,7 +11,12 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 const ConversationCard = ({ conversation, setConversation }) => {
   const { user, token } = useSelector((state) => state.auth);
   const currentUserId = user.id;
-  const interlocutorData = conversation?.Messages[0];
+
+  const firstSenderId = currentUserId === conversation.Messages[0].UserId;
+
+  const receiverId = firstSenderId
+    ? conversation.Messages[0].receiverId
+    : conversation.Messages[0].UserId;
 
   const [content, setContent] = useState("");
   const [isContentModified, setIsContentModified] = useState(false);
@@ -23,11 +28,12 @@ const ConversationCard = ({ conversation, setConversation }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const newMessage = {
         content: content,
         UserId: currentUserId,
-        receiverId: interlocutorData.receiverId,
+        receiverId: receiverId,
         ConversationId: conversation.id,
       };
 
@@ -65,9 +71,8 @@ const ConversationCard = ({ conversation, setConversation }) => {
                 <div className="align-self-end">
                   <img
                     src={
-                      interlocutorData?.Receiver?.avatar
-                        ? `http://localhost:${process.env.REACT_APP_PORT}/` +
-                          interlocutorData?.Receiver?.avatar
+                      message?.Sender?.avatar
+                        ? `http://localhost:${process.env.REACT_APP_PORT}/${message?.Sender?.avatar}`
                         : defaultAvatar
                     }
                     alt="Avatar"
@@ -92,9 +97,8 @@ const ConversationCard = ({ conversation, setConversation }) => {
                 <div className="align-self-end">
                   <img
                     src={
-                      interlocutorData?.Sender?.avatar
-                        ? `http://localhost:${process.env.REACT_APP_PORT}/` +
-                          interlocutorData?.Sender?.avatar
+                      message?.Sender?.avatar
+                        ? `http://localhost:${process.env.REACT_APP_PORT}/${message?.Sender?.avatar}`
                         : defaultAvatar
                     }
                     alt="Avatar"

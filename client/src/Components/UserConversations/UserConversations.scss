@@ -20,6 +20,12 @@
     border-radius: 30px;
     width: 390px;
     margin: auto;
+
+    .badge {
+      background-color: #f85a3e;
+      font-weight: normal;
+      border-radius: 30px;
+    }
   }
 
   .list-group-item.active {
