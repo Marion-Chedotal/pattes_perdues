@@ -47,7 +47,7 @@ const UserConversations = () => {
             );
             return {
               ...conversation,
-              lastMessage: lastMessage || null, 
+              lastMessage: lastMessage || null,
             };
           }
         );
@@ -70,6 +70,11 @@ const UserConversations = () => {
         );
 
         setActiveConversation(conversation);
+
+        const lastMessageId =
+          conversation.Messages[conversation.Messages.length - 1].id;
+
+        await messageService.markAsRead(lastMessageId, token);
       }
     } catch (err) {
       console.error("Failed switchConversation().", err);
@@ -172,7 +177,8 @@ const UserConversations = () => {
                             <div className="d-flex align-items-center">
                               <h6>{conversation?.myInterlocutor}</h6>
                               {conversation?.lastMessage?.read === false &&
-                                conversation?.lastMessage?.receiverId === currentUserId && (
+                                conversation?.lastMessage?.receiverId ===
+                                  currentUserId && (
                                   <span className="ps-2">
                                     <FontAwesomeIcon
                                       icon={faEnvelope}

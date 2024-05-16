@@ -10,12 +10,16 @@ const addMessage = async (data) => {
 };
 
 /**
- * Change the read fields to true when message is read
+ * Change the read fields to true when interlocutor message is read
  * @param {Object} messageId -
  * @returns {Promise<Object>}
  */
-const passMessageToRead = async (messageId) => {
-  return await Message.update({ read: true }, { where: { id: messageId } });
+const passMessageToRead = async (messageId, currentUserId) => {
+  const message = await Message.findByPk(messageId);
+
+  if (message && message.UserId !== currentUserId) {
+    return await Message.update({ read: true }, { where: { id: messageId } });
+  }
 };
 
 /**
@@ -25,11 +29,8 @@ const passMessageToRead = async (messageId) => {
  */
 const unreadMessages = async (userId) => {
   return await Message.count({
-    // const hasUnreadMessages = await Message.findAll({
     where: { receiverId: userId, read: false },
   });
-  // return hasUnreadMessages > 0;
-  // // return hasUnreadMessages;
 };
 
 /**
@@ -44,7 +45,7 @@ const getLastMessageForConversation = async (conversationId) => {
       where: { ConversationId: conversationId },
       order: [["createdAt", "DESC"]],
       limit: 1,
-      attributes: { exclude: ["createdAt", "content"] }
+      attributes: { exclude: ["createdAt", "content"] },
     });
     return message;
   } catch (error) {

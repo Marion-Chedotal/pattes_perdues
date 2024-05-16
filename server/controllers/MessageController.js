@@ -77,9 +77,10 @@ const createMessage = async (req, res) => {
  */
 const markMessageAsRead = async (req, res) => {
   const { messageId } = req.params;
+  const currentUserId = req.userId;
 
   try {
-    await MessageService.passMessageToRead(messageId);
+    await MessageService.passMessageToRead(messageId, currentUserId);
     res.status(200).json();
   } catch (error) {
     res.status(500).json({ error: "Error marking message as read" });

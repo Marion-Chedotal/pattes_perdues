@@ -91,6 +91,12 @@ router.post(
   AuthMiddleware.validateToken,
   MessageController.createMessage
 );
+router.post(
+  "/conversation/:messageId/mark-as-read",
+  AuthMiddleware.validateToken,
+  MessageController.markMessageAsRead
+);
+
 router.get(
   "/conversation/last-messages",
   AuthMiddleware.validateToken,
