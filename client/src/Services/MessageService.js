@@ -31,7 +31,6 @@ const addMessage = async (conversationId, formData, token) => {
  * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */
 const userUnreadMessages = async (userId, token) => {
-
   try {
     const response = await axiosInstance.get(
       `/conversation/${userId}/unreadMessages`,
@@ -49,9 +48,33 @@ const userUnreadMessages = async (userId, token) => {
   }
 };
 
+/**
+ * Get last message of a conversation
+ * @param {number} conversationId - conversation id
+ * @param {string} token - token
+ * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
+ */
+const getLastMessage = async (conversationId, token) => {
+
+  try {
+    const response = await axiosInstance.get(`/conversation/last-messages?conversationIds=${conversationId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error.message;
+  }
+};
+
 const messageService = {
   addMessage,
   userUnreadMessages,
+  getLastMessage,
 };
 
 export default messageService;

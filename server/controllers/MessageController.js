@@ -20,7 +20,8 @@ const validateMessageInput = (data) => {
     UserId: Joi.number(),
     receiverId: Joi.number(),
     ConversationId: Joi.number(),
-    read: Joi.boolean(),
+
+    // read: Joi.boolean(),
   });
 
   return schema.validate(data);
@@ -97,12 +98,39 @@ const hasUnreadMessages = async (req, res) => {
 
   try {
     const response = await MessageService.unreadMessages(currentUserId);
+    const hasUnread = response > 0;
 
-    if (response) {
-      res.status(200).json("User have unread messages");
-    }
+    res.status(200).json(hasUnread);
   } catch (error) {
     res.status(500).json({ error: "Error checking for unread messages" });
   }
 };
-module.exports = { createMessage, markMessageAsRead, hasUnreadMessages };
+
+/**
+ * Get the latest message
+ * @param {object} req
+ * @param {object} res
+ * @returns {string} string success
+ * @throws {object} error
+ */
+const findLastMessage = async (req, res) => {
+  const { conversationIds } = req.query;
+  const conversationIdArray = conversationIds
+    .split(",")
+    .map((id) => parseInt(id, 10));
+
+  try {
+    const lastMessages = await MessageService.getLastMessagesForConversations(
+      conversationIdArray
+    );
+    res.status(200).json(lastMessages);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching last messages" });
+  }
+};
+module.exports = {
+  createMessage,
+  markMessageAsRead,
+  hasUnreadMessages,
+  findLastMessage,
+};

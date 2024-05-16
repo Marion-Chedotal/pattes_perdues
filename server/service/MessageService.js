@@ -24,7 +24,50 @@ const passMessageToRead = async (messageId) => {
  * @returns {Promise<Object>}
  */
 const unreadMessages = async (userId) => {
-  return await Message.count({ where: { receiverId: userId, read: false } });
+  return await Message.count({
+    // const hasUnreadMessages = await Message.findAll({
+    where: { receiverId: userId, read: false },
+  });
+  // return hasUnreadMessages > 0;
+  // // return hasUnreadMessages;
 };
 
-module.exports = { addMessage, passMessageToRead, unreadMessages };
+/**
+ * Get the latest message of a conversation
+ * @param {Object} idConversation - id of the conversation
+ * @returns {Promise<Object>}
+ */
+
+const getLastMessageForConversation = async (conversationId) => {
+  try {
+    const message = await Message.findOne({
+      where: { ConversationId: conversationId },
+      order: [["createdAt", "DESC"]],
+      limit: 1,
+      attributes: { exclude: ["createdAt", "content"] }
+    });
+    return message;
+  } catch (error) {
+    throw new Error("Error fetching last message for conversation");
+  }
+};
+
+const getLastMessagesForConversations = async (conversationIdArray) => {
+  try {
+    const lastMessages = await Promise.all(
+      conversationIdArray.map(async (id) => {
+        return await getLastMessageForConversation(id);
+      })
+    );
+    return lastMessages;
+  } catch (error) {
+    throw new Error("Error fetching last messages for conversations");
+  }
+};
+
+module.exports = {
+  addMessage,
+  passMessageToRead,
+  unreadMessages,
+  getLastMessagesForConversations,
+};

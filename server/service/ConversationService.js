@@ -31,7 +31,7 @@ const getAllConversationsByUser = async (userId) => {
           p.name,
           u1.login as userLogin, u1.id as userId, u1.avatar as userAvatar,
           u2.login as receiverLogin, u2.id as receiverId, u2.avatar as receiverAvatar,
-          m.read, m.updatedAt as messageUpdatedAt, m.ConversationId, m.ReceiverId, m.UserId,
+          m.read, m.ConversationId,
           CASE 
             WHEN u1.login != '${userLogin}' THEN u1.login
             ELSE u2.login

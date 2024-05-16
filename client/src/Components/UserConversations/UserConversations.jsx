@@ -30,19 +30,34 @@ const UserConversations = () => {
         if (userConversations.length === 0) return setNoResults(true);
         setNoResults(false);
 
-        // check for unread messages
-        const hasUnreadMessages = await messageService.userUnreadMessages(
-          user.id,
+        const conversationIds = userConversations.map(
+          (conversation) => conversation.id
+        );
+
+        const lastMessages = await messageService.getLastMessage(
+          conversationIds,
           token
         );
 
-        setHasUnreadMessages(hasUnreadMessages);
+        // Map last messages to conversations
+        const conversationsWithLastMessages = userConversations.map(
+          (conversation) => {
+            const lastMessage = lastMessages.find(
+              (msg) => msg.ConversationId === conversation.id
+            );
+            return {
+              ...conversation,
+              lastMessage: lastMessage || null, 
+            };
+          }
+        );
+        setConversations(conversationsWithLastMessages);
       } catch (error) {
         console.error("Error fetching conversations:", error);
       }
     };
     fetchUserConversations();
-  }, [login, token, user.id]);
+  }, [login, token]);
 
   const switchConversation = async (conversationId) => {
     try {
@@ -156,8 +171,8 @@ const UserConversations = () => {
                           <div>
                             <div className="d-flex align-items-center">
                               <h6>{conversation?.myInterlocutor}</h6>
-                              {conversation.read === false &&
-                                conversation.receiverId === user.id && (
+                              {conversation?.lastMessage?.read === false &&
+                                conversation?.lastMessage?.receiverId === currentUserId && (
                                   <span className="ps-2">
                                     <FontAwesomeIcon
                                       icon={faEnvelope}
@@ -174,7 +189,7 @@ const UserConversations = () => {
                         </div>
                         <div className="d-flex justify-content-end">
                           <span className="mb-3">
-                            {formatDate(conversation?.messageUpdatedAt)}
+                            {formatDate(conversation?.lastMessage?.updatedAt)}
                           </span>
                         </div>
                       </div>

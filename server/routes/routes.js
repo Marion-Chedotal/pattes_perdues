@@ -92,6 +92,12 @@ router.post(
   MessageController.createMessage
 );
 router.get(
+  "/conversation/last-messages",
+  AuthMiddleware.validateToken,
+  MessageController.findLastMessage
+);
+
+router.get(
   "/conversation/:userId/unreadMessages",
   AuthMiddleware.validateToken,
   MessageController.hasUnreadMessages
