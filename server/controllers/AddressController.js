@@ -1,6 +1,5 @@
-const AddressService = require("../service/AddressService");
-const AuthenticationService = require("../service/AuthenticationService");
-const { escapeHtml } = require("../utils/htmlEscape");
+const addressService = require("../service/addressService");
+const authenticationService = require("../service/authenticationService");
 
 /**
  * Register a new address
@@ -14,13 +13,13 @@ const createAddress = async (req, res) => {
   let { street, postalCode, city } = req.body;
 
   try {
-    await AddressService.addAddress({
+    const address = await addressService.addAddress({
       street,
       postalCode,
       city,
     });
 
-    res.status(201).json(`Your address has been successfully registered`);
+    res.status(201).json(address);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -41,27 +40,26 @@ const updateAddress = async (res, req) => {
   const id = parseInt(req.params.id, 10);
   const currentUserId = req.userId;
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(
+  const isUserAllowed = authenticationService.checkUserPermission(
     currentUserId,
     id
   );
 
-  if (isUserAllowed) {
-    try {
-      const address = await AddressService.editAddress(id, data);
-
-      if (!address) {
-        return res.status(400).json({ error: `Address not found` });
-      }
-      res.status(200).json(`Address has been successfully updated`);
-    } catch {
-      res.status(500).json({
-        error: `Error when updating address, ${error}`,
-      });
-    }
-  } else {
+  if (!isUserAllowed) {
     res.status(403).json({
       error: `You don't have the rights`,
+    });
+  }
+  try {
+    const address = await addressService.editAddress(id, data);
+
+    if (!address) {
+      return res.status(400).json({ error: `Address not found` });
+    }
+    res.status(200).json(address);
+  } catch {
+    res.status(500).json({
+      error: `Error when updating address, ${error}`,
     });
   }
 };

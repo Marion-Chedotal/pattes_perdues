@@ -1,4 +1,4 @@
-const PetCategoryService = require("../service/PetCategoryService");
+const petCategoryService = require("../service/petCategoryService");
 
 /**
  * Get all the pet category
@@ -11,7 +11,7 @@ const findAllPetCategory = async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   try {
-    const petCategory = await PetCategoryService.getAllPetCategory();
+    const petCategory = await petCategoryService.getAllPetCategory();
 
     if (!petCategory) {
       return res.status(400).json({

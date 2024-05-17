@@ -1,9 +1,9 @@
-import "./PostCard.scss";
+import "./postCard.scss";
 import React from "react";
 import { Card } from "react-bootstrap";
-import { formatDate } from "../../Utils/format";
-import Button from "../Btn/Button";
-import affiche from "../../Assets/affiche_animal_perdu.jpg";
+import { formatDate } from "../../utils/format";
+import Button from "../btn/Button";
+import affiche from "../../assets/affiche_animal_perdu.jpg";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

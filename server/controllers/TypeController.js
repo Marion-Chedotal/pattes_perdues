@@ -1,4 +1,4 @@
-const TypeService = require("../service/TypeService");
+const typeService = require("../service/typeService");
 
 /**
  * Get all the type
@@ -11,7 +11,7 @@ const findAllType = async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   try {
-    const type = await TypeService.getAllType();
+    const type = await typeService.getAllType();
 
     if (!type) {
       return res.status(400).json({ error: `Type ${id} doesn't exist` });

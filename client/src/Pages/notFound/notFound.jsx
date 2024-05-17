@@ -1,11 +1,11 @@
 import React from "react";
 import "./notFound.scss";
-import Header from "../../Components/Header/Header";
-import Button from "../../Components/Btn/Button";
-import Footer from "../../Components/Footer/Footer";
+import Header from "../../components/header/Header";
+import Button from "../../components/btn/Button";
+import Footer from "../../components/footer/Footer";
 import { Link } from "react-router-dom";
 import { Image } from "react-bootstrap";
-import notFoundPicture from "../../Assets/not_found.jpg";
+import notFoundPicture from "../../assets/not_found.jpg";
 
 const notFound = () => {
   return (

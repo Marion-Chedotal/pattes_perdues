@@ -1,4 +1,4 @@
-import axiosInstance from "./Axios";
+import axiosInstance from "./axios";
 
 /**
  * Get user's conversations

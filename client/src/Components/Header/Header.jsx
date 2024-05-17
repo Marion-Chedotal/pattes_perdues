@@ -1,15 +1,15 @@
-import "./Header.scss";
+import "./header.scss";
 import React, { useEffect, useState } from "react";
-import userService from "../../Services/UserService";
-import messageService from "../../Services/MessageService";
+import userService from "../../services/userService";
+import messageService from "../../services/messageService";
 import { Link } from "react-router-dom";
-import Button from "../Btn/Button";
+import Button from "../btn/Button";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import logo from "../../Assets/pattes_perdues_logo.png";
-import Logout from "../LogoutBtn/LogoutBtn";
+import logo from "../../assets/pattes_perdues_logo.png";
+import Logout from "../logoutBtn/LogoutBtn";
 import { useSelector } from "react-redux";
 import { Tooltip } from "react-tooltip";
-import defaultAvatar from "../../Assets/default_avatar.png";
+import defaultAvatar from "../../assets/default_avatar.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 

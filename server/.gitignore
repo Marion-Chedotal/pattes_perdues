@@ -2,6 +2,5 @@
 .env
 pattes_perduesV3.sql
 /coverage
-package-lock.json
 readme.md
 /uploads

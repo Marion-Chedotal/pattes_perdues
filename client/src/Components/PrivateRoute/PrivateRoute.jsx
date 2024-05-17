@@ -1,10 +1,10 @@
 import React from "react";
-import "./PrivateRoute.scss";
+import "./privateRoute.scss";
 import { Link } from "react-router-dom";
-import Header from "../../Components/Header/Header";
-import Button from "../Btn/Button";
+import Header from "../../components/header/Header";
+import Button from "../btn/Button";
 import { Image, Container, Row, Col } from "react-bootstrap";
-import affiche from "../../Assets/affiche_animal_perdu.jpg";
+import affiche from "../../assets/affiche_animal_perdu.jpg";
 import { useSelector } from "react-redux";
 
 const PrivateRoute = ({ children }) => {

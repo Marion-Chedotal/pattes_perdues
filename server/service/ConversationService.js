@@ -1,6 +1,6 @@
 const { Conversation, Message, User, Post } = require("../models");
 const db = require("../models");
-const UserService = require("../service/UserService");
+const userService = require("./userService");
 
 const sequelize = db.sequelize;
 
@@ -10,9 +10,8 @@ const { Op } = require("sequelize");
  * Create a new conversation
  * @returns {Promise<Object>}
  */
-const addConversation = async (postData) => {
-  return await Conversation.create(postData);
-};
+const addConversation = (postData) => Conversation.create(postData);
+
 
 /**
  * Get all conversations by User and retrieve login partner conversation
@@ -22,7 +21,7 @@ const addConversation = async (postData) => {
  */
 const getAllConversationsByUser = async (userId) => {
   try {
-    const user = await UserService.getById(userId);
+    const user = await userService.getById(userId);
     const userLogin = user.login;
 
     const sqlQuery = `

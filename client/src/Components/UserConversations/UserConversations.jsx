@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import "./UserConversations.scss";
-import ConversationService from "../../Services/ConversationService";
-import ConversationCard from "../ConversationCard/ConversationCard";
-import messageService from "../../Services/MessageService";
-import { formatDate } from "../../Utils/format";
-import defaultAvatar from "../../Assets/default_avatar.png";
-import Button from "../Btn/Button";
+import "./userConversations.scss";
+import conversationService from "../../services/conversationService";
+import ConversationCard from "../conversationCard/ConversationCard";
+import messageService from "../../services/messageService";
+import { formatDate } from "../../utils/format";
+import defaultAvatar from "../../assets/default_avatar.png";
+import Button from "../btn/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBackward, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
@@ -25,7 +25,7 @@ const UserConversations = () => {
     const fetchUserConversations = async () => {
       try {
         const userConversations =
-          await ConversationService.getUserConversations(login, token);
+          await conversationService.getUserConversations(login, token);
         setConversations(userConversations);
         if (userConversations.length === 0) return setNoResults(true);
         setNoResults(false);
@@ -63,7 +63,7 @@ const UserConversations = () => {
     try {
       if (!isNaN(conversationId)) {
         setActiveConversationId(conversationId);
-        const conversation = await ConversationService.getOne(
+        const conversation = await conversationService.getOne(
           login,
           conversationId,
           token
@@ -94,6 +94,22 @@ const UserConversations = () => {
   if (currentUserId === firstReceiver) {
     myInterlocutor = activeConversation?.Messages[0].Sender;
   }
+
+  console.log(conversations);
+  const avatars = conversations.map(conversation => {
+    if (currentUserId === conversation.receiverId) {
+      return {
+        ...conversation,
+        myInterlocutorAvatar: conversation.senderAvatar
+      };
+    } else {
+      return {
+        ...conversation,
+        myInterlocutorAvatar: conversation.receiverAvatar
+      };
+    }
+  });
+  
 
   return (
     <div className="container">
@@ -165,9 +181,9 @@ const UserConversations = () => {
                         <div className="d-flex justify-content-start align-items-center gap-2 mb-2">
                           <img
                             src={
-                              conversation?.myInterlocutor?.avatar
+                              conversation?.myInterlocutor?.avatar // n'existe pas
                                 ? `http://localhost:${process.env.REACT_APP_PORT}/` +
-                                  conversation?.myInterlocutor?.avatar
+                                  conversation?.myInterlocutor?.avatar // n'existe pas
                                 : defaultAvatar
                             }
                             alt="Avatar"

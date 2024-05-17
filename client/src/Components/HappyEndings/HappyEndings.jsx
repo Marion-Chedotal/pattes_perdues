@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import "./HappyEndings.scss";
+import "./happyEndings.scss";
 import { useSelector } from "react-redux";
-import Header from "../Header/Header";
-import PostCard from "../PostCard/PostCard";
-import Footer from "../Footer/Footer";
-import postService from "../../Services/PostService";
-import userService from "../../Services/UserService";
-import Pagination from "../../Components/Pagination/Pagination";
+import Header from "../header/Header";
+import PostCard from "../postCard/PostCard";
+import Footer from "../footer/Footer";
+import postService from "../../services/postService";
+import userService from "../../services/userService";
+import Pagination from "../../components/pagination/Pagination";
 import { Row, Col } from "react-bootstrap";
-import { capitalizeFirstLetter } from "../../Utils/format";
+import { capitalizeFirstLetter } from "../../utils/format";
 
 const HappyEndings = () => {
   const { user, token } = useSelector((state) => state.auth);

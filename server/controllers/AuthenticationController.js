@@ -1,9 +1,9 @@
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
 const { escapeHtml } = require("../utils/htmlEscape");
-const AuthenticationService = require("../service/AuthenticationService");
-const UserService = require("../service/UserService");
-const AddressService = require("../service/AddressService");
+const authenticationService = require("../service/authenticationService");
+const userService = require("../service/userService");
+const addressService = require("../service/addressService");
 const errors = require("../utils/errors.json");
 
 const passwordRegex =
@@ -56,6 +56,15 @@ const register = async (req, res) => {
       });
     }
 
+    // Check input format
+    const { error } = validateInput(req.body);
+    if (error) {
+      return res.status(400).json({
+        errorCode: "invalidInput",
+        errorMessage: errors.global.invalidInput,
+      });
+    }
+
     // sanitize input
     const fieldsToSanitize = [
       "login",
@@ -69,20 +78,11 @@ const register = async (req, res) => {
       req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
     });
 
-    // Check input format
-    const { error } = validateInput(req.body);
-    if (error) {
-      return res.status(400).json({
-        errorCode: "invalidInput",
-        errorMessage: errors.global.invalidInput,
-      });
-    }
-
     // Get user input
     let { login, password, email, postalCode, city } = req.body;
 
     // Check if user already exist: same email
-    const isEmailAlreadyExist = await UserService.checkEmailExists(email);
+    const isEmailAlreadyExist = await userService.checkEmailExists(email);
 
     if (isEmailAlreadyExist) {
       return res.status(409).json({
@@ -92,7 +92,7 @@ const register = async (req, res) => {
     }
 
     // Check if user already exist: same login
-    const isLoginAlreadyExist = await UserService.checkLoginExists(login);
+    const isLoginAlreadyExist = await userService.checkLoginExists(login);
 
     if (isLoginAlreadyExist) {
       return res.status(409).json({
@@ -105,20 +105,20 @@ const register = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    const user = await UserService.registerUser({
+    const user = await userService.registerUser({
       login: login,
       password: hashPassword,
       email: email,
     });
 
-    const address = await AddressService.addAddress({
+    const address = await addressService.addAddress({
       postalCode: postalCode,
       city: city,
     });
 
     await user.setAddress(address);
 
-    res.status(201).json(`User ${login} has been successfully registered`);
+    res.status(201).json(user);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -159,7 +159,7 @@ const login = async (req, res) => {
 
     let { login, password } = req.body;
 
-    const user = await UserService.getByLogin(login);
+    const user = await userService.getByLogin(login);
 
     if (!user) {
       return res.status(404).json({
@@ -169,7 +169,7 @@ const login = async (req, res) => {
     }
 
     const dbPassword = user.password;
-    const passwordMatch = await AuthenticationService.comparePasswords(
+    const passwordMatch = await authenticationService.comparePasswords(
       password,
       dbPassword
     );
@@ -180,7 +180,7 @@ const login = async (req, res) => {
       });
     }
 
-    const accessToken = AuthenticationService.createToken(user.login, user.id);
+    const accessToken = authenticationService.createToken(user.login, user.id);
 
     res.status(200).json({
       user: { login: login, id: user.id },

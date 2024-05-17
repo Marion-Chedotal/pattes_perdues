@@ -1,7 +1,7 @@
-const PostService = require("../service/PostService");
-const UserService = require("../service/UserService");
-const AuthenticationService = require("../service/AuthenticationService");
-const AddressService = require("../service/AddressService");
+const postService = require("../service/postService");
+const userService = require("../service/userService");
+const authenticationService = require("../service/authenticationService");
+const addressService = require("../service/addressService");
 const { escapeHtml } = require("../utils/htmlEscape");
 const errors = require("../utils/errors.json");
 const Joi = require("joi");
@@ -47,6 +47,15 @@ const validateInput = (data) => {
  * @throws {object} error
  */
 const createPost = async (req, res) => {
+  // Check input format
+  const { error } = validateInput(req.body);
+  if (error) {
+    return res.status(400).json({
+      errorCode: "fieldsToFill",
+      errorMessage: errors.global.fieldsToFill,
+    });
+  }
+
   // sanitize input
   const fieldsToSanitize = [
     "gender",
@@ -72,15 +81,6 @@ const createPost = async (req, res) => {
       req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
     }
   });
-
-  // Check input format
-  const { error } = validateInput(req.body);
-  if (error) {
-    return res.status(400).json({
-      errorCode: "fieldsToFill",
-      errorMessage: errors.global.fieldsToFill,
-    });
-  }
 
   let {
     gender,
@@ -108,7 +108,7 @@ const createPost = async (req, res) => {
     }
 
     // create a new post
-    const post = await PostService.addPost({
+    const post = await postService.addPost({
       gender,
       alert_date,
       description,
@@ -124,7 +124,7 @@ const createPost = async (req, res) => {
       PetCategoryId,
     });
 
-    const address = await AddressService.addAddress({
+    const address = await addressService.addAddress({
       street: street,
       postalCode: postalCode,
       city: city,
@@ -132,10 +132,7 @@ const createPost = async (req, res) => {
 
     await post.setAddress(address);
 
-    res.status(201).json({
-      postId: post.id,
-      message: "Post has been successfully registered",
-    });
+    res.status(201).json(post);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -154,7 +151,7 @@ const findById = async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   try {
-    const post = await PostService.getById(id);
+    const post = await postService.getById(id);
 
     if (post.length === 0) {
       return res.status(400).json({ error: `Post ${id} doesn't exist` });
@@ -175,7 +172,7 @@ const findById = async (req, res) => {
  */
 const findAll = async (req, res) => {
   try {
-    const post = await PostService.getAll();
+    const post = await postService.getAll();
 
     if (post.length === 0) {
       return res.status(400).json({ error: `There is no posts` });
@@ -196,7 +193,7 @@ const findAll = async (req, res) => {
  */
 const findLastThreePosts = async (req, res) => {
   try {
-    const post = await PostService.getThreeLatestPosts();
+    const post = await postService.getThreeLatestPosts();
 
     if (post.length === 0) {
       return res.status(400).json({ error: `There is no posts` });
@@ -218,7 +215,7 @@ const findLastThreePosts = async (req, res) => {
  */
 const findLastThreeArchivesPosts = async (req, res) => {
   try {
-    const post = await PostService.getThreeLatestArchivesPosts();
+    const post = await postService.getThreeLatestArchivesPosts();
 
     if (post.length === 0) {
       return res.status(400).json({ error: `There is no posts` });
@@ -239,7 +236,7 @@ const findLastThreeArchivesPosts = async (req, res) => {
  */
 const findAllArchivesPosts = async (req, res) => {
   try {
-    const post = await PostService.getAllArchivesPosts();
+    const post = await postService.getAllArchivesPosts();
 
     if (post.length === 0) {
       return res.status(400).json({ error: `There is no posts` });
@@ -260,11 +257,11 @@ const findAllArchivesPosts = async (req, res) => {
  */
 const findByUser = async (req, res) => {
   const login = req.params.login;
-  const user = await UserService.getByLogin(login);
+  const user = await userService.getByLogin(login);
   const userId = user.id;
 
   try {
-    const post = await PostService.getAllByUser(userId);
+    const post = await postService.getAllByUser(userId);
     if (post.length === 0) {
       return res.status(400).json({ error: `User doesn't have post` });
     }
@@ -286,7 +283,7 @@ const numberPostsByUser = async (req, res) => {
   const currentUserId = req.userId;
 
   try {
-    const post = await PostService.countPostsByUser(currentUserId);
+    const post = await postService.countPostsByUser(currentUserId);
     if (post.length === 0) {
       return res.status(400).json({ error: `User doesn't have post yet.` });
     }
@@ -307,12 +304,21 @@ const numberPostsByUser = async (req, res) => {
 const updatePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
   const currentUserId = req.userId;
-  const postToEdit = await PostService.getById(idPost);
+  const postToEdit = await postService.getById(idPost);
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(
+  const isUserAllowed = authenticationService.checkUserPermission(
     postToEdit.UserId,
     currentUserId
   );
+
+  // Check input format
+  const { error } = validateInput(req.body);
+  if (error) {
+    return res.status(400).json({
+      errorCode: "fieldsToFill",
+      errorMessage: errors.global.fieldsToFill,
+    });
+  }
 
   // sanitize input
   const fieldsToSanitize = [
@@ -339,14 +345,6 @@ const updatePost = async (req, res) => {
       req.body[fieldName] = escapeHtml(req.body[fieldName].trim());
     }
   });
-  // Check input format
-  const { error } = validateInput(req.body);
-  if (error) {
-    return res.status(400).json({
-      errorCode: "fieldsToFill",
-      errorMessage: errors.global.fieldsToFill,
-    });
-  }
 
   let {
     gender,
@@ -374,52 +372,52 @@ const updatePost = async (req, res) => {
     });
   }
 
-  if (isUserAllowed) {
-    try {
-      let picturePath;
-      if (req.files && req.files.picture && req.files.picture.length > 0) {
-        picturePath = req.files.picture[0].path;
-
-        // Delete old picture from server
-        if (postToEdit.picture) {
-          fs.unlinkSync(postToEdit.picture);
-        }
-      }
-
-      const post = await PostService.editPost(idPost, {
-        gender,
-        alert_date,
-        description,
-        name,
-        tattoo,
-        microchip,
-        collar,
-        distinctive_signs,
-        picture: picturePath,
-        is_active,
-        UserId,
-        TypeId,
-        PetCategoryId,
-      });
-
-      await AddressService.editAddress(postToEdit.AddressId, {
-        street: street,
-        postalCode: postalCode,
-        city: city,
-      });
-
-      if (post.length === 0) {
-        return res.status(400).json({ error: `Post doesn't exist` });
-      }
-      res.status(200).json("Post has been updated!");
-    } catch (error) {
-      res.status(500).json({
-        error: `Error when updating post, ${error}`,
-      });
-    }
-  } else {
+  if (!isUserAllowed) {
     res.status(403).json({
       error: `You don't have the rights`,
+    });
+  }
+
+  try {
+    let picturePath;
+    if (req.files && req.files.picture && req.files.picture.length > 0) {
+      picturePath = req.files.picture[0].path;
+
+      // Delete old picture from server
+      if (postToEdit.picture) {
+        fs.unlinkSync(postToEdit.picture);
+      }
+    }
+
+    const post = await postService.editPost(idPost, {
+      gender,
+      alert_date,
+      description,
+      name,
+      tattoo,
+      microchip,
+      collar,
+      distinctive_signs,
+      picture: picturePath,
+      is_active,
+      UserId,
+      TypeId,
+      PetCategoryId,
+    });
+
+    await addressService.editAddress(postToEdit.AddressId, {
+      street: street,
+      postalCode: postalCode,
+      city: city,
+    });
+
+    if (post.length === 0) {
+      return res.status(400).json({ error: `Post doesn't exist` });
+    }
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when updating post, ${error}`,
     });
   }
 };
@@ -434,36 +432,36 @@ const removePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
   const currentUserId = req.userId;
 
-  const postToDelete = await PostService.getById(idPost);
+  const postToDelete = await postService.getById(idPost);
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(
+  const isUserAllowed = authenticationService.checkUserPermission(
     postToDelete?.UserId,
     currentUserId
   );
 
-  if (isUserAllowed) {
-    try {
-      // get the picture to delete it with the post
-      const picture = postToDelete.picture;
-      const post = await PostService.deletePost(idPost);
-
-      if (post.length === 0) {
-        return res.status(400).json({ error: `Post ${id} doesn't exist` });
-      }
-
-      if (picture) {
-        fs.unlinkSync(picture);
-      }
-
-      res.status(200).json(`Post ${idPost} has been successfully deleted`);
-    } catch (error) {
-      res.status(500).json({
-        error: `Error when deleting post , ${error}`,
-      });
-    }
-  } else {
+  if (!isUserAllowed) {
     res.status(403).json({
       error: `You don't have the rights`,
+    });
+  }
+
+  try {
+    // get the picture to delete it with the post
+    const picture = postToDelete.picture;
+    const post = await postService.deletePost(idPost);
+
+    if (post.length === 0) {
+      return res.status(400).json({ error: `Post ${id} doesn't exist` });
+    }
+
+    if (picture) {
+      fs.unlinkSync(picture);
+    }
+
+    res.status(200).json(`Post ${idPost} has been successfully deleted`);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when deleting post , ${error}`,
     });
   }
 };

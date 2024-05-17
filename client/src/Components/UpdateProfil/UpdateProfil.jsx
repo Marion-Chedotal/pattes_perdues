@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import "./UpdateProfil.scss";
+import "./updateProfil.scss";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import UserService from "../../Services/UserService";
-import authService from "../../Services/AuthService";
-import defaultAvatar from "../../Assets/default_avatar.png";
-import Button from "../Btn/Button";
+import userService from "../../services/userService";
+import authService from "../../services/authService";
+import defaultAvatar from "../../assets/default_avatar.png";
+import Button from "../btn/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip } from "react-tooltip";
-import errorMessage from "../../Utils/errorMessages.json";
+import errorMessage from "../../utils/errorMessages.json";
 import { useTranslation } from "react-i18next";
-import { validateUserInputs } from "../../Utils/errorInputs";
+import { validateUserInputs } from "../../utils/errorInputs";
 
 const UpdateProfil = () => {
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ const UpdateProfil = () => {
     const fetchUserData = async () => {
       try {
         // Fetch global user information
-        const data = await UserService.getUserInformation(currentUserId, token);
+        const data = await userService.getUserInformation(currentUserId, token);
         setFormData((prevFormData) => ({
           ...prevFormData,
           ...data,
@@ -147,7 +147,7 @@ const UpdateProfil = () => {
       };
 
       // Call the UserService to update user information
-      await UserService.updateUserInformation(login, updatedFormData, token);
+      await userService.updateUserInformation(login, updatedFormData, token);
       setIsModified(false);
       navigate(`/profil/${user.login}`, {
         state: {
@@ -155,7 +155,16 @@ const UpdateProfil = () => {
         },
       });
     } catch (error) {
-      const errorMessage = t(`userUpdate.${error.errorCode}`);
+      let errorMessage;
+
+      if (error?.errorCode) {
+        errorMessage = t(`userUpdate.${error.errorCode}`);
+      }
+
+      if (!errorMessage) {
+        errorMessage =
+          "Une erreur s'est produite. Veuillez réessayer plus tard.";
+      }
       setErrMsg(errorMessage);
       window.scroll({
         top: 0,
@@ -184,7 +193,8 @@ const UpdateProfil = () => {
                     newPicture
                       ? URL.createObjectURL(newPicture)
                       : formData?.avatar
-                      ? `http://localhost:${process.env.REACT_APP_PORT}/` + formData.avatar
+                      ? `http://localhost:${process.env.REACT_APP_PORT}/` +
+                        formData.avatar
                       : defaultAvatar
                   }
                   alt="user avatar"

@@ -1,11 +1,11 @@
 import "./register.scss";
-import logo from "../../Assets/pattes_perdues_logo.png";
+import logo from "../../assets/pattes_perdues_logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import authService from "../../Services/AuthService";
-import Button from "../../Components/Btn/Button";
-import { validateRegisterInputs } from "../../Utils/errorInputs";
-import errorMessage from "../../Utils/errorMessages.json";
+import authService from "../../services/authService";
+import Button from "../../components/btn/Button";
+import { validateRegisterInputs } from "../../utils/errorInputs";
+import errorMessage from "../../utils/errorMessages.json";
 import { useTranslation } from "react-i18next";
 
 const Register = () => {
@@ -97,7 +97,16 @@ const Register = () => {
       });
       navigate("/");
     } catch (err) {
-      const errorMessage = t(`authentication.${err?.errorCode}`);
+      let errorMessage;
+
+      if (err?.errorCode) {
+        errorMessage = t(`authentication.${err.errorCode}`);
+      }
+
+      if (!errorMessage) {
+        errorMessage =
+          "Une erreur s'est produite. Veuillez réessayer plus tard.";
+      }
       setErrMsg(errorMessage);
       window.scroll({
         top: 0,

@@ -1,5 +1,5 @@
 import axios from "axios";
-import axiosInstance from "./Axios";
+import axiosInstance from "./axios";
 /**
  * Get postalCode from API carto
  * @param {number} postalCode - Postal code to query

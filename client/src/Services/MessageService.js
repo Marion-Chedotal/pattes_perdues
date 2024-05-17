@@ -1,4 +1,4 @@
-import axiosInstance from "./Axios";
+import axiosInstance from "./axios";
 
 /**
  * Add message to a conversation
@@ -79,7 +79,6 @@ const getLastMessage = async (conversationId, token) => {
  * @returns {Promise<object>} - Promise resolving to the response object from the get endpoint
  */
 const markAsRead = async (messageId, token) => {
-  console.log(messageId, token);
   try {
     const response = await axiosInstance.post(
       `/conversation/${messageId}/mark-as-read`, {},

@@ -1,10 +1,10 @@
-const UserService = require("../service/UserService");
-const AddressService = require("../service/AddressService");
-const AuthenticationService = require("../service/AuthenticationService");
+const userService = require("../service/userService");
+const addressService = require("../service/addressService");
+const authenticationService = require("../service/authenticationService");
 const errors = require("../utils/errors.json");
 const bcrypt = require("bcryptjs");
 const { escapeHtml } = require("../utils/htmlEscape");
-const { passwordRegex } = require("./AuthenticationController");
+const { passwordRegex } = require("./authenticationController");
 const Joi = require("joi");
 const fs = require("fs");
 
@@ -31,7 +31,7 @@ const findById = async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   try {
-    const user = await UserService.getById(id);
+    const user = await userService.getById(id);
 
     if (!user) {
       return res.status(400).json({ error: `User ${id} doesn't exist` });
@@ -55,14 +55,24 @@ const updateUser = async (req, res) => {
   const login = req.params.login;
   const currentUserId = req.userId;
 
-  const user = await UserService.getByLogin(login);
+  const user = await userService.getByLogin(login);
 
   const userId = user.id;
-  
-  const isUserAllowed = AuthenticationService.checkUserPermission(
+
+  const isUserAllowed = authenticationService.checkUserPermission(
     currentUserId,
     userId
   );
+
+  // Check input format
+  const { error } = validateUpdateInput(req.body);
+
+  if (error) {
+    return res.status(400).json({
+      errorCode: "invalidInput",
+      errorMessage: errors.global.invalidInput,
+    });
+  }
 
   // sanitize input
   const fieldsToSanitize = [
@@ -79,17 +89,6 @@ const updateUser = async (req, res) => {
     }
   });
 
-  // Check input format
-  const { error } = validateUpdateInput(req.body);
-
-  if (error) {
-
-    return res.status(400).json({
-      errorCode: "invalidInput",
-      errorMessage: errors.global.invalidInput,
-    });
-  }
-
   let { password, email, avatar, postalCode, city } = req.body;
 
   if (postalCode !== user.Address.postalCode && !city) {
@@ -99,58 +98,56 @@ const updateUser = async (req, res) => {
     });
   }
 
-  if (isUserAllowed) {
-    try {
-      // Check if user already exist: same email
-      if (user.email !== email) {
-        const isEmailAlreadyExist = await UserService.checkEmailExists(email);
-        if (isEmailAlreadyExist) {
-          return res.status(400).json("Email already used");
-        }
-      }
-      let hashPassword;
-      if (password) {
-        hashPassword = await bcrypt.hash(password, 10);
-        req.body.password = hashPassword;
-      }
-
-      let avatarPath;
-      if (req.files && req.files.avatar && req.files.avatar.length > 0) {
-        avatarPath = req.files.avatar[0].path;
-
-        // Delete old avatar from server
-        if (user.avatar) {
-          fs.unlinkSync(user.avatar);
-        }
-      }
-
-      const userUpdated = await UserService.editUser(currentUserId, {
-        password: hashPassword,
-        email: email,
-        avatar: avatarPath,
-      });
-      await AddressService.editAddress(user.AddressId, {
-        postalCode: postalCode,
-        city: city,
-      });
-
-      if (!userUpdated) {
-        return res
-          .status(400)
-          .json({ error: `User ${currentUserId} doesn't exist` });
-      }
-
-      res.status(200).json({
-        message: `The user ${user.login} has been successfully updated`,
-      });
-    } catch (error) {
-      res.status(500).json({
-        error: `Error when updating user, ${error}`,
-      });
-    }
-  } else {
+  if (!isUserAllowed) {
     res.status(403).json({
       error: `You don't have the rights`,
+    });
+  }
+
+  try {
+    // Check if user already exist: same email
+    if (user.email !== email) {
+      const isEmailAlreadyExist = await userService.checkEmailExists(email);
+      if (isEmailAlreadyExist) {
+        return res.status(409).json("Email already used");
+      }
+    }
+    let hashPassword;
+    if (password) {
+      hashPassword = await bcrypt.hash(password, 10);
+      req.body.password = hashPassword;
+    }
+
+    let avatarPath;
+    if (req.files && req.files.avatar && req.files.avatar.length > 0) {
+      avatarPath = req.files.avatar[0].path;
+
+      // Delete old avatar from server
+      if (user.avatar) {
+        fs.unlinkSync(user.avatar);
+      }
+    }
+
+    const userUpdated = await userService.editUser(currentUserId, {
+      password: hashPassword,
+      email: email,
+      avatar: avatarPath,
+    });
+    await addressService.editAddress(user.AddressId, {
+      postalCode: postalCode,
+      city: city,
+    });
+
+    if (!userUpdated) {
+      return res
+        .status(400)
+        .json({ error: `User ${currentUserId} doesn't exist` });
+    }
+
+    res.status(200).json(userUpdated);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when updating user, ${error}`,
     });
   }
 };
@@ -165,33 +162,33 @@ const updateUser = async (req, res) => {
 const removeUser = async (req, res) => {
   const login = req.params.login;
 
-  const user = await UserService.getByLogin(login);
+  const user = await userService.getByLogin(login);
   const userId = user.id;
   const currentUserId = req.userId;
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(
+  const isUserAllowed = authenticationService.checkUserPermission(
     currentUserId,
     userId
   );
 
-  if (isUserAllowed) {
-    try {
-      const user = await UserService.deleteUser(userId);
-
-      if (!user) {
-        return res.status(400).json({ error: `User ${userId} doesn't exist` });
-      }
-      const login = user.login;
-
-      res.status(200).json(`The user ${login} has been successfully deleted`);
-    } catch (error) {
-      res.status(500).json({
-        error: `Error when deleting user, ${error}`,
-      });
-    }
-  } else {
+  if (!isUserAllowed) {
     res.status(403).json({
       error: `You don't have the rights`,
+    });
+  }
+
+  try {
+    const user = await userService.deleteUser(userId);
+
+    if (!user) {
+      return res.status(400).json({ error: `User ${userId} doesn't exist` });
+    }
+    const login = user.login;
+
+    res.status(200).json(`The user ${login} has been successfully deleted`);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when deleting user, ${error}`,
     });
   }
 };

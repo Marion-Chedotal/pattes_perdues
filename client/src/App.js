@@ -1,18 +1,18 @@
-import "./App.scss";
-import Home from "./Pages/home/Home";
-import Login from "./Pages/login/Login";
-import Register from "./Pages/register/Register";
-import PostForm from "./Pages/postForm/PostForm";
-import PostsList from "./Pages/postsList/PostsList";
-import Profil from "./Pages/profil/Profil";
-import Post from "./Pages/post/Post";
-import PageNotFound from "./Pages/notFound/notFound";
+import "./app.scss";
+import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
+import Register from "./pages/register/Register";
+import PostForm from "./pages/postForm/PostForm";
+import PostsList from "./pages/postsList/PostsList";
+import Profil from "./pages/profil/Profil";
+import Post from "./pages/post/Post";
+import PageNotFound from "./pages/notFound/notFound";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
-import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
-import HappyEndings from "./Components/HappyEndings/HappyEndings";
+import PrivateRoute from "./components/privateRoute/PrivateRoute";
+import HappyEndings from "./components/happyEndings/HappyEndings";
 
 function App() {
   useEffect(() => {

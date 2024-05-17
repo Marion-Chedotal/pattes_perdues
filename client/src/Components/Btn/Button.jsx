@@ -1,5 +1,5 @@
 import React from 'react';
-import './Button.scss';
+import './button.scss';
 
 const Button = ({ children, onClick, disabled }) => {
   return (

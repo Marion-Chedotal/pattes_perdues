@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import typeService from "../../Services/TypeService";
-import categoryService from "../../Services/PetCategoryService";
-import authService from "../../Services/AuthService";
-import postService from "../../Services/PostService";
-import Button from "../../Components/Btn/Button";
-import Header from "../../Components/Header/Header";
-import Footer from "../../Components/Footer/Footer";
+import typeService from "../../services/typeService";
+import categoryService from "../../services/petCategoryService";
+import authService from "../../services/authService";
+import postService from "../../services/postService";
+import Button from "../../components/btn/Button";
+import Header from "../../components/header/Header";
+import Footer from "../../components/footer/Footer";
 import { Row, Col, Image } from "react-bootstrap";
 import { Tooltip } from "react-tooltip";
 import "./postForm.scss";
-import errorMessage from "../../Utils/errorMessages.json";
+import errorMessage from "../../utils/errorMessages.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
-import { validatePostInputs } from "../../Utils/errorInputs";
-import { formatDate } from "../../Utils/format";
+import { validatePostInputs } from "../../utils/errorInputs";
+import { formatDate } from "../../utils/format";
 
 const PostForm = () => {
   const { t } = useTranslation();
@@ -231,10 +231,20 @@ const PostForm = () => {
         });
       } else {
         const response = await postService.register(postData, token);
-        navigate(`/annonce/${response.postId}`);
+        console.log(response);
+        navigate(`/annonce/${response.id}`);
       }
     } catch (err) {
-      const errorMessage = t(`post.${err?.errorCode}`);
+      let errorMessage;
+
+      if (err?.errorCode) {
+        errorMessage = t(`post.${err.errorCode}`);
+      }
+
+      if (!errorMessage) {
+        errorMessage =
+          "Une erreur s'est produite. Veuillez réessayer plus tard.";
+      }
       setErrMsg(errorMessage);
       window.scroll({
         top: 0,
@@ -352,7 +362,8 @@ const PostForm = () => {
                   src={
                     newPicture
                       ? URL.createObjectURL(newPicture)
-                      : `http://localhost:${process.env.REACT_APP_PORT}/` + formData?.picture
+                      : `http://localhost:${process.env.REACT_APP_PORT}/` +
+                        formData?.picture
                   }
                   style={{ maxWidth: "100%", maxHeight: "400px" }}
                 />

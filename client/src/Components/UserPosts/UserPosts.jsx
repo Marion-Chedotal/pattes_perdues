@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector} from "react-redux";
-import PostService from "../../Services/PostService";
-import PostCard from "../../Components/PostCard/PostCard";
+import postService from "../../services/postService";
+import PostCard from "../../components/postCard/PostCard";
 import { useParams } from "react-router-dom";
 
 const UserPosts = () => {
@@ -13,7 +13,7 @@ const UserPosts = () => {
   useEffect(() => {
     const fetchUserPosts = async () => {
       try {
-        const userPosts = await PostService.getUserPosts(login, token);
+        const userPosts = await postService.getUserPosts(login, token);
         setPosts(userPosts);
         if (userPosts.length === 0) return setNoResults(true);
         setNoResults(false);

@@ -1,10 +1,10 @@
 import "./login.scss";
-import logo from "../../Assets/pattes_perdues_logo.png";
+import logo from "../../assets/pattes_perdues_logo.png";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Button from "../../Components/Btn/Button";
+import Button from "../../components/btn/Button";
 import { useTranslation } from "react-i18next";
-import authService from "../../Services/AuthService";
+import authService from "../../services/authService";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/authActions";
 
@@ -32,7 +32,16 @@ const Login = () => {
       dispatch(loginSuccess(data.accessToken, data.user));
       navigate("/");
     } catch (err) {
-      const errorMessage = t(`authentication.${err?.errorCode}`);
+      let errorMessage;
+
+      if (err?.errorCode) {
+        errorMessage = t(`authentication.${err.errorCode}`);
+      }
+
+      if (!errorMessage) {
+        errorMessage =
+          "Une erreur s'est produite. Veuillez réessayer plus tard.";
+      }
       setErrMsg(errorMessage);
     }
   };

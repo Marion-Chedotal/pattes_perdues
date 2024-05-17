@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import "./Post.scss";
-import Header from "../../Components/Header/Header";
-import Footer from "../../Components/Footer/Footer";
-import affiche from "../../Assets/affiche_animal_perdu.jpg";
-import postService from "../../Services/PostService";
+import "./post.scss";
+import Header from "../../components/header/Header";
+import Footer from "../../components/footer/Footer";
+import affiche from "../../assets/affiche_animal_perdu.jpg";
+import postService from "../../services/postService";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Button from "../../Components/Btn/Button";
-import SuccessMessage from "../../Components/SuccessMessage/SuccessMessage";
-import ConversationService from "../../Services/ConversationService";
+import Button from "../../components/btn/Button";
+import SuccessMessage from "../../components/successMessage/SuccessMessage";
+import conversationService from "../../services/conversationService";
 import { Tooltip } from "react-tooltip";
-import { formatDate, capitalizeFirstLetter } from "../../Utils/format";
+import { formatDate, capitalizeFirstLetter } from "../../utils/format";
 import { Image, Container, Row, Col, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -125,7 +125,7 @@ const Post = () => {
   const handleContact = async (e) => {
     e.preventDefault();
     try {
-      await ConversationService.start(
+      await conversationService.start(
         receiverId,
         {
           ...content,
@@ -142,7 +142,16 @@ const Post = () => {
         },
       });
     } catch (err) {
-      const errorMessage = t(`conversation.${err?.errorCode}`);
+      let errorMessage;
+
+      if (err?.errorCode) {
+        errorMessage = t(`conversation.${err.errorCode}`);
+      }
+
+      if (!errorMessage) {
+        errorMessage =
+          "Une erreur s'est produite. Veuillez réessayer plus tard.";
+      }
       setError(errorMessage);
     }
   };

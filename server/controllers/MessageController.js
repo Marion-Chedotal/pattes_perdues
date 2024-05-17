@@ -1,5 +1,5 @@
-const MessageService = require("../service/MessageService");
-const ConversationService = require("../service/ConversationService");
+const messageService = require("../service/messageService");
+const conversationService = require("../service/conversationService");
 const { escapeHtml } = require("../utils/htmlEscape");
 const errors = require("../utils/errors.json");
 const Joi = require("joi");
@@ -35,9 +35,6 @@ const validateMessageInput = (data) => {
  * @throws {object} error
  */
 const createMessage = async (req, res) => {
-  // sanitize input
-  req.body.content = escapeHtml(req.body.content);
-
   // Check input format
   const { error } = validateMessageInput(req.body);
   if (error) {
@@ -47,15 +44,18 @@ const createMessage = async (req, res) => {
     });
   }
 
+  // sanitize input
+  req.body.content = escapeHtml(req.body.content);
+
   // UserId = senderId
   let { content, UserId, receiverId, ConversationId } = req.body;
 
   const messageData = { ...req.body, read: false };
 
   try {
-    await MessageService.addMessage(messageData);
+    await messageService.addMessage(messageData);
 
-    const conversation = await ConversationService.getConversation(
+    const conversation = await conversationService.getConversation(
       UserId,
       ConversationId
     );
@@ -80,7 +80,7 @@ const markMessageAsRead = async (req, res) => {
   const currentUserId = req.userId;
 
   try {
-    await MessageService.passMessageToRead(messageId, currentUserId);
+    await messageService.passMessageToRead(messageId, currentUserId);
     res.status(200).json();
   } catch (error) {
     res.status(500).json({ error: "Error marking message as read" });
@@ -98,7 +98,7 @@ const hasUnreadMessages = async (req, res) => {
   const currentUserId = req.userId;
 
   try {
-    const response = await MessageService.unreadMessages(currentUserId);
+    const response = await messageService.unreadMessages(currentUserId);
     const hasUnread = response > 0;
 
     res.status(200).json(hasUnread);
@@ -121,7 +121,7 @@ const findLastMessage = async (req, res) => {
     .map((id) => parseInt(id, 10));
 
   try {
-    const lastMessages = await MessageService.getLastMessagesForConversations(
+    const lastMessages = await messageService.getLastMessagesForConversations(
       conversationIdArray
     );
     res.status(200).json(lastMessages);

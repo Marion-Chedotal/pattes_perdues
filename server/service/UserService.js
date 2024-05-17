@@ -22,9 +22,8 @@ const checkLoginExists = async (login) => {
  * @returns {Promise<Object>}
  */
 
-const registerUser = async (userData) => {
-  return await User.create(userData);
-};
+const registerUser = (userData) => User.create(userData);
+
 
 /**
  * Find user by login

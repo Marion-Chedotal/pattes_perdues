@@ -1,7 +1,7 @@
-const ConversationService = require("../service/ConversationService");
-const UserService = require("../service/UserService");
-const AuthenticationService = require("../service/AuthenticationService");
-const MessageService = require("../service/MessageService");
+const conversationService = require("../service/conversationService");
+const userService = require("../service/userService");
+const authenticationService = require("../service/authenticationService");
+const messageService = require("../service/messageService");
 const { escapeHtml } = require("../utils/htmlEscape");
 const errors = require("../utils/errors.json");
 const Joi = require("joi");
@@ -34,9 +34,6 @@ const validateInput = (data) => {
  * @throws {object} error
  */
 const startConversation = async (req, res) => {
-  // sanitize input
-  req.body.content = escapeHtml(req.body.content);
-
   // Check input format
   const { error } = validateInput(req.body);
   if (error) {
@@ -46,16 +43,19 @@ const startConversation = async (req, res) => {
     });
   }
 
+  // sanitize input
+  req.body.content = escapeHtml(req.body.content);
+
   let { content, senderId, receiverId, PostId } = req.body;
 
-  const existingConversation = await ConversationService.doesConversationExist(
+  const existingConversation = await conversationService.doesConversationExist(
     PostId,
     senderId,
     receiverId
   );
 
   if (existingConversation) {
-    return res.status(400).json({
+    return res.status(409).json({
       errorCode: "conversationExist",
       errorMessage: errors.conversation.conversationExist,
     });
@@ -64,7 +64,7 @@ const startConversation = async (req, res) => {
   if (senderId != receiverId) {
     try {
       // create a new conversation
-      const conversation = await ConversationService.addConversation({
+      const conversation = await conversationService.addConversation({
         PostId,
       });
 
@@ -76,9 +76,9 @@ const startConversation = async (req, res) => {
         read: false,
       };
 
-      await MessageService.addMessage(messageData);
+      await messageService.addMessage(messageData);
 
-      res.status(201).json(`Conversation created`);
+      res.status(201).json(conversation);
     } catch (error) {
       console.error(error);
       res.status(500).json({
@@ -102,31 +102,31 @@ const startConversation = async (req, res) => {
 const findConversation = async (req, res) => {
   const idConversation = parseInt(req.params.id, 10);
   const login = req.params.login;
-  const user = await UserService.getByLogin(login);
+  const user = await userService.getByLogin(login);
   const userId = user.id;
   const currentUserId = req.userId;
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(
+  const isUserAllowed = authenticationService.checkUserPermission(
     currentUserId,
     userId
   );
 
-  if (isUserAllowed) {
-    try {
-      const conversation = await ConversationService.getConversation(
-        userId,
-        idConversation
-      );
-      await res.status(201).json(conversation);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        error: `Error when fetching conversation, ${error}`,
-      });
-    }
-  } else {
+  if (!isUserAllowed) {
     res.status(403).json({
       error: `You don't have the rights`,
+    });
+  }
+
+  try {
+    const conversation = await conversationService.getConversation(
+      userId,
+      idConversation
+    );
+    await res.status(201).json(conversation);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: `Error when fetching conversation, ${error}`,
     });
   }
 };
@@ -140,32 +140,31 @@ const findConversation = async (req, res) => {
  */
 const findConversations = async (req, res) => {
   const login = req.params.login;
-  const user = await UserService.getByLogin(login);
+  const user = await userService.getByLogin(login);
   const userId = user.id;
   const currentUserId = req.userId;
 
-  const isUserAllowed = AuthenticationService.checkUserPermission(
+  const isUserAllowed = authenticationService.checkUserPermission(
     currentUserId,
     userId
   );
 
-  if (isUserAllowed) {
-    try {
-      const conversations = await ConversationService.getAllConversationsByUser(
-        userId
-      );
-
-      res.status(201).json(conversations);
-    } catch (error) {
-      res.status(500).json({
-        error: `Error when fetching conversations, ${error}`,
-      });
-      findConversations;
-    }
-  } else {
+  if (!isUserAllowed) {
     res.status(403).json({
       error: `You don't have the rights`,
     });
+  }
+  try {
+    const conversations = await conversationService.getAllConversationsByUser(
+      userId
+    );
+
+    res.status(201).json(conversations);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when fetching conversations, ${error}`,
+    });
+    findConversations;
   }
 };
 

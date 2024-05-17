@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "./ProfilCard.scss";
+import "./profilCard.scss";
 import { useSelector } from "react-redux";
-import UserService from "../../Services/UserService";
-import postService from "../../Services/PostService";
-import { capitalizeFirstLetter } from "../../Utils/format";
+import userService from "../../services/userService";
+import postService from "../../services/postService";
+import { capitalizeFirstLetter } from "../../utils/format";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faNewspaper } from "@fortawesome/free-solid-svg-icons";
-import defaultAvatar from "../../Assets/default_avatar.png";
+import defaultAvatar from "../../assets/default_avatar.png";
 import { Tooltip } from "react-tooltip";
 
 const ProfilCard = ({ showUserPosts }) => {
@@ -19,7 +19,7 @@ const ProfilCard = ({ showUserPosts }) => {
     const fetchUserData = async () => {
       try {
         // fetch global user information
-        const data = await UserService.getUserInformation(currentUserId, token);
+        const data = await userService.getUserInformation(currentUserId, token);
 
         setUserData(data);
         // fetch user's post

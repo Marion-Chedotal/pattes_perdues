@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./SuccessMessage.scss";
+import "./successMessage.scss";
 import { useLocation } from "react-router-dom";
 
 const SuccessMessage = () => {

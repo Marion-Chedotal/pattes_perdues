@@ -5,9 +5,7 @@ const { Message } = require("../models");
  * @param {Object} data - data of the message
  * @returns {Promise<Object>}
  */
-const addMessage = async (data) => {
-  return await Message.create(data);
-};
+const addMessage = (data) => Message.create(data);
 
 /**
  * Change the read fields to true when interlocutor message is read

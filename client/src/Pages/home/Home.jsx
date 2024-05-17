@@ -1,6 +1,6 @@
 import "./home.scss";
-import Header from "../../Components/Header/Header";
-import Footer from "../../Components/Footer/Footer";
+import Header from "../../components/header/Header";
+import Footer from "../../components/footer/Footer";
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Image, Container, Row, Col } from "react-bootstrap";
@@ -12,11 +12,11 @@ import {
   faBullhorn,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
-import chien from "../../Assets/chien_home.jpg";
-import sparkles from "../../Assets/sparkles.png";
-import Button from "../../Components/Btn/Button";
-import postService from "../../Services/PostService";
-import PostCard from "../../Components/PostCard/PostCard";
+import chien from "../../assets/chien_home.jpg";
+import sparkles from "../../assets/sparkles.png";
+import Button from "../../components/btn/Button";
+import postService from "../../services/postService";
+import PostCard from "../../components/postCard/PostCard";
 
 const Home = () => {
   const [lastThreePosts, setLastThreePosts] = useState([]);

@@ -5,9 +5,7 @@ const { Post, User, Pet_category, Type, Address } = require("../models");
  * @param {Object} postData - data of the post
  * @returns {Promise<Object>}
  */
-const addPost = async (postData) => {
-  return await Post.create(postData);
-};
+const addPost = (postData) => Post.create(postData);
 
 /**
  * Find post by his id including user information

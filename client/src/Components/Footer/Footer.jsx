@@ -1,5 +1,5 @@
-import "./Footer.scss";
-import logo from "../../Assets/pattes_perdues_logo.png";
+import "./footer.scss";
+import logo from "../../assets/pattes_perdues_logo.png";
 import { Link } from "react-router-dom";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

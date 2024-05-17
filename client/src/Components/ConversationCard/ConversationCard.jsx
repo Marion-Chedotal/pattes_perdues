@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import "./ConversationCard.scss";
+import "./conversationCard.scss";
 import { useSelector } from "react-redux";
-import MessageService from "../../Services/MessageService";
-import Button from "../../Components/Btn/Button";
-import { formatDate } from "../../Utils/format";
-import defaultAvatar from "../../Assets/default_avatar.png";
+import messageService from "../../services/messageService";
+import Button from "../../components/btn/Button";
+import { formatDate } from "../../utils/format";
+import defaultAvatar from "../../assets/default_avatar.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
@@ -41,7 +41,7 @@ const ConversationCard = ({ conversation, setConversation }) => {
       setConversation({ ...conversation, Messages: updatedMessages });
       setIsContentModified(false);
 
-      await MessageService.addMessage(conversation?.id, newMessage, token);
+      await messageService.addMessage(conversation?.id, newMessage, token);
       setContent("");
     } catch (err) {
       console.error("Failed sendMessage().", err);

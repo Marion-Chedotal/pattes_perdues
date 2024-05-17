@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import "./PostsList.scss";
-import Header from "../../Components/Header/Header";
-import PostCard from "../../Components/PostCard/PostCard";
-import Footer from "../../Components/Footer/Footer";
-import PostService from "../../Services/PostService";
-import Pagination from "../../Components/Pagination/Pagination";
+import "./postsList.scss";
+import Header from "../../components/header/Header";
+import PostCard from "../../components/postCard/PostCard";
+import Footer from "../../components/footer/Footer";
+import postService from "../../services/postService";
+import Pagination from "../../components/pagination/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faDiamondTurnRight } from "@fortawesome/free-solid-svg-icons";
-import userService from "../../Services/UserService";
-import { capitalizeFirstLetter } from "../../Utils/format";
-import SuccessMessage from "../../Components/SuccessMessage/SuccessMessage.jsx";
+import userService from "../../services/userService";
+import { capitalizeFirstLetter } from "../../utils/format";
+import SuccessMessage from "../../components/successMessage/SuccessMessage";
 
 const PostsList = () => {
   const { user, token } = useSelector((state) => state.auth);
@@ -31,7 +31,7 @@ const PostsList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const postData = await PostService.getAll();
+        const postData = await postService.getAll();
         setPosts(postData);
         setFilteredPosts(postData);
       } catch (error) {
