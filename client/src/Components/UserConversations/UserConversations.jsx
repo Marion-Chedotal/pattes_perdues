@@ -14,11 +14,11 @@ import { faBackward, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 const UserConversations = () => {
   const { token, user } = useSelector((state) => state.auth);
   const { login } = useParams();
+  const currentUserId = user.id;
 
   const [conversations, setConversations] = useState([]);
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [activeConversation, setActiveConversation] = useState(null);
-  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
   const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
@@ -52,12 +52,31 @@ const UserConversations = () => {
           }
         );
         setConversations(conversationsWithLastMessages);
+
+        // add avatarInterlocutor
+        const avatarsInterlocutor = conversationsWithLastMessages.map(
+          (conversation) => {
+
+            if (currentUserId === conversation.receiverId) {
+              return {
+                ...conversation,
+                myInterlocutorAvatar: conversation.userAvatar,
+              };
+            } else {
+              return {
+                ...conversation,
+                myInterlocutorAvatar: conversation.receiverAvatar,
+              };
+            }
+          }
+        );
+        setConversations(avatarsInterlocutor);
       } catch (error) {
         console.error("Error fetching conversations:", error);
       }
     };
     fetchUserConversations();
-  }, [login, token]);
+  }, [login, token, currentUserId]);
 
   const switchConversation = async (conversationId) => {
     try {
@@ -81,8 +100,7 @@ const UserConversations = () => {
     }
   };
 
-  // know if currentUser is receiver or sender
-  const currentUserId = user.id;
+  // know if currentUser is receiver or sender in activeConversations
   const firstSender = activeConversation?.Messages[0].UserId;
   const firstReceiver = activeConversation?.Messages[0].Receiver.id;
   let myInterlocutor;
@@ -94,22 +112,6 @@ const UserConversations = () => {
   if (currentUserId === firstReceiver) {
     myInterlocutor = activeConversation?.Messages[0].Sender;
   }
-
-  console.log(conversations);
-  const avatars = conversations.map(conversation => {
-    if (currentUserId === conversation.receiverId) {
-      return {
-        ...conversation,
-        myInterlocutorAvatar: conversation.senderAvatar
-      };
-    } else {
-      return {
-        ...conversation,
-        myInterlocutorAvatar: conversation.receiverAvatar
-      };
-    }
-  });
-  
 
   return (
     <div className="container">
@@ -181,9 +183,9 @@ const UserConversations = () => {
                         <div className="d-flex justify-content-start align-items-center gap-2 mb-2">
                           <img
                             src={
-                              conversation?.myInterlocutor?.avatar // n'existe pas
+                              conversation?.myInterlocutorAvatar
                                 ? `http://localhost:${process.env.REACT_APP_PORT}/` +
-                                  conversation?.myInterlocutor?.avatar // n'existe pas
+                                  conversation?.myInterlocutorAvatar
                                 : defaultAvatar
                             }
                             alt="Avatar"

@@ -231,7 +231,6 @@ const PostForm = () => {
         });
       } else {
         const response = await postService.register(postData, token);
-        console.log(response);
         navigate(`/annonce/${response.id}`);
       }
     } catch (err) {
