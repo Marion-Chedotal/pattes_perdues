@@ -56,7 +56,6 @@ const UserConversations = () => {
         // add avatarInterlocutor
         const avatarsInterlocutor = conversationsWithLastMessages.map(
           (conversation) => {
-
             if (currentUserId === conversation.receiverId) {
               return {
                 ...conversation,
@@ -94,6 +93,21 @@ const UserConversations = () => {
           conversation.Messages[conversation.Messages.length - 1].id;
 
         await messageService.markAsRead(lastMessageId, token);
+
+        // Update the conversations state to reflect the read message
+        setConversations((prevConversations) =>
+          prevConversations.map((conv) =>
+            conv.id === conversationId
+              ? {
+                  ...conv,
+                  lastMessage: {
+                    ...conv.lastMessage,
+                    read: true,
+                  },
+                }
+              : conv
+          )
+        );
       }
     } catch (err) {
       console.error("Failed switchConversation().", err);
