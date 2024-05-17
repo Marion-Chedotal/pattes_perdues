@@ -20,8 +20,10 @@ const validateMessageInput = (data) => {
     UserId: Joi.number(),
     receiverId: Joi.number(),
     ConversationId: Joi.number(),
-
-    // read: Joi.boolean(),
+    Sender: Joi.object({
+      avatar: Joi.string()
+    }),
+    createdAt: Joi.date()
   });
 
   return schema.validate(data);
@@ -35,6 +37,7 @@ const validateMessageInput = (data) => {
  * @throws {object} error
  */
 const createMessage = async (req, res) => {
+
   // Check input format
   const { error } = validateMessageInput(req.body);
   if (error) {

@@ -34,16 +34,15 @@ const ConversationCard = ({ conversation, setConversation }) => {
         (msg) => msg.UserId === currentUserId
       )?.Sender?.avatar;
 
-
       const newMessage = {
         content: content,
         UserId: currentUserId,
         receiverId: receiverId,
         ConversationId: conversation.id,
         Sender: {
-          avatar: currentUserAvatar || defaultAvatar
+          avatar: currentUserAvatar || defaultAvatar,
         },
-        createdAt: new Date(), 
+        createdAt: new Date(),
       };
 
       const updatedMessages = [...conversation.Messages, newMessage];
