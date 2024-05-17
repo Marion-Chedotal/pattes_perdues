@@ -30,11 +30,20 @@ const ConversationCard = ({ conversation, setConversation }) => {
     e.preventDefault();
 
     try {
+      const currentUserAvatar = conversation.Messages.find(
+        (msg) => msg.UserId === currentUserId
+      )?.Sender?.avatar;
+
+
       const newMessage = {
         content: content,
         UserId: currentUserId,
         receiverId: receiverId,
         ConversationId: conversation.id,
+        Sender: {
+          avatar: currentUserAvatar || defaultAvatar
+        },
+        createdAt: new Date(), 
       };
 
       const updatedMessages = [...conversation.Messages, newMessage];
