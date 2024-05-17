@@ -40,6 +40,7 @@ const validateInput = (data) => {
  * @throws {object} error
  */
 const register = async (req, res) => {
+
   try {
     if (
       !(
@@ -109,18 +110,12 @@ const register = async (req, res) => {
       login: login,
       password: hashPassword,
       email: email,
-    });
-
-    const address = await addressService.addAddress({
       postalCode: postalCode,
       city: city,
     });
 
-    await user.setAddress(address);
-
     res.status(201).json(user);
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       error: `Error when register user, ${error}`,
     });

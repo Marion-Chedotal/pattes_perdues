@@ -24,7 +24,6 @@ const checkLoginExists = async (login) => {
 
 const registerUser = (userData) => User.create(userData);
 
-
 /**
  * Find user by login
  * @param {string} login
@@ -34,10 +33,6 @@ const getByLogin = async (login) => {
   return await User.findOne({
     where: {
       login,
-    },
-    include: {
-      model: Address,
-      attributes: ["street", "postalCode", "city"],
     },
   });
 };
@@ -50,10 +45,6 @@ const getByLogin = async (login) => {
 const getById = async (id) => {
   return await User.findByPk(id, {
     attributes: { exclude: ["password"] },
-    include: {
-      model: Address,
-      attributes: ["street", "postalCode", "city"],
-    },
   });
 };
 

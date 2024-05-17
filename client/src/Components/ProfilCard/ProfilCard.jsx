@@ -61,10 +61,10 @@ const ProfilCard = ({ showUserPosts }) => {
 
             <div className="d-flex align-items-center">
               <h6 className="mb-0 me-3">Ville: </h6>
-              <span className="me-2">{userData?.Address?.postalCode}</span>
+              <span className="me-2">{userData?.postalCode}</span>
               <span>
-                {userData?.Address?.city
-                  ? capitalizeFirstLetter(userData?.Address?.city)
+                {userData?.city
+                  ? capitalizeFirstLetter(userData?.city)
                   : ""}
               </span>
             </div>

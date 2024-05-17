@@ -19,6 +19,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      postalCode: {
+        type: DataTypes.CHAR(5),
+        allowNull: false,
+      },
+      city: {
+        type: DataTypes.STRING(32),
+        allowNull: false,
+      },
     },
     {
       tableName: "User",
@@ -28,7 +36,6 @@ module.exports = (sequelize, DataTypes) => {
 
   // add foreign keys
   User.associate = (models) => {
-    User.belongsTo(models.Address);
     User.hasMany(models.Post);
     User.hasMany(models.Message);
   };

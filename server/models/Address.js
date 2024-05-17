@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Address.associate = (models) => {
-    Address.hasOne(models.User);
     Address.hasOne(models.Post, {
       constraints: true,
       onUpdate: "CASCADE",

@@ -50,7 +50,7 @@ const PostsList = () => {
           currentUserId,
           token
         );
-        const result = userData.Address.city;
+        const result = userData.city;
         setUserCity(result);
         setSearchInput(result); // Set the search input to user's city by default
       } catch (error) {

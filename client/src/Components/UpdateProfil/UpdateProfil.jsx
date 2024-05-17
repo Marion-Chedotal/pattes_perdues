@@ -44,8 +44,6 @@ const UpdateProfil = () => {
         setFormData((prevFormData) => ({
           ...prevFormData,
           ...data,
-          postalCode: data?.Address?.postalCode,
-          selectedCity: data?.Address?.city,
         }));
       } catch (err) {
         console.error("Error fetching user data:", err);

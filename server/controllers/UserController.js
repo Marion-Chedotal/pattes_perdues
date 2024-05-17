@@ -91,7 +91,7 @@ const updateUser = async (req, res) => {
 
   let { password, email, avatar, postalCode, city } = req.body;
 
-  if (postalCode !== user.Address.postalCode && !city) {
+  if (postalCode !== user.postalCode && !city) {
     return res.status(400).json({
       errorCode: "noCity",
       errorMessage: errors.global.noCity,
@@ -132,8 +132,6 @@ const updateUser = async (req, res) => {
       password: hashPassword,
       email: email,
       avatar: avatarPath,
-    });
-    await addressService.editAddress(user.AddressId, {
       postalCode: postalCode,
       city: city,
     });
