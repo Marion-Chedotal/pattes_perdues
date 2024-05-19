@@ -88,10 +88,16 @@ const getAllByUser = async (userId) => {
     where: {
       UserId: userId,
     },
-    include: {
-      model: User,
-      attributes: ["login"],
-    },
+    include: [
+      {
+        model: User,
+        attributes: ["login"],
+      },
+      {
+        model: Address,
+        attributes: ["city"],
+      },
+    ],
   });
 };
 

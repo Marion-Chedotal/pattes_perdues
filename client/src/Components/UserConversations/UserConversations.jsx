@@ -11,7 +11,7 @@ import Button from "../btn/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBackward, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
-const UserConversations = () => {
+const UserConversations = ({ hasUnreadMessages }) => {
   const { token, user } = useSelector((state) => state.auth);
   const { login } = useParams();
   const currentUserId = user.id;
@@ -89,10 +89,17 @@ const UserConversations = () => {
 
         setActiveConversation(conversation);
 
-        const lastMessageId =
-          conversation.Messages[conversation.Messages.length - 1].id;
+        // get only sender message
+        const senderMessages = conversation.Messages.filter(
+          (message) => message.Sender.id === message.UserId
+        );
 
-        await messageService.markAsRead(lastMessageId, token);
+        // mark as read all sender message when click on conversation
+        await Promise.all(
+          senderMessages.map(async (message) => {
+            await messageService.markAsRead(message.id, token);
+          })
+        );
 
         // Update the conversations state to reflect the read message
         setConversations((prevConversations) =>

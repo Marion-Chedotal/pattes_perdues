@@ -38,6 +38,7 @@ const PostCard = ({ post }) => {
               }
               className="my-3"
               style={{ height: "250px", objectFit: "cover" }}
+              alt="photo animal annonce"
             />
           ) : (
             <Card.Img

@@ -173,15 +173,22 @@ const Post = () => {
           )}
           {isPostOwner && (
             <div className="mb-4 d-flex justify-content-center isOwnerAction">
-              <Link to={`/modification-annonce/${id}`}>
-                <button type="button">
+              <Link
+                to={`/modification-annonce/${id}`}
+                aria_label="renvoyer vers la modification de l'annonce"
+              >
+                <button type="button" aria_label="modifier l'annonce">
                   <FontAwesomeIcon
                     icon={faPenToSquare}
                     className="iconAction"
                   />
                 </button>
               </Link>
-              <button type="button" onClick={handleShowDeleteModal}>
+              <button
+                type="button"
+                onClick={handleShowDeleteModal}
+                aria_label="supprimer l'annonce"
+              >
                 <FontAwesomeIcon icon={faTrash} className="iconAction" />
               </button>
               <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
@@ -196,6 +203,7 @@ const Post = () => {
                     type="button"
                     className="p-2 text-black border border-0 rounded"
                     onClick={handleDelete}
+                    aria_label="supprimer l'annonce"
                   >
                     Oui
                   </button>
@@ -203,6 +211,7 @@ const Post = () => {
                     type="button"
                     className="p-2 text-black border border border-0 rounded"
                     onClick={handleCloseDeleteModal}
+                    aria_label="fermer la modal"
                   >
                     Non
                   </button>
@@ -354,6 +363,7 @@ const Post = () => {
                   type="button"
                   onClick={handleShowContactModal}
                   disabled={!user}
+                  aria_label="envoyer un message"
                 >
                   <FontAwesomeIcon icon={faMessage} className="iconAction" />
                   &nbsp;Contacter {post?.User?.login}
@@ -363,16 +373,28 @@ const Post = () => {
                 </Button>
                 <div className="d-flex justify-content-center gap-2 mt-4 align-items-center mt-5">
                   <h6>Partager l'annonce:</h6>
-                  <EmailShareButton url={shareUrl}>
+                  <EmailShareButton
+                    url={shareUrl}
+                    aria_label="partager par mail"
+                  >
                     <EmailIcon size={32} round={true} />
                   </EmailShareButton>
-                  <FacebookMessengerShareButton url={shareUrl}>
+                  <FacebookMessengerShareButton
+                    url={shareUrl}
+                    aria_label="partager sur messenger"
+                  >
                     <FacebookMessengerIcon size={32} round={true} />
                   </FacebookMessengerShareButton>
-                  <FacebookShareButton url={shareUrl}>
+                  <FacebookShareButton
+                    url={shareUrl}
+                    aria_label="partager sur facebook"
+                  >
                     <FacebookIcon size={32} round={true} />
                   </FacebookShareButton>
-                  <WhatsappShareButton url={shareUrl}>
+                  <WhatsappShareButton
+                    url={shareUrl}
+                    aria_label="partager sur whatsapp"
+                  >
                     <WhatsappIcon size={32} round={true} />
                   </WhatsappShareButton>
                 </div>
@@ -411,7 +433,11 @@ const Post = () => {
                     rows="10"
                     onChange={handleContentChange}
                   ></textarea>
-                  <Button type="submit" disabled={!isContentModified}>
+                  <Button
+                    type="submit"
+                    disabled={!isContentModified}
+                    aria_label="envoyer le message"
+                  >
                     Envoyer
                     <FontAwesomeIcon
                       icon={faPaperPlane}

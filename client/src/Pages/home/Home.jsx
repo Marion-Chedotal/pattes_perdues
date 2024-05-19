@@ -101,7 +101,7 @@ const Home = () => {
                 <h3 className="ms-4">Comment ?</h3>
               </div>
 
-              <dl className="how p-3">
+              <div className="how p-3">
                 <div className="d-flex align-items-center pb-3">
                   <FontAwesomeIcon icon={faPaw} />
                   <dt className="ps-3">Vous avez perdu votre animal ?</dt>
@@ -127,7 +127,7 @@ const Home = () => {
                   </li>
                   <li>Publier une annonce pour informer la communauté !</li>
                 </ol>
-              </dl>
+              </div>
             </Col>
             <Col md={3} className="text-center mt-5 d-none d-md-block">
               <Image

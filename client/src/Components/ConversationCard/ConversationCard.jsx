@@ -75,7 +75,7 @@ const ConversationCard = ({ conversation, setConversation }) => {
           <div key={message.id} className="mb-3">
             {message.shouldDisplayDate && <span>{message.messageDate}</span>}
             {message?.UserId !== currentUserId && (
-              <div className="d-flex align-items-start gap-2">
+              <div key={message.id} className="d-flex align-items-start gap-2">
                 <div className="align-self-end">
                   <img
                     src={

@@ -13,6 +13,7 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";
 import HappyEndings from "./components/happyEndings/HappyEndings";
+import Legals from "./pages/legals/Legals";
 
 function App() {
   useEffect(() => {
@@ -60,6 +61,10 @@ function App() {
     {
       path: "/profil/:login",
       element: <PrivateRoute children={<Profil/>} />,
+    },
+    {
+      path: "legals",
+      element: <Legals />,
     },
     {
       path: "*",

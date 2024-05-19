@@ -365,6 +365,7 @@ const PostForm = () => {
                         formData?.picture
                   }
                   style={{ maxWidth: "100%", maxHeight: "400px" }}
+                  alt="image de l'animal pour l'annonce"
                 />
               </div>
             )}
