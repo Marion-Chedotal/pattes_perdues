@@ -4,7 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const db = require("./models");
 const cookieParser = require("cookie-parser");
-
+require("./crons/cronJob");
 const routes = require("./routes/routes");
 
 const app = express();

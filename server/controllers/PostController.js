@@ -107,6 +107,12 @@ const createPost = async (req, res) => {
       picturePath = req.files.picture[0].path;
     }
 
+    const address = await addressService.findOrCreateAddress({
+      street: street,
+      postalCode: postalCode,
+      city: city,
+    });
+
     // create a new post
     const post = await postService.addPost({
       gender,
@@ -122,15 +128,8 @@ const createPost = async (req, res) => {
       UserId,
       TypeId,
       PetCategoryId,
+      AddressId: address.id,
     });
-
-    const address = await addressService.addAddress({
-      street: street,
-      postalCode: postalCode,
-      city: city,
-    });
-
-    await post.setAddress(address);
 
     res.status(201).json(post);
   } catch (error) {
@@ -389,6 +388,12 @@ const updatePost = async (req, res) => {
       }
     }
 
+    const addressToChange = await addressService.findOrCreateAddress({
+      street: street,
+      postalCode: postalCode,
+      city: city,
+    });
+
     const post = await postService.editPost(idPost, {
       gender,
       alert_date,
@@ -403,12 +408,7 @@ const updatePost = async (req, res) => {
       UserId,
       TypeId,
       PetCategoryId,
-    });
-
-    await addressService.editAddress(postToEdit.AddressId, {
-      street: street,
-      postalCode: postalCode,
-      city: city,
+      AddressId: addressToChange.id,
     });
 
     if (post.length === 0) {

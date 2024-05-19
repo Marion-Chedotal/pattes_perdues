@@ -1,5 +1,4 @@
 const userService = require("../service/userService");
-const addressService = require("../service/addressService");
 const authenticationService = require("../service/authenticationService");
 const errors = require("../utils/errors.json");
 const bcrypt = require("bcryptjs");
