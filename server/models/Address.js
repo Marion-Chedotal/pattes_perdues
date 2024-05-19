@@ -22,11 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Address.associate = (models) => {
-    Address.hasMany(models.Post, {
-      constraints: true,
-      onUpdate: "SET NULL",
-      onDelete: "SET NULL",
-    });
+    Address.hasMany(models.Post);
   };
 
   return Address;

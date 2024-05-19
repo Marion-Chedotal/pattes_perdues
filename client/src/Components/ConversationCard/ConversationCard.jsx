@@ -12,11 +12,11 @@ const ConversationCard = ({ conversation, setConversation }) => {
   const { user, token } = useSelector((state) => state.auth);
   const currentUserId = user.id;
 
-  const firstSenderId = currentUserId === conversation.Messages[0].UserId;
+  const firstSenderId = currentUserId === conversation?.Messages[0]?.UserId;
 
   const receiverId = firstSenderId
-    ? conversation.Messages[0].receiverId
-    : conversation.Messages[0].UserId;
+    ? conversation?.Messages[0]?.receiverId
+    : conversation?.Messages[0]?.UserId;
 
   const [content, setContent] = useState("");
   const [isContentModified, setIsContentModified] = useState(false);
@@ -40,7 +40,7 @@ const ConversationCard = ({ conversation, setConversation }) => {
         receiverId: receiverId,
         ConversationId: conversation.id,
         Sender: {
-          avatar: currentUserAvatar || defaultAvatar,
+          avatar: currentUserAvatar,
         },
         createdAt: new Date(),
       };
@@ -118,18 +118,18 @@ const ConversationCard = ({ conversation, setConversation }) => {
           </div>
         ))}
         <div className="sendMessage">
-          <form
-            className="d-flex flex-column"
-            onSubmit={handleSubmit}
-            method="POST"
-            encType="multipart/form-data"
-          >
+          <form className="d-flex flex-column" onSubmit={handleSubmit}>
             <textarea
               className="form-control mb-4"
               aria-label="With textarea"
               placeholder="Message"
               name="content"
               value={content}
+              disabled={
+                !conversation?.Messages[0]?.UserId ||
+                !conversation?.Messages[0]?.receiverId ||
+                !conversation.PostId
+              }
               onChange={handleContentChange}
             ></textarea>
             <Button

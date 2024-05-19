@@ -39,11 +39,11 @@ const getAllConversationsByUser = async (userId) => {
           Conversation c
       INNER JOIN
           Message m ON c.id = m.ConversationId
-      INNER JOIN
+      LEFT JOIN
           User u1 ON m.UserId = u1.id
-      INNER JOIN
+      LEFT JOIN
           User u2 ON m.receiverId = u2.id
-      INNER JOIN
+      LEFT JOIN
           Post p ON p.id = c.PostId
       WHERE
           u1.id = ${userId} OR u2.id = ${userId}

@@ -21,9 +21,9 @@ const validateMessageInput = (data) => {
     receiverId: Joi.number(),
     ConversationId: Joi.number(),
     Sender: Joi.object({
-      avatar: Joi.string()
+      avatar: Joi.string().allow(null),
     }),
-    createdAt: Joi.date()
+    createdAt: Joi.date(),
   });
 
   return schema.validate(data);
@@ -37,10 +37,11 @@ const validateMessageInput = (data) => {
  * @throws {object} error
  */
 const createMessage = async (req, res) => {
-
+  console.log("hello");
   // Check input format
   const { error } = validateMessageInput(req.body);
   if (error) {
+    console.log(error);
     return res.status(400).json({
       errorCode: "fieldsToFill",
       errorMessage: errors.global.fieldsToFill,

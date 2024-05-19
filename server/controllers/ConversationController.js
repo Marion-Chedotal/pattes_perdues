@@ -164,7 +164,6 @@ const findConversations = async (req, res) => {
     res.status(500).json({
       error: `Error when fetching conversations, ${error}`,
     });
-    findConversations;
   }
 };
 

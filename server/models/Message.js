@@ -21,10 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     Message.belongsTo(models.User, {
       foreignKey: "receiverId",
       as: "Receiver",
+      onDelete: "SET NULL",
     });
     Message.belongsTo(models.User, {
       foreignKey: "UserId",
       as: "Sender",
+      onDelete: "SET NULL",
     });
     Message.belongsTo(models.Conversation, { onDelete: "CASCADE" });
   };

@@ -261,9 +261,7 @@ const findByUser = async (req, res) => {
 
   try {
     const post = await postService.getAllByUser(userId);
-    if (post.length === 0) {
-      return res.status(400).json({ error: `User doesn't have post` });
-    }
+
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({

@@ -54,7 +54,10 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Post.associate = (models) => {
-    Post.belongsTo(models.User);
+    Post.belongsTo(models.User, {
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
     Post.belongsTo(models.Address, {
       onUpdate: "SET NULL",
       onDelete: "SET NULL",

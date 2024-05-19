@@ -11,7 +11,7 @@ import Button from "../btn/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBackward, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
-const UserConversations = ({ hasUnreadMessages }) => {
+const UserConversations = () => {
   const { token, user } = useSelector((state) => state.auth);
   const { login } = useParams();
   const currentUserId = user.id;
@@ -91,7 +91,7 @@ const UserConversations = ({ hasUnreadMessages }) => {
 
         // get only sender message
         const senderMessages = conversation.Messages.filter(
-          (message) => message.Sender.id === message.UserId
+          (message) => message?.Sender?.id === message?.UserId
         );
 
         // mark as read all sender message when click on conversation
@@ -122,16 +122,16 @@ const UserConversations = ({ hasUnreadMessages }) => {
   };
 
   // know if currentUser is receiver or sender in activeConversations
-  const firstSender = activeConversation?.Messages[0].UserId;
-  const firstReceiver = activeConversation?.Messages[0].Receiver.id;
+  const firstSender = activeConversation?.Messages[0]?.UserId;
+  const firstReceiver = activeConversation?.Messages[0]?.Receiver?.id;
   let myInterlocutor;
 
   if (currentUserId === firstSender) {
-    myInterlocutor = activeConversation?.Messages[0].Receiver;
+    myInterlocutor = activeConversation?.Messages[0]?.Receiver;
   }
 
   if (currentUserId === firstReceiver) {
-    myInterlocutor = activeConversation?.Messages[0].Sender;
+    myInterlocutor = activeConversation?.Messages[0]?.Sender;
   }
 
   return (
@@ -158,15 +158,25 @@ const UserConversations = ({ hasUnreadMessages }) => {
                   alt="Avatar"
                   className="avatar rounded-circle"
                 />
-                <h6>{myInterlocutor?.login}</h6>
+                {myInterlocutor?.login ? (
+                  <h6>{myInterlocutor?.login}</h6>
+                ) : (
+                  <h6>Profil supprimé</h6>
+                )}
               </div>
               <div>
-                <h5 className="mt-2">
-                  Annonce pour {activeConversation?.Post?.name}
-                </h5>
-                <Link to={`/annonce/${activeConversation.PostId}`}>
-                  Voir l'annonce
-                </Link>
+                {activeConversation?.Post?.name ? (
+                  <div>
+                    <h5 className="mt-2">
+                      Annonce pour {activeConversation?.Post?.name}
+                    </h5>
+                    <Link to={`/annonce/${activeConversation.PostId}`}>
+                      Voir l'annonce
+                    </Link>
+                  </div>
+                ) : (
+                  <h5 className="mt-2">L'annonce a été supprimée</h5>
+                )}
               </div>
               <div className="mt-5">
                 <div className="conversationCard py-5 px-5">
@@ -214,7 +224,12 @@ const UserConversations = ({ hasUnreadMessages }) => {
                           />
                           <div>
                             <div className="d-flex align-items-center">
-                              <h6>{conversation?.myInterlocutor}</h6>
+                              {conversation?.myInterlocutor !== user.login ? (
+                                <h6>{conversation?.myInterlocutor}</h6>
+                              ) : (
+                                <h6>Profil supprimé</h6>
+                              )}
+
                               {conversation?.lastMessage?.read === false &&
                                 conversation?.lastMessage?.receiverId ===
                                   currentUserId && (
@@ -226,10 +241,13 @@ const UserConversations = ({ hasUnreadMessages }) => {
                                   </span>
                                 )}
                             </div>
-
-                            <span className="mb-3">
-                              Annonce pour {conversation?.name}
-                            </span>
+                            {conversation?.name ? (
+                              <span className="mb-3">
+                                Annonce pour {conversation?.name}
+                              </span>
+                            ) : (
+                              <span>Annonce supprimée</span>
+                            )}
                           </div>
                         </div>
                         <div className="d-flex justify-content-end">

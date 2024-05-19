@@ -111,6 +111,8 @@ const updateUser = async (req, res) => {
         return res.status(409).json("Email already used");
       }
     }
+    if (!city) city = user.city;
+
     let hashPassword;
     if (password) {
       hashPassword = await bcrypt.hash(password, 10);

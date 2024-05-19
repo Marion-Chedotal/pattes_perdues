@@ -34,7 +34,7 @@ const findAddress = async ({ street, postalCode, city }) => {
 const findOrCreateAddress = async ({ street, postalCode, city }) => {
   // already sanitize and escape in post controller
   try {
-    const addressAlreadyExist = await Address.findAddress({
+    const addressAlreadyExist = await findAddress({
       street,
       postalCode,
       city,
@@ -43,7 +43,7 @@ const findOrCreateAddress = async ({ street, postalCode, city }) => {
     if (addressAlreadyExist) {
       return addressAlreadyExist;
     } else {
-      const newAddress = await Address.addAddress({
+      const newAddress = await addAddress({
         street,
         postalCode,
         city,
@@ -52,7 +52,7 @@ const findOrCreateAddress = async ({ street, postalCode, city }) => {
     }
   } catch (error) {
     console.error(error);
-    throw new Error(`Error when finding ou adding address, ${error}`);
+    throw new Error(`Error when finding or adding address, ${error}`);
   }
 };
 

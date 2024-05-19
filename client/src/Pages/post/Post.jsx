@@ -342,9 +342,9 @@ const Post = () => {
                 </div>
               </Col>
               <Col xs={6}>
-                <div className="d-flex mt-4 justify-content-center">
+                <div className="d-flex mt-4 justify-content-center align-items-center">
                   <FontAwesomeIcon icon={faUser} className="me-3 icon" />
-                  <p className="pt-1">{post?.User?.login}</p>
+                  <p className="pt-3">{post?.User?.login}</p>
                 </div>
               </Col>
             </Row>

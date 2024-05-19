@@ -9,11 +9,9 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Conversation.associate = (models) => {
-    Conversation.hasMany(models.Message, {
-      onDelete: "CASCADE",
-    });
+    Conversation.hasMany(models.Message);
     Conversation.belongsTo(models.Post, {
-      onDelete: "CASCADE",
+      onDelete: "SET NULL",
     });
   };
 
