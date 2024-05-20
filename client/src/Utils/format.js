@@ -27,7 +27,19 @@ export const decodeHtml = (str) => {
     "&quot;": '"',
     "&#039;": "'",
   };
-  return str?.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function (m) {
-    return map[m];
-  });
+  
+  let decodedStr = str;
+  let hasEscapedChars = true;
+  
+  while (hasEscapedChars) {
+    const originalStr = decodedStr;
+    decodedStr = decodedStr?.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function (m) {
+      return map[m];
+    });
+    
+ 
+    hasEscapedChars = originalStr !== decodedStr;
+  }
+  
+  return decodedStr;
 };
