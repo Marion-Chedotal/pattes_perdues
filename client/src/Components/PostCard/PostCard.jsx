@@ -1,7 +1,7 @@
 import "./postCard.scss";
 import React from "react";
 import { Card } from "react-bootstrap";
-import { formatDate } from "../../utils/format";
+import { formatDate, decodeHtml } from "../../utils/format";
 import Button from "../btn/Button";
 import affiche from "../../assets/affiche_animal_perdu.jpg";
 import { Link } from "react-router-dom";
@@ -28,7 +28,7 @@ const PostCard = ({ post }) => {
           </div>
           <div className="d-flex align-items-baseline">
             <FontAwesomeIcon icon={faIdCard} className="me-2" />
-            <Card.Title className="mb-0 ms-2">{post?.name}</Card.Title>
+            <Card.Title className="mb-0 ms-2">{decodeHtml(post?.name)}</Card.Title>
           </div>
           {post?.picture ? (
             <Card.Img

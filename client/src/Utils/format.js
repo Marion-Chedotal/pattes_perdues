@@ -18,3 +18,16 @@ export const formatDate = (dateToFormat) => {
 export const capitalizeFirstLetter = (string) => {
   return string?.charAt(0).toUpperCase() + string?.slice(1);
 };
+
+export const decodeHtml = (str) => {
+  const map = {
+    "&amp;": "&",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&quot;": '"',
+    "&#039;": "'",
+  };
+  return str?.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function (m) {
+    return map[m];
+  });
+};

@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { validatePostInputs } from "../../utils/errorInputs";
-import { formatDate } from "../../utils/format";
+import { formatDate, decodeHtml } from "../../utils/format";
 
 const PostForm = () => {
   const { t } = useTranslation();
@@ -257,7 +257,7 @@ const PostForm = () => {
       <Header />
       <h2 className="text-center my-5">
         {isUpdate
-          ? `Modification de l'annonce: ${formData?.name}`
+          ? `Modification de l'annonce: ${decodeHtml(formData?.name)}`
           : "Votre annonce"}
       </h2>
       <form
@@ -399,7 +399,7 @@ const PostForm = () => {
               <input
                 type="text"
                 name="name"
-                value={formData?.name}
+                value={decodeHtml(formData?.name)}
                 onChange={handleChange}
               />
             </label>
@@ -427,7 +427,7 @@ const PostForm = () => {
               <textarea
                 type="text"
                 name="description"
-                value={formData?.description}
+                value={decodeHtml(formData?.description)}
                 onChange={handleChange}
                 placeholder="Expliquer la situation"
               />
@@ -440,7 +440,7 @@ const PostForm = () => {
               <textarea
                 type="text"
                 name="distinctive_signs"
-                value={formData?.distinctive_signs}
+                value={decodeHtml(formData?.distinctive_signs)}
                 onChange={handleChange}
                 placeholder="Cela peut faciliter l'indentification de l'animal"
               />
@@ -454,7 +454,7 @@ const PostForm = () => {
               <input
                 type="text"
                 name="street"
-                value={formData.street}
+                value={decodeHtml(formData.street)}
                 onChange={handleChange}
               />
             </label>

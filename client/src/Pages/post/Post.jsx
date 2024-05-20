@@ -9,7 +9,7 @@ import Button from "../../components/btn/Button";
 import SuccessMessage from "../../components/successMessage/SuccessMessage";
 import conversationService from "../../services/conversationService";
 import { Tooltip } from "react-tooltip";
-import { formatDate, capitalizeFirstLetter } from "../../utils/format";
+import { formatDate, capitalizeFirstLetter, decodeHtml } from "../../utils/format";
 import { Image, Container, Row, Col, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -263,7 +263,7 @@ const Post = () => {
                     <FontAwesomeIcon icon={faIdCard} className="me-4 icon" />
                     <div>
                       <h6 className="mb-0">Nom</h6>
-                      <span>{name}</span>
+                      <span>{decodeHtml(name)}</span>
                     </div>
                   </div>
                 </Col>
@@ -317,9 +317,9 @@ const Post = () => {
               </Row>
               <div className="details">
                 <h5>Description: </h5>
-                <p>{post?.description}</p>
+                <p>{decodeHtml(post?.description)}</p>
                 <h5>Signes distinctifs: </h5>
-                <p>{post?.distinctive_signs}</p>
+                <p>{decodeHtml(post?.distinctive_signs)}</p>
               </div>
             </div>
           </Col>
@@ -333,7 +333,7 @@ const Post = () => {
                 <div className="d-flex justify-content-center align-items-center mt-4 ">
                   <FontAwesomeIcon icon={faLocationDot} className="me-3 icon" />
                   <div>
-                    <p className="m-0">{post?.Address?.street}</p>
+                    <p className="m-0">{decodeHtml(post?.Address?.street)}</p>
                     <div className="d-flex align-items-center">
                       <p className="m-0 me-2">{post?.Address?.postalCode}</p>
                       <p className="m-0 city">{post?.Address?.city}</p>
@@ -409,7 +409,7 @@ const Post = () => {
                   <h4 className="mt-2 text-center lh-base">
                     Contacter <em>{post?.User?.login} </em>
                     pour l'annonce de <FontAwesomeIcon icon={faPaw} />
-                    <em> {name}</em>
+                    <em> {decodeHtml(name)}</em>
                   </h4>
                   {error && (
                     <div className="alert alert-danger mt-4 text-center">

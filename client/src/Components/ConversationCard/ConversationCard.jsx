@@ -3,7 +3,7 @@ import "./conversationCard.scss";
 import { useSelector } from "react-redux";
 import messageService from "../../services/messageService";
 import Button from "../../components/btn/Button";
-import { formatDate } from "../../utils/format";
+import { formatDate, decodeHtml } from "../../utils/format";
 import defaultAvatar from "../../assets/default_avatar.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
@@ -35,7 +35,7 @@ const ConversationCard = ({ conversation, setConversation }) => {
       )?.Sender?.avatar;
 
       const newMessage = {
-        content: content,
+        content: decodeHtml(content),
         UserId: currentUserId,
         receiverId: receiverId,
         ConversationId: conversation.id,
@@ -90,7 +90,7 @@ const ConversationCard = ({ conversation, setConversation }) => {
 
                 <div>
                   <p value={message?.id} className="text-start">
-                    {message?.content}
+                    {decodeHtml(message?.content)}
                   </p>
                 </div>
               </div>
@@ -99,7 +99,7 @@ const ConversationCard = ({ conversation, setConversation }) => {
               <div className="d-flex justify-content-end align-items-center gap-2">
                 <div>
                   <p value={message?.id} className="text-start">
-                    {message?.content}
+                    {decodeHtml(message?.content)}
                   </p>
                 </div>
                 <div className="align-self-end">
@@ -124,7 +124,7 @@ const ConversationCard = ({ conversation, setConversation }) => {
               aria-label="With textarea"
               placeholder="Message"
               name="content"
-              value={content}
+              value={decodeHtml(content)}
               disabled={
                 !conversation?.Messages[0]?.UserId ||
                 !conversation?.Messages[0]?.receiverId ||

@@ -5,7 +5,7 @@ import "./userConversations.scss";
 import conversationService from "../../services/conversationService";
 import ConversationCard from "../conversationCard/ConversationCard";
 import messageService from "../../services/messageService";
-import { formatDate } from "../../utils/format";
+import { decodeHtml, formatDate } from "../../utils/format";
 import defaultAvatar from "../../assets/default_avatar.png";
 import Button from "../btn/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -168,7 +168,7 @@ const UserConversations = () => {
                 {activeConversation?.Post?.name ? (
                   <div>
                     <h5 className="mt-2">
-                      Annonce pour {activeConversation?.Post?.name}
+                      Annonce pour {decodeHtml(activeConversation?.Post?.name)}
                     </h5>
                     <Link to={`/annonce/${activeConversation.PostId}`}>
                       Voir l'annonce
@@ -243,7 +243,7 @@ const UserConversations = () => {
                             </div>
                             {conversation?.name ? (
                               <span className="mb-3">
-                                Annonce pour {conversation?.name}
+                                Annonce pour {decodeHtml(conversation?.name)}
                               </span>
                             ) : (
                               <span>Annonce supprimée</span>
