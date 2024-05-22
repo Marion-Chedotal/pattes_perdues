@@ -151,8 +151,7 @@ const UserConversations = () => {
                 <img
                   src={
                     myInterlocutor?.avatar
-                      ? `http://localhost:${process.env.REACT_APP_PORT}/` +
-                        myInterlocutor?.avatar
+                      ? `${process.env.REACT_APP_HOST}/${myInterlocutor?.avatar}`
                       : defaultAvatar
                   }
                   alt="Avatar"
@@ -215,8 +214,7 @@ const UserConversations = () => {
                           <img
                             src={
                               conversation?.myInterlocutorAvatar
-                                ? `http://localhost:${process.env.REACT_APP_PORT}/` +
-                                  conversation?.myInterlocutorAvatar
+                                ? `${process.env.REACT_APP_HOST}/${conversation?.myInterlocutorAvatar}`
                                 : defaultAvatar
                             }
                             alt="Avatar"

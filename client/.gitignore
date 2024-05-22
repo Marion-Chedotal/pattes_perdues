@@ -25,3 +25,5 @@ yarn-error.log*
 
 # MCL to delete
 src/TO_DELETE.js
+.env
+.env.devlopment

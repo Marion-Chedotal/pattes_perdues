@@ -68,9 +68,9 @@ const PostForm = () => {
             ...prevFormData,
             ...post,
             is_active: post.is_active ? "true" : "false",
-            street: post?.Address?.street,
-            postalCode: post?.Address?.postalCode,
-            selectedCity: post?.Address?.city,
+            street: post?.street,
+            postalCode: post?.postalCode,
+            selectedCity: post?.city,
           }));
 
           setSelectedTypeId(post.TypeId);
@@ -361,8 +361,7 @@ const PostForm = () => {
                   src={
                     newPicture
                       ? URL.createObjectURL(newPicture)
-                      : `http://localhost:${process.env.REACT_APP_PORT}/` +
-                        formData?.picture
+                      : `${process.env.REACT_APP_HOST}/${formData?.picture}`
                   }
                   style={{ maxWidth: "100%", maxHeight: "400px" }}
                   alt="image de l'animal pour l'annonce"

@@ -4,26 +4,34 @@ const cors = require("cors");
 const morgan = require("morgan");
 const db = require("./models");
 const cookieParser = require("cookie-parser");
-require("./crons/cronJob");
 const routes = require("./routes/routes");
+
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+//prod
+// app.use(
+//   cors({
+//     origin: "*",
+//     credentials: true,
+//   })
+// );
+// dev
 app.use(
   cors({
     origin: "http://localhost:3000",
-    credentials: true,
+    // credentials: true,
   })
 );
 app.use(morgan("combine"));
-app.use("/uploads", express.static("uploads"));
+app.use("/api/uploads", express.static("uploads"));
 
 app.use("/api", routes);
 
-const port = process.env.REACT_APP_PORT || 8080;
+const port = process.env.PORT || 8080;
 
 try {
   db.sequelize.sync().then(() => {

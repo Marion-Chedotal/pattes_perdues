@@ -9,7 +9,11 @@ import Button from "../../components/btn/Button";
 import SuccessMessage from "../../components/successMessage/SuccessMessage";
 import conversationService from "../../services/conversationService";
 import { Tooltip } from "react-tooltip";
-import { formatDate, capitalizeFirstLetter, decodeHtml } from "../../utils/format";
+import {
+  formatDate,
+  capitalizeFirstLetter,
+  decodeHtml,
+} from "../../utils/format";
 import { Image, Container, Row, Col, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -222,10 +226,7 @@ const Post = () => {
           {post?.picture ? (
             <Col md={6} className="text-center">
               <Image
-                src={
-                  `http://localhost:${process.env.REACT_APP_PORT}/` +
-                  post?.picture
-                }
+                src={`${process.env.REACT_APP_HOST}/${post?.picture}`}
                 alt="photo de l'animal"
                 style={{ maxWidth: "100%", maxHeight: "500px" }}
               />
@@ -333,10 +334,10 @@ const Post = () => {
                 <div className="d-flex justify-content-center align-items-center mt-4 ">
                   <FontAwesomeIcon icon={faLocationDot} className="me-3 icon" />
                   <div>
-                    <p className="m-0">{decodeHtml(post?.Address?.street)}</p>
+                    <p className="m-0">{decodeHtml(post?.street)}</p>
                     <div className="d-flex align-items-center">
-                      <p className="m-0 me-2">{post?.Address?.postalCode}</p>
-                      <p className="m-0 city">{post?.Address?.city}</p>
+                      <p className="m-0 me-2">{post?.postalCode}</p>
+                      <p className="m-0 city">{post?.city}</p>
                     </div>
                   </div>
                 </div>

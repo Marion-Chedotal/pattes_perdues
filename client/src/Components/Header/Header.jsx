@@ -70,8 +70,8 @@ const Header = () => {
                       className="h-8 w-8 avatar rounded-circle"
                       src={
                         userData?.avatar
-                          ? `http://localhost:${process.env.REACT_APP_PORT}/` +
-                            userData.avatar
+                          ? `${process.env.REACT_APP_HOST}/${userData.avatar}` 
+                            
                           : defaultAvatar
                       }
                       alt="user avatar"

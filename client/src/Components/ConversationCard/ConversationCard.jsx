@@ -80,7 +80,7 @@ const ConversationCard = ({ conversation, setConversation }) => {
                   <img
                     src={
                       message?.Sender?.avatar
-                        ? `http://localhost:${process.env.REACT_APP_PORT}/${message?.Sender?.avatar}`
+                        ? `${process.env.REACT_APP_HOST}/${message?.Sender?.avatar}`
                         : defaultAvatar
                     }
                     alt="Avatar"
@@ -106,7 +106,7 @@ const ConversationCard = ({ conversation, setConversation }) => {
                   <img
                     src={
                       message?.Sender?.avatar
-                        ? `http://localhost:${process.env.REACT_APP_PORT}/${message?.Sender?.avatar}`
+                        ? `${process.env.REACT_APP_HOST}/${message?.Sender?.avatar}`
                         : defaultAvatar
                     }
                     alt="Avatar"
