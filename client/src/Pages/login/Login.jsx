@@ -50,12 +50,11 @@ const Login = () => {
     <div className="login container">
       <div className="row ml-5">
         <div className="part d-flex">
-          <div className="left d-none d-md-block col-md-6"></div>
-          <div className="right col-md-6 d-flex flex-column">
+          <div className="left d-none d-md-block"></div>
+          <div className="right d-flex flex-column">
             <Link to="/" className="logo mx-auto">
               <img src={logo} alt="logo pattes perdues" />
             </Link>
-            <div></div>
             <h1 className="fs-2 fw-bold">Se connecter</h1>
             <form className="d-flex flex-column" onSubmit={handleSubmit}>
               <input

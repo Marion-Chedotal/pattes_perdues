@@ -119,7 +119,7 @@ const Register = () => {
     <div className="register container">
       <div className="row ml-5">
         <div className="part d-flex">
-          <div className="left col-md-6 d-flex flex-column">
+          <div className="left d-flex flex-column">
             <Link to="/" className="logo mx-auto">
               <img src={logo} alt="logo pattes perdues" />
             </Link>
@@ -204,7 +204,7 @@ const Register = () => {
               </Link>
             </div>
           </div>
-          <div className="right d-none d-md-block col-md-6"></div>
+          <div className="right d-none d-md-block"></div>
         </div>
       </div>
     </div>
