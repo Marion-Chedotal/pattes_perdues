@@ -134,6 +134,7 @@ const Register = () => {
                 type="text"
                 placeholder="Pseudo"
                 name="login"
+                value={inputs.login}
                 onChange={handleChange}
               />
               {validation.login && (
@@ -143,6 +144,7 @@ const Register = () => {
                 type="email"
                 placeholder="Email"
                 name="email"
+                value={inputs.email}
                 onChange={handleChange}
               />
               {validation.email && (
@@ -152,6 +154,7 @@ const Register = () => {
                 type="password"
                 placeholder="Mot de passe"
                 name="password"
+                value={inputs.password}
                 onChange={handleChange}
               />
               {validation.password && (
@@ -161,6 +164,7 @@ const Register = () => {
                 type="text"
                 placeholder="Code postal"
                 name="postalCode"
+                value={inputs.postalCode}
                 onChange={handlePostalCodeChange}
                 maxLength={5}
               />
@@ -172,7 +176,12 @@ const Register = () => {
               {validation.noCity && (
                 <div className="alert alert-danger">{validation.noCity}</div>
               )}
-              <select name="selectedCity" onChange={handleChange} required>
+              <select
+                name="selectedCity"
+                value={inputs.selectedCity}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Sélectionner votre ville</option>
                 {inputs.cities &&
                   inputs.cities.map((city, index) => (

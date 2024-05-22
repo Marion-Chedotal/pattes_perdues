@@ -62,12 +62,14 @@ const Login = () => {
                 type="text"
                 placeholder="Pseudo"
                 name="login"
+                value={inputs.login}
                 onChange={handleChange}
               ></input>
               <input
                 type="password"
                 placeholder="Mot de passe"
                 name="password"
+                value={inputs.password}
                 onChange={handleChange}
               ></input>
               {errMsg && (
