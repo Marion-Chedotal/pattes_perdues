@@ -72,7 +72,7 @@ const PostsList = () => {
           post.Pet_category.label === categoryFilter || categoryFilter === "all"
       )
       .filter((post) =>
-        post.Address.city.toLowerCase().includes(searchInput.toLowerCase())
+        post.city.toLowerCase().includes(searchInput.toLowerCase())
       );
 
     if (filtered.length === 0) {

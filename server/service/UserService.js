@@ -1,4 +1,4 @@
-const { User, Address } = require("../models");
+const { User } = require("../models");
 
 /** check if the email is already used
  * @param {string} email

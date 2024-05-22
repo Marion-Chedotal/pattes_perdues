@@ -1,7 +1,6 @@
 const postService = require("../service/postService");
 const userService = require("../service/userService");
 const authenticationService = require("../service/authenticationService");
-const addressService = require("../service/addressService");
 const { escapeHtml } = require("../utils/htmlEscape");
 const errors = require("../utils/errors.json");
 const Joi = require("joi");
@@ -107,12 +106,6 @@ const createPost = async (req, res) => {
       picturePath = req.files.picture[0].path;
     }
 
-    const address = await addressService.findOrCreateAddress({
-      street: street,
-      postalCode: postalCode,
-      city: city,
-    });
-
     // create a new post
     const post = await postService.addPost({
       gender,
@@ -125,10 +118,12 @@ const createPost = async (req, res) => {
       distinctive_signs,
       picture: picturePath,
       is_active,
+      street,
+      postalCode,
+      city,
       UserId,
       TypeId,
       PetCategoryId,
-      AddressId: address.id,
     });
 
     res.status(201).json(post);
@@ -362,7 +357,7 @@ const updatePost = async (req, res) => {
     PetCategoryId,
   } = req.body;
 
-  if (postalCode !== postToEdit.Address.postalCode && !city) {
+  if (postalCode !== postToEdit.postalCode && !city) {
     return res.status(400).json({
       errorCode: "noCity",
       errorMessage: errors.global.noCity,
@@ -386,12 +381,6 @@ const updatePost = async (req, res) => {
       }
     }
 
-    const addressToChange = await addressService.findOrCreateAddress({
-      street: street,
-      postalCode: postalCode,
-      city: city,
-    });
-
     const post = await postService.editPost(idPost, {
       gender,
       alert_date,
@@ -403,10 +392,12 @@ const updatePost = async (req, res) => {
       distinctive_signs,
       picture: picturePath,
       is_active,
+      street,
+      postalCode,
+      city,
       UserId,
       TypeId,
       PetCategoryId,
-      AddressId: addressToChange.id,
     });
 
     if (post.length === 0) {

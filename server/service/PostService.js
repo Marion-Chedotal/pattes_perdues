@@ -1,4 +1,4 @@
-const { Post, User, Pet_category, Type, Address } = require("../models");
+const { Post, User, Pet_category, Type } = require("../models");
 
 /**
  * Create a new post
@@ -18,7 +18,6 @@ const getById = async (id) => {
       { model: User, attributes: { exclude: ["password", "email"] } },
       Pet_category,
       Type,
-      Address,
     ],
   });
 };
@@ -29,7 +28,7 @@ const getById = async (id) => {
  */
 const getAll = async () => {
   return await Post.findAll({
-    include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    include: [{ model: Pet_category }, { model: Type }],
     where: {
       is_active: true,
     },
@@ -43,7 +42,7 @@ const getAll = async () => {
  */
 const getThreeLatestPosts = async () => {
   return await Post.findAll({
-    include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    include: [{ model: Pet_category }, { model: Type }],
     order: [["createdAt", "DESC"]],
     limit: 3,
   });
@@ -55,7 +54,7 @@ const getThreeLatestPosts = async () => {
  */
 const getThreeLatestArchivesPosts = async () => {
   return await Post.findAll({
-    include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    include: [{ model: Pet_category }, { model: Type }],
     where: {
       is_active: false,
     },
@@ -70,7 +69,7 @@ const getThreeLatestArchivesPosts = async () => {
  */
 const getAllArchivesPosts = async () => {
   return await Post.findAll({
-    include: [{ model: Pet_category }, { model: Type }, { model: Address }],
+    include: [{ model: Pet_category }, { model: Type }],
     where: {
       is_active: false,
     },
@@ -92,11 +91,7 @@ const getAllByUser = async (userId) => {
       {
         model: User,
         attributes: ["login"],
-      },
-      {
-        model: Address,
-        attributes: ["city"],
-      },
+      }
     ],
   });
 };

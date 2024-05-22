@@ -46,6 +46,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
+      street: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+      },
+      postalCode: {
+        type: DataTypes.CHAR(5),
+        allowNull: false,
+      },
+      city: {
+        type: DataTypes.STRING(32),
+        allowNull: false,
+      },
     },
     {
       tableName: "Post",
@@ -57,10 +69,6 @@ module.exports = (sequelize, DataTypes) => {
     Post.belongsTo(models.User, {
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
-    });
-    Post.belongsTo(models.Address, {
-      onUpdate: "SET NULL",
-      onDelete: "SET NULL",
     });
     Post.belongsTo(models.Type);
     Post.belongsTo(models.Pet_category);

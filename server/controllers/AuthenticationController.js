@@ -3,7 +3,6 @@ const Joi = require("joi");
 const { escapeHtml } = require("../utils/htmlEscape");
 const authenticationService = require("../service/authenticationService");
 const userService = require("../service/userService");
-const addressService = require("../service/addressService");
 const errors = require("../utils/errors.json");
 
 const passwordRegex =
