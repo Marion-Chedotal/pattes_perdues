@@ -20,6 +20,11 @@ router.post("/login", authController.login);
  * user routes
  */
 router.get("/user/:id", authMiddleware.validateToken, userController.findById);
+router.get(
+  "/users/:login",
+  authMiddleware.validateToken,
+  userController.findByLogin
+);
 router.put(
   "/user/:login",
   authMiddleware.validateToken,

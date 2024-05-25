@@ -21,6 +21,27 @@ const getUserInformation = async (id, token) => {
 };
 
 /**
+ * Get user information from the API by login.
+ * @param {string} login - User's login.
+ * @param {string} token - Authentication token.
+ * @returns {Promise<Object>} - Promise resolving to the user data object.
+ * @throws {Object} - Throws an error object containing response data.
+ */
+const getUserByLogin = async (login, token) => {
+  try {
+    const response = await axiosInstance.get(`/users/${login}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+/**
  * Update user informations from API
  * @param {string} login -  user login
  * @param {string} token - token
@@ -35,7 +56,6 @@ const updateUserInformation = async (login, userData, token) => {
       },
     });
   } catch (error) {
-
     throw error.response.data;
   }
 };
@@ -59,5 +79,10 @@ const deleteUser = async (login, token) => {
   }
 };
 
-const userService = { getUserInformation, updateUserInformation, deleteUser };
+const userService = {
+  getUserInformation,
+  getUserByLogin,
+  updateUserInformation,
+  deleteUser,
+};
 export default userService;

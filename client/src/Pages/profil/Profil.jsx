@@ -174,13 +174,13 @@ const Profil = () => {
       {activeSection === "profil" && (
         <ProfilCard showUserPosts={handleShowUserPosts} />
       )}
-      {activeSection === "modification-profil" && user.login === login && (
+      {activeSection === "modification-profil" && (
         <UpdateProfil />
       )}
-      {activeSection === "mes-annonces" && user.login === login && (
+      {activeSection === "mes-annonces" && (
         <UserPosts />
       )}
-      {activeSection === "messagerie" && user.login === login && (
+      {activeSection === "messagerie" && (
         <UserConversations />
       )}
       <Footer />

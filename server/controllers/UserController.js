@@ -44,6 +44,30 @@ const findById = async (req, res) => {
 };
 
 /**
+ * Get user by his login
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} user's data
+ * @throws {object} error
+ */
+const findByLogin = async (req, res) => {
+  const login = req.params.login;
+
+  try {
+    const user = await userService.getByLogin(login);
+
+    if (!user) {
+      return res.status(400).json({ error: `User ${login} doesn't exist` });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error when fetching user by login, ${error}`,
+    });
+  }
+};
+
+/**
  * Update user's data
  * @param {object} req
  * @param {object} res
@@ -165,7 +189,7 @@ const removeUser = async (req, res) => {
   const login = req.params.login;
 
   const user = await userService.getByLogin(login);
-  const userId = user?.id; 
+  const userId = user?.id;
   const currentUserId = req.userId;
 
   const isUserAllowed = authenticationService.checkUserPermission(
@@ -195,4 +219,4 @@ const removeUser = async (req, res) => {
   }
 };
 
-module.exports = { findById, updateUser, removeUser };
+module.exports = { findById, findByLogin, updateUser, removeUser };

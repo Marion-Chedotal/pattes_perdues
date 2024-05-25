@@ -40,7 +40,7 @@ function App() {
     },
     {
       path: "/deposer-une-annonce",
-      element: <PrivateRoute children={<PostForm/>} />,
+      element: <PrivateRoute children={<PostForm />} />,
     },
     {
       path: "/annonces",
@@ -56,11 +56,19 @@ function App() {
     },
     {
       path: "/modification-annonce/:id",
-      element: <PrivateRoute children={<PostForm/>} />,
+      element: (
+        <PrivateRoute isOwner={true}>
+          <PostForm />
+        </PrivateRoute>
+      ),
     },
     {
       path: "/profil/:login",
-      element: <PrivateRoute children={<Profil/>} />,
+      element: (
+        <PrivateRoute isCurrentUser={true}>
+          <Profil />
+        </PrivateRoute>
+      ),
     },
     {
       path: "legals",

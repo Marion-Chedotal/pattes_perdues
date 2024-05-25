@@ -147,7 +147,7 @@ const findById = async (req, res) => {
   try {
     const post = await postService.getById(id);
 
-    if (post.length === 0) {
+    if (!post) {
       return res.status(400).json({ error: `Post ${id} doesn't exist` });
     }
     res.status(200).json(post);
@@ -299,7 +299,7 @@ const updatePost = async (req, res) => {
   const postToEdit = await postService.getById(idPost);
 
   const isUserAllowed = authenticationService.checkUserPermission(
-    postToEdit.UserId,
+    postToEdit?.UserId,
     currentUserId
   );
 
@@ -400,7 +400,7 @@ const updatePost = async (req, res) => {
       PetCategoryId,
     });
 
-    if (post.length === 0) {
+    if (!post) {
       return res.status(400).json({ error: `Post doesn't exist` });
     }
     res.status(200).json(post);
@@ -439,7 +439,7 @@ const removePost = async (req, res) => {
     const picture = postToDelete.picture;
     const post = await postService.deletePost(idPost);
 
-    if (post.length === 0) {
+    if (!post) {
       return res.status(400).json({ error: `Post ${id} doesn't exist` });
     }
 
