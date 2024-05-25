@@ -38,7 +38,7 @@ const getByLogin = async (login) => {
 };
 
 /**
- * Find user by his id and get his address
+ * Find user by his id
  * @param {number} id
  * @returns {Promise<Object>}
  */

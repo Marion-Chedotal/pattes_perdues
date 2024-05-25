@@ -35,11 +35,10 @@ const validateInput = (data) => {
  * Register a new user
  * @param {object} req
  * @param {object} res
- * @returns {string} string success
+ * @returns {object} user data
  * @throws {object} error
  */
 const register = async (req, res) => {
-
   try {
     if (
       !(
@@ -185,4 +184,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { passwordRegex, validateInput, register, login };
+module.exports = { passwordRegex, loginRegex, validateInput, register, login };

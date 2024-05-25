@@ -63,6 +63,12 @@ const updateUser = async (req, res) => {
     userId
   );
 
+  if (!isUserAllowed) {
+    res.status(403).json({
+      error: `You don't have the rights`,
+    });
+  }
+
   // Check input format
   const { error } = validateUpdateInput(req.body);
 
@@ -94,12 +100,6 @@ const updateUser = async (req, res) => {
     return res.status(400).json({
       errorCode: "noCity",
       errorMessage: errors.global.noCity,
-    });
-  }
-
-  if (!isUserAllowed) {
-    res.status(403).json({
-      error: `You don't have the rights`,
     });
   }
 

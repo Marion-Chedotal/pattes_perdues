@@ -37,11 +37,9 @@ const validateMessageInput = (data) => {
  * @throws {object} error
  */
 const createMessage = async (req, res) => {
-  console.log("hello");
   // Check input format
   const { error } = validateMessageInput(req.body);
   if (error) {
-    console.log(error);
     return res.status(400).json({
       errorCode: "fieldsToFill",
       errorMessage: errors.global.fieldsToFill,
