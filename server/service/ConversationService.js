@@ -22,7 +22,7 @@ const addConversation = (postData) => Conversation.create(postData);
 const getAllConversationsByUser = async (userId) => {
   try {
     const user = await userService.getById(userId);
-    const userLogin = user.login;
+    const userLogin = user?.login;
 
     const sqlQuery = `
       SELECT DISTINCT

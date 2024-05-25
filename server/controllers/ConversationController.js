@@ -141,7 +141,7 @@ const findConversation = async (req, res) => {
 const findConversations = async (req, res) => {
   const login = req.params.login;
   const user = await userService.getByLogin(login);
-  const userId = user.id;
+  const userId = user?.id;
   const currentUserId = req.userId;
 
   const isUserAllowed = authenticationService.checkUserPermission(

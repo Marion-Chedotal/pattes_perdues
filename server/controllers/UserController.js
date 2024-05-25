@@ -56,7 +56,7 @@ const updateUser = async (req, res) => {
 
   const user = await userService.getByLogin(login);
 
-  const userId = user.id;
+  const userId = user?.id;
 
   const isUserAllowed = authenticationService.checkUserPermission(
     currentUserId,
@@ -96,7 +96,7 @@ const updateUser = async (req, res) => {
 
   let { password, email, avatar, postalCode, city } = req.body;
 
-  if (postalCode !== user.postalCode && !city) {
+  if (postalCode !== user?.postalCode && !city) {
     return res.status(400).json({
       errorCode: "noCity",
       errorMessage: errors.global.noCity,
@@ -165,7 +165,7 @@ const removeUser = async (req, res) => {
   const login = req.params.login;
 
   const user = await userService.getByLogin(login);
-  const userId = user.id;
+  const userId = user?.id; 
   const currentUserId = req.userId;
 
   const isUserAllowed = authenticationService.checkUserPermission(

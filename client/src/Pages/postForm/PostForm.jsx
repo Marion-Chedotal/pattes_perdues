@@ -321,6 +321,9 @@ const PostForm = () => {
                 ))}
               </select>
             </label>
+            {validation.TypeId && (
+              <div className="alert alert-danger">{validation.TypeId}</div>
+            )}
           </Col>
           <Col md={6}>
             <label className="required">
@@ -339,6 +342,11 @@ const PostForm = () => {
                 ))}
               </select>
             </label>
+            {validation.PetCategoryId && (
+              <div className="alert alert-danger">
+                {validation.PetCategoryId}
+              </div>
+            )}
           </Col>
         </Row>
         <Row className="mb-3 mx-5 align-items-center justify-content-center">
@@ -405,6 +413,9 @@ const PostForm = () => {
                 onChange={handleChange}
               />
             </label>
+            {validation.name && (
+              <div className="alert alert-danger">{validation.name}</div>
+            )}
             <label
               className="required"
               data-tip
@@ -539,6 +550,9 @@ const PostForm = () => {
                   </label>
                 </div>
               </div>
+              {validation.tattoo && (
+                <div className="alert alert-danger">{validation.tattoo}</div>
+              )}
               <div className="d-flex justify-content-between align-items-center">
                 <p className="required">L'animal est-il pucé ?</p>
                 <div className="d-flex align-items-center">
@@ -575,6 +589,9 @@ const PostForm = () => {
                   </label>
                 </div>
               </div>
+              {validation.microchip && (
+                <div className="alert alert-danger">{validation.microchip}</div>
+              )}
               <div className="d-flex justify-content-between align-items-center">
                 <p className="required">L'animal a-t-il un collier ?</p>
                 <div className="d-flex align-items-center">
@@ -611,6 +628,9 @@ const PostForm = () => {
                   </label>
                 </div>
               </div>
+              {validation.collar && (
+                <div className="alert alert-danger">{validation.collar}</div>
+              )}
             </div>
           </Col>
         </Row>

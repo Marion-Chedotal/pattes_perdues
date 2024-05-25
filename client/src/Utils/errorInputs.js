@@ -39,6 +39,9 @@ export const validateRegisterInputs = ({
 export const validatePostInputs = (formData) => {
   const requiredFields = {
     gender: "gender",
+    PetCategoryId: "PetCategoryId",
+    TypeId: "TypeId",
+    name: "name",
     alert_date: "alert_date",
     description: "description",
     street: "street",
@@ -68,11 +71,7 @@ export const validatePostInputs = (formData) => {
   return errors;
 };
 
-export const validateUserInputs = ({
-  email,
-  password,
-  postalCode,
-}) => {
+export const validateUserInputs = ({ email, password, postalCode }) => {
   let errors = {};
 
   if (!/^[^\s@]+@[^\s@]+\.(com|net|org|gov|edu|fr|io)$/.test(email)) {

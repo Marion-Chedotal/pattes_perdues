@@ -25,7 +25,7 @@ import {
 
 const Profil = () => {
   const { login } = useParams();
-  const { token } = useSelector((state) => state.auth);
+  const { token, user } = useSelector((state) => state.auth);
   const [showModal, setShowModal] = useState(false);
   const [activeSection, setActiveSection] = useState("profil");
   const [error, setError] = useState(null);
@@ -48,15 +48,17 @@ const Profil = () => {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      await userService.deleteUser(login, token);
-      dispatch(logout());
-      navigate("/", {
-        state: {
-          deleteSuccessMessage: "Votre compte a été supprimé avec succès !",
-        },
-      });
+      if (user.login === login) {
+        await userService.deleteUser(login, token);
+        dispatch(logout());
+        navigate("/", {
+          state: {
+            deleteSuccessMessage: "Votre compte a été supprimé avec succès !",
+          },
+        });
+      }
     } catch (err) {
-      setError("La suppression du compte a échoué. Veuillez réessayer.");
+      setError("Une erreur est survenue lors de la suppression du compte.");
     }
   };
 
@@ -172,9 +174,15 @@ const Profil = () => {
       {activeSection === "profil" && (
         <ProfilCard showUserPosts={handleShowUserPosts} />
       )}
-      {activeSection === "modification-profil" && <UpdateProfil />}
-      {activeSection === "mes-annonces" && <UserPosts />}
-      {activeSection === "messagerie" && <UserConversations />}
+      {activeSection === "modification-profil" && user.login === login && (
+        <UpdateProfil />
+      )}
+      {activeSection === "mes-annonces" && user.login === login && (
+        <UserPosts />
+      )}
+      {activeSection === "messagerie" && user.login === login && (
+        <UserConversations />
+      )}
       <Footer />
     </div>
   );
