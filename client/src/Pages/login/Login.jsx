@@ -23,6 +23,7 @@ const Login = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInputs({ ...inputs, [name]: value });
+    setErrMsg("");
   };
 
   const handleSubmit = async (e) => {

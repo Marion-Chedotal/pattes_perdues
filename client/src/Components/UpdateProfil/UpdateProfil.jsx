@@ -57,6 +57,7 @@ const UpdateProfil = () => {
     const file = event.target.files[0];
     setNewPicture(file);
     setIsModified(true);
+    setErrMsg("");
 
     const reader = new FileReader();
 
@@ -72,6 +73,7 @@ const UpdateProfil = () => {
   const handlePostalCodeChange = async (e) => {
     const value = e.target.value;
     setIsModified(true);
+    setErrMsg("");
 
     if (value.length <= 5) {
       setFormData((prevInputs) => ({
@@ -116,6 +118,7 @@ const UpdateProfil = () => {
 
     setFormData({ ...formData, [name]: value });
     setIsModified(true);
+    setErrMsg("");
 
     setValidation((prevErrors) => ({
       ...prevErrors,

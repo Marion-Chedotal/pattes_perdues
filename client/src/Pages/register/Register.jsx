@@ -38,11 +38,13 @@ const Register = () => {
       ...prevErrors,
       [name]: undefined,
     }));
+    setErrMsg("");
   };
 
   const handlePostalCodeChange = async (e) => {
     const value = e.target.value;
-
+    setErrMsg("");
+    
     if (value.length <= 5) {
       setInputs((prevInputs) => ({
         ...prevInputs,
@@ -95,7 +97,12 @@ const Register = () => {
         postalCode: inputs.postalCode,
         city: inputs.selectedCity,
       });
-      navigate("/");
+      navigate("/", {
+        state: {
+          successMessage:
+            "Votre profil a bien été créé avec succès, veuillez vous connecter pour accéder à votre profil !",
+        },
+      });
     } catch (err) {
       let errorMessage;
 

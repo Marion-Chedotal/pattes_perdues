@@ -17,6 +17,7 @@ import sparkles from "../../assets/sparkles.png";
 import Button from "../../components/btn/Button";
 import postService from "../../services/postService";
 import PostCard from "../../components/postCard/PostCard";
+import SuccessMessage from "../../components/successMessage/SuccessMessage.jsx";
 
 const Home = () => {
   const [lastThreePosts, setLastThreePosts] = useState([]);
@@ -68,6 +69,7 @@ const Home = () => {
   return (
     <div>
       <Header />
+      <SuccessMessage/>
       {deleteSuccessMessage && (
         <div className="successDelete text-center alert alert-success">
           {deleteSuccessMessage}

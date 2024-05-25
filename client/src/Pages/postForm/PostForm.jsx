@@ -107,6 +107,7 @@ const PostForm = () => {
     const file = event.target.files[0];
     setNewPicture(file);
     setIsModified(true);
+    setErrMsg("");
 
     const reader = new FileReader();
 
@@ -125,6 +126,7 @@ const PostForm = () => {
   const handlePostalCodeChange = async (e) => {
     const value = e.target.value;
     setIsModified(true);
+    setErrMsg("");
 
     if (value.length <= 5) {
       setFormData((prevInputs) => ({
@@ -169,6 +171,7 @@ const PostForm = () => {
 
     setFormData({ ...formData, [name]: value });
     setIsModified(true);
+    setErrMsg("");
 
     // for Type and Pet Category select
     if (name === "selectedTypeId") {
