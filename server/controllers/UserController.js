@@ -108,7 +108,10 @@ const updateUser = async (req, res) => {
     if (user.email !== email) {
       const isEmailAlreadyExist = await userService.checkEmailExists(email);
       if (isEmailAlreadyExist) {
-        return res.status(409).json("Email already used");
+        return res.status(409).json({
+          errorCode: "emailExist",
+          errorMessage: errors.authentication.emailExist,
+        });
       }
     }
     if (!city) city = user.city;

@@ -14,6 +14,7 @@
   },
   "userUpdate": {
     "noCity": "Merci de sélectionner une ville",
+    "emailExist": "Email déjà utilisé.",
     "LIMIT_FILE_SIZE": "La photo dépasse la taille autorisée: 1 Mo.",
     "badImgFormat": "Seules les photos au format jpg, jpeg et png sont autorisées.",
     "invalidInput": "Merci de respecter le format attendu."
