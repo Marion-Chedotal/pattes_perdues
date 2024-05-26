@@ -34,6 +34,7 @@ const getByLogin = async (login) => {
     where: {
       login,
     },
+    // attributes: { exclude: ['postalCode', 'city', 'email'] },
   });
 };
 

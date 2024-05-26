@@ -1,5 +1,6 @@
 const messageService = require("../service/messageService");
 const conversationService = require("../service/conversationService");
+const authenticationService = require("../service/authenticationService");
 const { escapeHtml } = require("../utils/htmlEscape");
 const errors = require("../utils/errors.json");
 const Joi = require("joi");
@@ -21,7 +22,7 @@ const validateMessageInput = (data) => {
     receiverId: Joi.number(),
     ConversationId: Joi.number(),
     Sender: Joi.object({
-      avatar: Joi.string().allow(null),
+      avatar: Joi.string().allow(null, ''),
     }),
     createdAt: Joi.date(),
   });
@@ -45,12 +46,24 @@ const createMessage = async (req, res) => {
       errorMessage: errors.global.fieldsToFill,
     });
   }
-
   // sanitize input
   req.body.content = escapeHtml(req.body.content);
 
   // UserId = senderId
   let { content, UserId, receiverId, ConversationId } = req.body;
+
+  const currentUserId = req.userId;
+
+  const isUserAllowed = authenticationService.checkUserPermission(
+    currentUserId,
+    UserId
+  );
+
+  if (!isUserAllowed) {
+    return res.status(403).json({
+      error: `You don't have the rights`,
+    });
+  }
 
   const messageData = { ...req.body, read: false };
 

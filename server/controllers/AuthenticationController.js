@@ -167,7 +167,7 @@ const login = async (req, res) => {
       dbPassword
     );
     if (!passwordMatch) {
-      return res.status(401).json({
+      return res.status(400).json({
         errorCode: "invalidInformations",
         errorMessage: errors.authentication.invalidInformations,
       });

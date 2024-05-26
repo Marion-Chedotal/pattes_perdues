@@ -44,7 +44,7 @@ const Register = () => {
   const handlePostalCodeChange = async (e) => {
     const value = e.target.value;
     setErrMsg("");
-    
+
     if (value.length <= 5) {
       setInputs((prevInputs) => ({
         ...prevInputs,
@@ -211,7 +211,9 @@ const Register = () => {
               </Link>
             </div>
           </div>
-          <div className="right d-none d-md-block"></div>
+          <div className="right d-none d-md-block">
+            <div class="background-image"></div>
+          </div>
         </div>
       </div>
     </div>

@@ -321,9 +321,6 @@ const PostForm = () => {
                 ))}
               </select>
             </label>
-            {validation.TypeId && (
-              <div className="alert alert-danger">{validation.TypeId}</div>
-            )}
           </Col>
           <Col md={6}>
             <label className="required">
@@ -342,11 +339,6 @@ const PostForm = () => {
                 ))}
               </select>
             </label>
-            {validation.PetCategoryId && (
-              <div className="alert alert-danger">
-                {validation.PetCategoryId}
-              </div>
-            )}
           </Col>
         </Row>
         <Row className="mb-3 mx-5 align-items-center justify-content-center">

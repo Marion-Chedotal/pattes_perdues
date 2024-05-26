@@ -12,7 +12,6 @@ const { Op } = require("sequelize");
  */
 const addConversation = (postData) => Conversation.create(postData);
 
-
 /**
  * Get all conversations by User and retrieve login partner conversation
  * @param {number} idSender
@@ -47,7 +46,8 @@ const getAllConversationsByUser = async (userId) => {
           Post p ON p.id = c.PostId
       WHERE
           u1.id = ${userId} OR u2.id = ${userId}
-      GROUP BY c.id
+          GROUP BY c.id
+
     `;
     return await sequelize.query(sqlQuery, {
       type: sequelize.QueryTypes.SELECT,

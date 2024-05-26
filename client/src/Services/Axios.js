@@ -12,7 +12,8 @@ instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const status = error.response ? error.response.status : null;
-    if (status === 401 && !isAlertDisplayed) {
+    const isAuthenticated = store.getState().auth.isAuthenticated;
+    if (status === 401 && isAuthenticated && !isAlertDisplayed) {
       store.dispatch(expiredToken());
       isAlertDisplayed = true;
       alert("Votre session a expiré. Veuillez vous reconnecter.");

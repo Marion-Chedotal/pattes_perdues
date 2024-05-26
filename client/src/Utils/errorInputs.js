@@ -39,8 +39,6 @@ export const validateRegisterInputs = ({
 export const validatePostInputs = (formData) => {
   const requiredFields = {
     gender: "gender",
-    PetCategoryId: "PetCategoryId",
-    TypeId: "TypeId",
     name: "name",
     alert_date: "alert_date",
     description: "description",
