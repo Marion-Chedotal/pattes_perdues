@@ -34,7 +34,6 @@ const getByLogin = async (login) => {
     where: {
       login,
     },
-    // attributes: { exclude: ['postalCode', 'city', 'email'] },
   });
 };
 
@@ -43,11 +42,11 @@ const getByLogin = async (login) => {
  * @param {number} id
  * @returns {Promise<Object>}
  */
-const getById = async (id) => {
-  return await User.findByPk(id, {
+const getById = (id) =>
+  User.findByPk(id, {
     attributes: { exclude: ["password"] },
+    //email need for profil
   });
-};
 
 /**
  * Update user
@@ -71,6 +70,9 @@ const editUser = async (idUser, data) => {
 const deleteUser = async (id) => {
   const user = await getById(id);
 
+  if (!user) {
+    throw new Error("User does not exist");
+  }
   return user.destroy();
 };
 

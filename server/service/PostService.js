@@ -15,7 +15,10 @@ const addPost = (postData) => Post.create(postData);
 const getById = async (id) => {
   return await Post.findByPk(id, {
     include: [
-      { model: User, attributes: { exclude: ["password", "email"] } },
+      {
+        model: User,
+        attributes: ["id", "login", "avatar"],
+      },
       Pet_category,
       Type,
     ],
@@ -91,7 +94,7 @@ const getAllByUser = async (userId) => {
       {
         model: User,
         attributes: ["login"],
-      }
+      },
     ],
   });
 };

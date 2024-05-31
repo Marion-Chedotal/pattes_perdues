@@ -212,7 +212,7 @@ const Register = () => {
             </div>
           </div>
           <div className="right d-none d-md-block">
-            <div class="background-image"></div>
+            <div className="background-image"></div>
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ const postController = require("../controllers/postController");
 const messageController = require("../controllers/messageController");
 const conversationController = require("../controllers/conversationController");
 const authMiddleware = require("../middleware/authMiddleware");
-const upload = require("../utils/multerConfig");
+const upload = require("../middleware/multerConfig");
 
 /**
  * authentication routes

@@ -87,7 +87,6 @@ const findByLogin = async (req, res) => {
  * @throws {object} error
  */
 const updateUser = async (req, res) => {
-  console.log("ici");
   const login = req.params.login;
   const currentUserId = req.userId;
 
@@ -110,7 +109,6 @@ const updateUser = async (req, res) => {
   const { error } = validateUpdateInput(req.body);
 
   if (error) {
-    console.log(error)
     return res.status(400).json({
       errorCode: "invalidInput",
       errorMessage: errors.global.invalidInput,
@@ -134,8 +132,6 @@ const updateUser = async (req, res) => {
 
   let { password, email, avatar, postalCode, city } = req.body;
 
-  console.log("postalcode", postalCode);
-  console.log("user.postalCode", user.postalCode);
   if (postalCode !== user?.postalCode && !city) {
     return res.status(400).json({
       errorCode: "noCity",
