@@ -3,7 +3,7 @@ const authenticationService = require("../service/authenticationService");
 const errors = require("../utils/errors.json");
 const bcrypt = require("bcryptjs");
 const { escapeHtml } = require("../utils/htmlEscape");
-const { passwordRegex } = require("./authenticationController");
+const { loginRegex, passwordRegex } = require("./authenticationController");
 const Joi = require("joi");
 const fs = require("fs");
 
@@ -19,6 +19,22 @@ const validateUpdateInput = (data) => {
   return schema.validate(data);
 };
 
+const validateLoginParams = (data) => {
+  const schema = Joi.object({
+    login: Joi.string().regex(new RegExp(loginRegex)),
+  });
+
+  return schema.validate(data);
+};
+
+const validateIdParams = (data) => {
+  const schema = Joi.object({
+    id: Joi.number(),
+  });
+
+  return schema.validate(data);
+};
+
 /**
  * Get user by his id
  * @param {object} req
@@ -29,6 +45,7 @@ const validateUpdateInput = (data) => {
 const findById = async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
+  validateIdParams(id);
   const currentUserId = req.userId;
 
   const isUserAllowed = authenticationService.checkUserPermission(
@@ -65,6 +82,8 @@ const findById = async (req, res) => {
 const findByLogin = async (req, res) => {
   const login = req.params.login;
 
+  validateLoginParams(login);
+
   try {
     const user = await userService.getByLogin(login);
 
@@ -88,6 +107,9 @@ const findByLogin = async (req, res) => {
  */
 const updateUser = async (req, res) => {
   const login = req.params.login;
+
+  validateLoginParams(login);
+
   const currentUserId = req.userId;
 
   const user = await userService.getByLogin(login);
@@ -199,6 +221,8 @@ const updateUser = async (req, res) => {
  */
 const removeUser = async (req, res) => {
   const login = req.params.login;
+
+  validateLoginParams(login);
 
   const user = await userService.getByLogin(login);
   const userId = user?.id;

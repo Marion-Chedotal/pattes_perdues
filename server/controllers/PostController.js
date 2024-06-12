@@ -5,7 +5,7 @@ const { escapeHtml } = require("../utils/htmlEscape");
 const errors = require("../utils/errors.json");
 const Joi = require("joi");
 const fs = require("fs");
-
+const { loginRegex } = require("./authenticationController");
 /**
  * Validate post input using a Joi schema.
  * @param {object} data - The data to be validated.
@@ -39,6 +39,14 @@ const validateInput = (data) => {
   return schema.validate(data);
 };
 
+const validateParams = (data) => {
+  const schema = Joi.object({
+    login: Joi.string().regex(new RegExp(loginRegex)).allow(""),
+    id: Joi.number().allow(""),
+  });
+
+  return schema.validate(data);
+};
 /**
  * Register a new post
  * @param {object} req
@@ -143,6 +151,7 @@ const createPost = async (req, res) => {
  */
 const findById = async (req, res) => {
   const id = parseInt(req.params.id, 10);
+  validateParams(id);
 
   try {
     const post = await postService.getById(id);
@@ -251,6 +260,8 @@ const findAllArchivesPosts = async (req, res) => {
  */
 const findByUser = async (req, res) => {
   const login = req.params.login;
+  validateParams(login);
+
   const user = await userService.getByLogin(login);
   const userId = user.id;
 
@@ -295,6 +306,8 @@ const numberPostsByUser = async (req, res) => {
  */
 const updatePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
+  validateParams(idPost);
+
   const currentUserId = req.userId;
   const postToEdit = await postService.getById(idPost);
 
@@ -419,6 +432,8 @@ const updatePost = async (req, res) => {
  */
 const removePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
+  validateParams(idPost);
+
   const currentUserId = req.userId;
 
   const postToDelete = await postService.getById(idPost);

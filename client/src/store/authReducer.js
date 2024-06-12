@@ -17,14 +17,6 @@ const authReducer = (
         token: null,
         user: null,
       };
-    case "UPDATE_USER":
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          login: action.payload.login,
-        },
-      };
     case "EXPIRED_TOKEN":
       return {
         ...state,

@@ -8,13 +8,12 @@ const typeService = require("../service/typeService");
  * @throws {object} error
  */
 const findAllType = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
 
   try {
     const type = await typeService.getAllType();
 
     if (!type) {
-      return res.status(400).json({ error: `Type ${id} doesn't exist` });
+      return res.status(400).json({ error: `There is no pet category` });
     }
     res.status(200).json(type);
   } catch (error) {

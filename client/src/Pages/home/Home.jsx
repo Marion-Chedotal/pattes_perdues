@@ -75,19 +75,17 @@ const Home = () => {
           {deleteSuccessMessage}
         </div>
       )}
-      <main className="home">
+      <main role="main" className="home">
         <Container fluid className="presentation mt-5 ">
           <Row>
             <Col
-              className={`my-5 d-flex justify-content-center justify-content-md-${
-                window.innerWidth >= 768 ? "center" : "start"
-              } text-center text-md-start`}
+              className="my-5 d-flex justify-content-center"
             >
               <div className="card border border-0">
                 <h2 className="card-header display-6 pb-5 border border-0 text-center">
                   Pattes perdues
                 </h2>
-                <div className="card-body ms-auto text-center introduction d-flex justify-content-center align-items-center">
+                <div className="card-body text-center introduction d-flex justify-content-center align-items-center">
                   <p className="card-text fw-bold">
                     facilite votre démarche pour vous aider à retrouver vos
                     animaux grâces à notre communauté !

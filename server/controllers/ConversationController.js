@@ -5,6 +5,7 @@ const messageService = require("../service/messageService");
 const { escapeHtml } = require("../utils/htmlEscape");
 const errors = require("../utils/errors.json");
 const Joi = require("joi");
+const { loginRegex } = require("./authenticationController");
 
 /**
  * Validate message input using a Joi schema.
@@ -22,6 +23,15 @@ const validateInput = (data) => {
     receiverId: Joi.number(),
     PostId: Joi.number(),
     read: Joi.boolean(),
+  });
+
+  return schema.validate(data);
+};
+
+const validateParams = (data) => {
+  const schema = Joi.object({
+    id: Joi.number().allow(""),
+    login: Joi.string().regex(new RegExp(loginRegex)),
   });
 
   return schema.validate(data);
@@ -102,6 +112,8 @@ const startConversation = async (req, res) => {
 const findConversation = async (req, res) => {
   const idConversation = parseInt(req.params.id, 10);
   const login = req.params.login;
+
+  validateParams(idConversation, login);
   const user = await userService.getByLogin(login);
   const userId = user.id;
   const currentUserId = req.userId;
@@ -140,6 +152,7 @@ const findConversation = async (req, res) => {
  */
 const findConversations = async (req, res) => {
   const login = req.params.login;
+  validateParams(login);
   const user = await userService.getByLogin(login);
   const userId = user?.id;
   const currentUserId = req.userId;

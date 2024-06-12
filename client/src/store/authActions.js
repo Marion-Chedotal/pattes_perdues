@@ -12,11 +12,6 @@ export const logout = () => ({
   type: LOGOUT,
 });
 
-export const updateUser = (login) => ({
-  type: UPDATE_USER,
-  payload: { login },
-});
-
 export const expiredToken = (accessToken, user) => ({
   type: EXPIRED_TOKEN,
   payload: { accessToken, user },

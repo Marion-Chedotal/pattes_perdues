@@ -28,9 +28,16 @@ $font-eb-garamond: "EB Garamond", serif;
 Colors 
 */
 $blue-color: #004e64;
-$beige-color: #D0C19F;
-$white-color: #FFFFFF;
+$beige-color: #d0c19f;
+$white-color: #ffffff;
 
 .App {
   color: $blue-color;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }

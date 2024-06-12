@@ -22,9 +22,17 @@ const validateMessageInput = (data) => {
     receiverId: Joi.number(),
     ConversationId: Joi.number(),
     Sender: Joi.object({
-      avatar: Joi.string().allow(null, ''),
+      avatar: Joi.string().allow(null, ""),
     }),
     createdAt: Joi.date(),
+  });
+
+  return schema.validate(data);
+};
+
+const validateParams = (data) => {
+  const schema = Joi.object({
+    messageId: Joi.number(),
   });
 
   return schema.validate(data);
@@ -92,6 +100,8 @@ const createMessage = async (req, res) => {
  */
 const markMessageAsRead = async (req, res) => {
   const { messageId } = req.params;
+  validateParams(messageId);
+
   const currentUserId = req.userId;
 
   try {
