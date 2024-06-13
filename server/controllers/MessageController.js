@@ -100,7 +100,11 @@ const createMessage = async (req, res) => {
  */
 const markMessageAsRead = async (req, res) => {
   const { messageId } = req.params;
-  validateParams(messageId);
+
+  const { error } = validateParams({messageId});
+  if (error) {
+    return res.status(400).json("Invalid request parameters");
+  }
 
   const currentUserId = req.userId;
 

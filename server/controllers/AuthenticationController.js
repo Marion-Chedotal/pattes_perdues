@@ -9,6 +9,7 @@ const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()_+])[A-Za-z\d!@#$%&*()_+]{10,32}$/;
 const loginRegex = /^[a-zA-Z0-9-_]{8,}$/;
 
+const cityRegex = /^[a-zA-ZÀ-ÿ\s\'-]+$/;
 /**
  * Validate register input using a Joi schema.
  * @param {object} data - The data to be validated.
@@ -25,7 +26,7 @@ const validateInput = (data) => {
     password: Joi.string().regex(new RegExp(passwordRegex)),
     login: Joi.string().regex(new RegExp(loginRegex)),
     postalCode: Joi.number().integer(),
-    city: Joi.string(),
+    city: Joi.string().regex(new RegExp(cityRegex)),
   });
 
   return schema.validate(data);
@@ -112,7 +113,15 @@ const register = async (req, res) => {
       city: city,
     });
 
-    res.status(201).json(user);
+    const userToSend = {
+      id: user.id,
+      login: user.login,
+      email: user.email,
+      postalCode: user.postalCode,
+      city: user.city,
+    };
+
+    res.status(201).json(userToSend);
   } catch (error) {
     res.status(500).json({
       error: `Error when register user, ${error}`,
@@ -184,4 +193,11 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { passwordRegex, loginRegex, validateInput, register, login };
+module.exports = {
+  passwordRegex,
+  loginRegex,
+  cityRegex,
+  validateInput,
+  register,
+  login,
+};

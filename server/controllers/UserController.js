@@ -3,7 +3,11 @@ const authenticationService = require("../service/authenticationService");
 const errors = require("../utils/errors.json");
 const bcrypt = require("bcryptjs");
 const { escapeHtml } = require("../utils/htmlEscape");
-const { loginRegex, passwordRegex } = require("./authenticationController");
+const {
+  loginRegex,
+  passwordRegex,
+  cityRegex,
+} = require("./authenticationController");
 const Joi = require("joi");
 const fs = require("fs");
 
@@ -13,7 +17,7 @@ const validateUpdateInput = (data) => {
     email: Joi.string().email(),
     avatar: Joi.string().dataUri().allow(""),
     postalCode: Joi.number().integer(),
-    city: Joi.string().allow(""),
+    city: Joi.string().regex(new RegExp(cityRegex)).allow(""),
   });
 
   return schema.validate(data);
@@ -45,7 +49,12 @@ const validateIdParams = (data) => {
 const findById = async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
-  validateIdParams(id);
+  const { error } = validateIdParams({ id });
+  if (error) {
+    console.log(error);
+    return res.status(400).json("Invalid request parameters");
+  }
+
   const currentUserId = req.userId;
 
   const isUserAllowed = authenticationService.checkUserPermission(
@@ -82,7 +91,10 @@ const findById = async (req, res) => {
 const findByLogin = async (req, res) => {
   const login = req.params.login;
 
-  validateLoginParams(login);
+  const { error } = validateLoginParams({ login });
+  if (error) {
+    return res.status(400).json("Invalid request parameters");
+  }
 
   try {
     const user = await userService.getByLogin(login);
@@ -90,7 +102,16 @@ const findByLogin = async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: `User ${login} doesn't exist` });
     }
-    res.status(200).json(user);
+
+    const userToSend = {
+      id: user.id,
+      login: user.login,
+      email: user.email,
+      postalCode: user.postalCode,
+      city: user.city,
+    };
+
+    res.status(200).json(userToSend);
   } catch (error) {
     res.status(500).json({
       error: `Error when fetching user by login, ${error}`,
@@ -108,8 +129,10 @@ const findByLogin = async (req, res) => {
 const updateUser = async (req, res) => {
   const login = req.params.login;
 
-  validateLoginParams(login);
-
+  const { error: paramsError } = validateLoginParams({ login });
+  if (paramsError) {
+    return res.status(400).json("Invalid request parameters");
+  }
   const currentUserId = req.userId;
 
   const user = await userService.getByLogin(login);
@@ -128,9 +151,9 @@ const updateUser = async (req, res) => {
   }
 
   // Check input format
-  const { error } = validateUpdateInput(req.body);
+  const { error: inputError } = validateUpdateInput(req.body);
 
-  if (error) {
+  if (inputError) {
     return res.status(400).json({
       errorCode: "invalidInput",
       errorMessage: errors.global.invalidInput,
@@ -222,7 +245,10 @@ const updateUser = async (req, res) => {
 const removeUser = async (req, res) => {
   const login = req.params.login;
 
-  validateLoginParams(login);
+  const { error } = validateLoginParams({ login });
+  if (error) {
+    return res.status(400).json("Invalid request parameters");
+  }
 
   const user = await userService.getByLogin(login);
   const userId = user?.id;

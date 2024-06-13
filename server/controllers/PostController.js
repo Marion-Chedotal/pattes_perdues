@@ -5,7 +5,7 @@ const { escapeHtml } = require("../utils/htmlEscape");
 const errors = require("../utils/errors.json");
 const Joi = require("joi");
 const fs = require("fs");
-const { loginRegex } = require("./authenticationController");
+const { loginRegex, cityRegex } = require("./authenticationController");
 /**
  * Validate post input using a Joi schema.
  * @param {object} data - The data to be validated.
@@ -30,7 +30,7 @@ const validateInput = (data) => {
     is_active: Joi.boolean(),
     street: Joi.string(),
     postalCode: Joi.number().integer(),
-    city: Joi.string(),
+    city: Joi.string().regex(new RegExp(cityRegex)).allow(""),
     UserId: Joi.number().integer(),
     TypeId: Joi.number().integer(),
     PetCategoryId: Joi.number().integer(),
@@ -42,7 +42,7 @@ const validateInput = (data) => {
 const validateParams = (data) => {
   const schema = Joi.object({
     login: Joi.string().regex(new RegExp(loginRegex)).allow(""),
-    id: Joi.number().allow(""),
+    idPost: Joi.number().allow(""),
   });
 
   return schema.validate(data);
@@ -57,6 +57,7 @@ const createPost = async (req, res) => {
   // Check input format
   const { error } = validateInput(req.body);
   if (error) {
+    console.log(error);
     return res.status(400).json({
       errorCode: "fieldsToFill",
       errorMessage: errors.global.fieldsToFill,
@@ -150,14 +151,18 @@ const createPost = async (req, res) => {
  * @throws {object} error
  */
 const findById = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  validateParams(id);
+  const idPost = parseInt(req.params.id, 10);
+
+  const { error } = validateParams({ idPost });
+  if (error) {
+    return res.status(400).json("Invalid request parameters");
+  }
 
   try {
-    const post = await postService.getById(id);
+    const post = await postService.getById(idPost);
 
     if (!post) {
-      return res.status(400).json({ error: `Post ${id} doesn't exist` });
+      return res.status(400).json({ error: `Post ${idPost} doesn't exist` });
     }
     res.status(200).json(post);
   } catch (error) {
@@ -260,7 +265,11 @@ const findAllArchivesPosts = async (req, res) => {
  */
 const findByUser = async (req, res) => {
   const login = req.params.login;
-  validateParams(login);
+
+  const { error } = validateParams({ login });
+  if (error) {
+    return res.status(400).json("Invalid request parameters");
+  }
 
   const user = await userService.getByLogin(login);
   const userId = user.id;
@@ -306,7 +315,11 @@ const numberPostsByUser = async (req, res) => {
  */
 const updatePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
-  validateParams(idPost);
+
+  const { error: paramsError } = validateParams({ idPost });
+  if (paramsError) {
+    return res.status(400).json("Invalid request parameters");
+  }
 
   const currentUserId = req.userId;
   const postToEdit = await postService.getById(idPost);
@@ -317,8 +330,8 @@ const updatePost = async (req, res) => {
   );
 
   // Check input format
-  const { error } = validateInput(req.body);
-  if (error) {
+  const { error: inputsError } = validateInput(req.body);
+  if (inputsError) {
     return res.status(400).json({
       errorCode: "fieldsToFill",
       errorMessage: errors.global.fieldsToFill,
@@ -432,7 +445,11 @@ const updatePost = async (req, res) => {
  */
 const removePost = async (req, res) => {
   const idPost = parseInt(req.params.id, 10);
-  validateParams(idPost);
+
+  const { error } = validateParams({ idPost });
+  if (error) {
+    return res.status(400).json("Invalid request parameters");
+  }
 
   const currentUserId = req.userId;
 
@@ -452,7 +469,7 @@ const removePost = async (req, res) => {
   try {
     // get the picture to delete it with the post
     const picture = postToDelete.picture;
-    const post = await postService.deletePost(idPost);
+    const post = await postService.deletePost(id);
 
     if (!post) {
       return res.status(400).json({ error: `Post ${id} doesn't exist` });
@@ -462,7 +479,7 @@ const removePost = async (req, res) => {
       fs.unlinkSync(picture);
     }
 
-    res.status(200).json(`Post ${idPost} has been successfully deleted`);
+    res.status(200).json(`Post ${id} has been successfully deleted`);
   } catch (error) {
     res.status(500).json({
       error: `Error when deleting post , ${error}`,

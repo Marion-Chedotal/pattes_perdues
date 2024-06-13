@@ -30,7 +30,7 @@ const validateInput = (data) => {
 
 const validateParams = (data) => {
   const schema = Joi.object({
-    id: Joi.number().allow(""),
+    idConversation: Joi.number().allow(""),
     login: Joi.string().regex(new RegExp(loginRegex)),
   });
 
@@ -113,9 +113,14 @@ const findConversation = async (req, res) => {
   const idConversation = parseInt(req.params.id, 10);
   const login = req.params.login;
 
-  validateParams(idConversation, login);
+  const { error } = validateParams({ idConversation, login });
+  if (error) {
+    console.log(error);
+    return res.status(400).json("Invalid request parameters");
+  }
+
   const user = await userService.getByLogin(login);
-  const userId = user.id;
+  const userId = user?.id;
   const currentUserId = req.userId;
 
   const isUserAllowed = authenticationService.checkUserPermission(
@@ -152,7 +157,12 @@ const findConversation = async (req, res) => {
  */
 const findConversations = async (req, res) => {
   const login = req.params.login;
-  validateParams(login);
+
+  const { error } = validateParams({ login });
+  if (error) {
+    return res.status(400).json("Invalid request parameters");
+  }
+
   const user = await userService.getByLogin(login);
   const userId = user?.id;
   const currentUserId = req.userId;
