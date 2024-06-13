@@ -493,7 +493,7 @@ const PostForm = () => {
                 {formData?.cities &&
                   formData?.cities.map((city, index) => (
                     <option key={index} value={city}>
-                      {city}
+                      {decodeHtml(city)}
                     </option>
                   ))}
               </select>

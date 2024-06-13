@@ -62,7 +62,7 @@ const PostCard = ({ post }) => {
           </div>
           <div className="d-flex align-items-baseline mt-3">
             <FontAwesomeIcon icon={faLocationDot} />
-            <p className="mb-0 ms-2">{post?.city}</p>
+            <p className="mb-0 ms-2">{decodeHtml(post?.city)}</p>
           </div>
           <Link to={`/annonce/${post.id}`} className="my-4 postCardBtn">
             <Button type="button">Détails</Button>

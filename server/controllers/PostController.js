@@ -402,7 +402,7 @@ const updatePost = async (req, res) => {
       picturePath = req.files.picture[0].path;
 
       // Delete old picture from server
-      if (postToEdit.picture) {
+      if (postToEdit.picture && postToEdit.picture.startsWith("uploads")) {
         fs.unlinkSync(postToEdit.picture);
       }
     }
@@ -469,17 +469,17 @@ const removePost = async (req, res) => {
   try {
     // get the picture to delete it with the post
     const picture = postToDelete.picture;
-    const post = await postService.deletePost(id);
+    const post = await postService.deletePost(idPost);
 
     if (!post) {
-      return res.status(400).json({ error: `Post ${id} doesn't exist` });
+      return res.status(400).json({ error: `Post ${idPost} doesn't exist` });
     }
 
-    if (picture) {
+    if (picture && picture.startsWith("uploads")) {
       fs.unlinkSync(picture);
     }
 
-    res.status(200).json(`Post ${id} has been successfully deleted`);
+    res.status(200).json(`Post ${idPost} has been successfully deleted`);
   } catch (error) {
     res.status(500).json({
       error: `Error when deleting post , ${error}`,

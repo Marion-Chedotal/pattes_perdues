@@ -337,7 +337,7 @@ const Post = () => {
                     <p className="m-0">{decodeHtml(post?.street)}</p>
                     <div className="d-flex align-items-center">
                       <p className="m-0 me-2">{post?.postalCode}</p>
-                      <p className="m-0 city">{post?.city}</p>
+                      <p className="m-0 city">{decodeHtml(post?.city)}</p>
                     </div>
                   </div>
                 </div>

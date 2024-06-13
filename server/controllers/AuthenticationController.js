@@ -9,7 +9,7 @@ const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()_+])[A-Za-z\d!@#$%&*()_+]{10,32}$/;
 const loginRegex = /^[a-zA-Z0-9-_]{8,}$/;
 
-const cityRegex = /^[a-zA-ZÀ-ÿ\s\'-]+$/;
+const cityRegex = /^[a-zA-ZÀ-ÿ\s'&#039;-]+$/;
 /**
  * Validate register input using a Joi schema.
  * @param {object} data - The data to be validated.

@@ -208,7 +208,7 @@ const updateUser = async (req, res) => {
       avatarPath = req.files.avatar[0].path;
 
       // Delete old avatar from server
-      if (user.avatar) {
+      if (user.avatar && user.avatar.startsWith("uploads")) {
         fs.unlinkSync(user.avatar);
       }
     }
