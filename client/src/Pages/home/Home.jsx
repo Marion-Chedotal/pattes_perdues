@@ -88,7 +88,7 @@ const Home = () => {
                 <div className="card-body text-center introduction d-flex justify-content-center align-items-center">
                   <p className="card-text fw-bold">
                     facilite votre démarche pour vous aider à retrouver vos
-                    animaux grâces à notre communauté !
+                    animaux grâce à notre communauté !
                   </p>
                 </div>
               </div>

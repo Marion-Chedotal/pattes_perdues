@@ -47,6 +47,9 @@ const getThreeLatestPosts = async () => {
   return await Post.findAll({
     include: [{ model: Pet_category }, { model: Type }],
     order: [["createdAt", "DESC"]],
+    where: {
+      is_active: true,
+    },
     limit: 3,
   });
 };

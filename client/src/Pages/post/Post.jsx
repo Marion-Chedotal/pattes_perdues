@@ -37,10 +37,6 @@ import {
 import {
   EmailShareButton,
   EmailIcon,
-  FacebookShareButton,
-  FacebookMessengerShareButton,
-  FacebookIcon,
-  FacebookMessengerIcon,
   WhatsappIcon,
   WhatsappShareButton,
 } from "react-share";
@@ -159,6 +155,20 @@ const Post = () => {
       setError(errorMessage);
     }
   };
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    // Scroll to top when id changes
+    scrollToTop();
+  }, [id]);
+
   return (
     <div className="onePost">
       <Header />
