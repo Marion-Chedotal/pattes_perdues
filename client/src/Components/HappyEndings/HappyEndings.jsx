@@ -126,7 +126,7 @@ useEffect(() => {
             onChange={handleTypeFilterChange}
             className="mb-3"
           >
-            <option value="all">Toutes les types</option>
+            <option value="all">Tous les types</option>
             <option value="Perdu">Perdus</option>
             <option value="Trouvé">Trouvés</option>
             <option value="Volé">Volés</option>

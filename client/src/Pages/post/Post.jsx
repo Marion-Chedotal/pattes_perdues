@@ -380,18 +380,18 @@ const Post = () => {
                   >
                     <EmailIcon size={32} round={true} />
                   </EmailShareButton>
-                  <FacebookMessengerShareButton
+                  {/* <FacebookMessengerShareButton
                     url={shareUrl}
                     aria_label="partager sur messenger"
                   >
                     <FacebookMessengerIcon size={32} round={true} />
-                  </FacebookMessengerShareButton>
-                  <FacebookShareButton
+                  </FacebookMessengerShareButton> */}
+                  {/* <FacebookShareButton
                     url={shareUrl}
                     aria_label="partager sur facebook"
                   >
                     <FacebookIcon size={32} round={true} />
-                  </FacebookShareButton>
+                  </FacebookShareButton> */}
                   <WhatsappShareButton
                     url={shareUrl}
                     aria_label="partager sur whatsapp"

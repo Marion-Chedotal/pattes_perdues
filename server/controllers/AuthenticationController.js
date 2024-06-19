@@ -6,7 +6,7 @@ const userService = require("../service/userService");
 const errors = require("../utils/errors.json");
 
 const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()_+])[A-Za-z\d!@#$%&*()_+]{10,32}$/;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%&*()_+]{10,32}$/;
 const loginRegex = /^[a-zA-Z0-9-_]{8,}$/;
 
 const cityRegex = /^[a-zA-ZÀ-ÿ\s'&#039;-]+$/;
